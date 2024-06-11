@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
-          content="Attribute Prototype Network for Zero-Shot Learning">
+          content="RS-Agent: Automating Remote Sensing Tasks through Intelligent Agents">
     <meta name="author" content="Wenjia Xu,
-                                Yongqin Xian,
+                                Zijian Yu,
+	    			Yixu Wang,
 				 Jiuniu Wang,
-                                Zeynep Akata,
-				 Bernt Schiele">
+                                Mugen Peng">
 
-    <title>Attribute Prototype Network for Zero-Shot Learning</title>
+    <title>RS-Agent: Automating Remote Sensing Tasks through Intelligent Agents</title>
     <!-- Bootstrap core CSS -->
     <!--link href="bootstrap.min.css" rel="stylesheet"-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -26,27 +26,26 @@
 <body>
 <div class="jumbotron jumbotron-fluid">
     <div class="container"></div>
-    <h2>Attribute Prototype Network for Zero-Shot Learning</h2>
+    <h2>RS-Agent: Automating Remote Sensing Tasks through Intelligent Agents</h2>
 <!--            <p class="abstract">An interpretable, data-efficient, and scalable neural scene representation.</p>-->
     <hr>
     <p class="authors">
         <a > Wenjia Xu</a>,
-        <a >Yongqin Xian</a>,
+        <a >Zijian Yu</a>,
+	    <a >Yixu Wang</a>,
 	    <a >Jiuniu Wang</a>,
-        <a >Zeynep Akata</a>,
-	    <a >Bernt Schiele</a>
+	    <a >Mugen Peng</a>
         
     </p>
     <div class="btn-group" role="group" aria-label="Top menu">
         <a href="https://arxiv.org/abs/2008.08290" class="btn btn-primary">Paper</a>
 <!-- 	<a href="https://arxiv.org/abs/2007.06877" class="btn btn-primary">Paper</a> -->
 
-        <a href="https://github.com/wenjiaXu/APN-ZSL" class="btn btn-primary">Code</a>
     </div>
 </div>
 
 <div class="container">
-	<h2>Introduction</h2>
+	<h2>Abstract</h2>
     <div class="section">
 <!--         <div class="vcontainer">
             <iframe class='video' src="https://www.youtube.com/embed/H7so-k0YOz4" frameborder="0"
@@ -55,31 +54,36 @@
         </div> -->
         <hr>
         <p>
-            From the beginning of zero-shot learning research, visual attributes have been shown to play an important role. 
-	In order to better transfer attribute-based knowledge from known to unknown classes, 
-	we argue that an image representation with integrated attribute localization ability would be beneficial for zero-shot learning.
-	To this end, we propose a novel zero-shot representation learning framework that jointly learns discriminative global and local features using only class-level attributes. 
-	While a visual-semantic embedding layer learns global features, local features are learned through an attribute prototype network that simultaneously regresses and decorrelates attributes from intermediate features.
-         We show that our locality augmented image representations achieve a new state-of-the-art on three zero-shot learning benchmarks. As an additional benefit, 
-	our model points to the visual evidence of the attributes in an image, e.g. for the CUB dataset, confirming the improved attribute localization ability of our image representation.
+            An increasing number of models have achieved great performance in remote sensing tasks with the recent development of
+	Large Language Models (LLMs) and Visual Language Models (VLMs). However, these models are constrained to basic vision and
+	language instruction-tuning tasks, facing challenges in complex remote sensing applications. Additionally, these models
+	lack specialized expertise in professional domains. To address these limitations, we propose a LLM-driven remote sensing 
+	intelligent agent named RS-Agent. Firstly, RS-Agent is powered by a large language model (LLM) that acts as its "Central 
+	Controller," enabling it to understand and respond to various problems intelligently. Secondly, our RS-Agent integrates 
+	many high-performance remote sensing image processing tools, facilitating multi-tool and multi-turn conversations. 
+	Thirdly, our RS-Agent can answer professional questions by leveraging robust knowledge documents.
+	We conducted experiments using several datasets, e.g., RSSDIVCS, RSVQA, and DOTAv1. 
+	The experimental results demonstrate that our RS-Agent delivers outstanding performance in many tasks, i.e., scene classification, visual question answering, and object counting tasks.
 	</p>
     </div>
     
     <div class="section">
-        <h2>Quantitative Results</h2>
+        <h2>Introduction</h2>
         <hr>
         <p>
-            We next show quantitative results for Zero-Shot Learning.
+            RS-Agent employs an LLM to understand the user's requirements. <br>
+	    RS-Agent can utilize multiple tools and engage in multi-turn conversations. <br>
+	    RS-Agent is capable of answering questions in specialized fields.
         </p>
 	<div class="row align-items-center">
             <div class="col justify-content-center text-center">
-                <img src="images/zsl.png" style="width:100%">
+                <img src="images/TeaserFigure.png" style="width:100%">
             </div> 
         </div>
     </div>
 	
     <div class="section">
-        <h2>Qualitative Results</h2>
+        <h2>Qualitative Result</h2>
         <hr>
         <p>
             We next show qualitative results for localizing attributes and body parts.
