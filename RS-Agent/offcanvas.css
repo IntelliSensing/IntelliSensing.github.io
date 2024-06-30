@@ -108,3 +108,9 @@ h2 {
     margin-top: 30px;
 }
 
+.video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Adjust this if you don't want it to take the full height of the viewport */
+        }
