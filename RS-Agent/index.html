@@ -15,46 +15,77 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            background-color: #ffffff; /* White background */
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
-            text-align: center; /* Center all content */
+            text-align: center;
+            font-size: 16px; /* Global font size */
         }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-        }
-        h1, h2, h3 {
+
+        /* Title */
+        h1 {
+            font-size: 32px; /* Larger font size for main title */
             color: #333;
         }
+
+        /* Subtitle (h2) */
+        h2 {
+            font-size: 28px; /* Slightly smaller for subtitles */
+            color: #333;
+        }
+
+        /* Author information */
+        .author-info {
+            font-size: 18px; /* Medium size for author info */
+            font-style: italic;
+        }
+
+        /* Button group */
         .button-group {
             margin: 20px 0;
         }
+        .button-group .button {
+            font-size: 18px; /* Button text size */
+        }
+
+        /* Project Content */
+        p {
+            font-size: 20px; /* Slightly larger for paragraphs */
+            color: #555;
+            margin-bottom: 15px;
+        }
+
         .content-image {
             display: block;
             margin: 20px auto;
-            max-width: 100%; /* Ensure image scales */
+            max-width: 100%;
         }
+
+        /* BibTex preformatted text */
+        pre {
+            font-size: 16px; /* Font size for BibTex */
+            text-align: left;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        /* Footer or feedback link */
+        .feedback-link {
+            font-size: 18px; /* Feedback text size */
+            margin-top: 20px;
+        }
+
+        /* Acknowledgement */
         .images-row {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-top: 20px;
         }
+
         .images-row img {
             max-width: 200px;
             width: 100%;
-        }
-        .feedback-link {
-            margin-top: 20px;
-        }
-        .author-info {
-            font-style: italic;
-        }
-        pre {
-            text-align: left;
-            display: inline-block;
-            margin-top: 20px;
         }
     </style>
 </head>
@@ -81,16 +112,13 @@
     <!-- Interactive Buttons -->
     <div class="button-group">
         <!-- arxiv button with Bulma styling and FontAwesome icon -->
-        <span class="link-block">
         <a href="https://arxiv.org/abs/2406.07089" target="_blank" class="button is-normal is-rounded is-dark">
             <span class="icon">
-                <i class="ai ai-arxiv">
-                  ::before
-                </i>
+                <i class="ai ai-arxiv"></i>
             </span>
             <span>arXiv</span>
         </a>
-        </span>
+
         <a href="https://github.com/IntelliSensing/IntelliSensing.github.io" target="_blank" class="button is-normal is-rounded is-primary">
             <span class="icon">
                 <i class="fab fa-github"></i>
