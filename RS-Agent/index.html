@@ -11,19 +11,16 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            text-align: center; /* Center all content */
         }
         .container {
             width: 80%;
             margin: 0 auto;
         }
-        .center-text {
-            text-align: center;
-        }
         h1, h2, h3 {
             color: #333;
         }
         .button-group {
-            text-align: center;
             margin: 20px 0;
         }
         .button-group a {
@@ -38,21 +35,28 @@
         .content-image {
             display: block;
             margin: 20px auto;
+            max-width: 100%; /* Ensure image scales */
         }
         .images-row {
             display: flex;
             justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
         }
         .images-row img {
-            margin: 0 10px;
+            max-width: 200px;
+            width: 100%;
         }
         .feedback-link {
-            text-align: center;
             margin-top: 20px;
         }
         .author-info {
-            text-align: center;
             font-style: italic;
+        }
+        pre {
+            text-align: left;
+            display: inline-block;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -61,12 +65,10 @@
 <div class="container">
 
     <!-- Project Logo -->
-    <div class="center-text">
-        <img src="1.jpg" alt="Project Logo" width="200">
-    </div>
+    <img src="1.jpg" alt="Project Logo" width="200">
 
     <!-- Article Title -->
-    <h1 class="center-text">RS-Agent: Automating Remote Sensing Tasks through Intelligent Agents</h1>
+    <h1>RS-Agent: Automating Remote Sensing Tasks through Intelligent Agents</h1>
 
     <!-- Authors -->
     <div class="author-info">
@@ -93,10 +95,10 @@
     <p>[Insert introduction content here]</p>
 
     <!-- Project Content -->
-    <h2 class="center-text">Project Content</h2>
-    <p class="center-text">RS-Agent employs an LLM to understand the user's requirements.</p>
-    <p class="center-text">RS-Agent can utilize multiple tools and engage in multi-turn conversations.</p>
-    <p class="center-text">RS-Agent is capable of answering questions in specialized fields.</p>
+    <h2>Project Content</h2>
+    <p>RS-Agent employs an LLM to understand the user's requirements.</p>
+    <p>RS-Agent can utilize multiple tools and engage in multi-turn conversations.</p>
+    <p>RS-Agent is capable of answering questions in specialized fields.</p>
     <img src="2.jpg" alt="Project Image" class="content-image">
 
     <!-- Demo Video -->
@@ -126,9 +128,9 @@
 
     <!-- Acknowledgement Images -->
     <div class="images-row">
-        <img src="4.jpg" alt="Image 4" width="200">
-        <img src="5.jpg" alt="Image 5" width="200">
-        <img src="6.jpg" alt="Image 6" width="200">
+        <img src="4.jpg" alt="Image 4">
+        <img src="5.jpg" alt="Image 5">
+        <img src="6.jpg" alt="Image 6">
     </div>
 
     <!-- Feedback Link -->
