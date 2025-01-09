@@ -14,7 +14,7 @@ footer {
 
 .authors {
   font-size: 20px;
-  text-align: center;  /* 居中显示作者 */
+  text-align: center !important;  /* 居中显示作者 */
 }
 
 .container {
@@ -23,7 +23,7 @@ footer {
 
 p {
   font-size: 18px;  /* 增大字体大小 */
-  text-align: center;  /* 摘要和段落文本居中 */
+  text-align: center !important;  /* 摘要和段落文本居中 */
 }
 
 li {
@@ -32,7 +32,7 @@ li {
 
 h2 {
   font-size: 36px;  /* 调整标题字体大小 */
-  text-align: center;  /* 标题居中 */
+  text-align: center !important;  /* 标题居中 */
 }
 
 .jumbotron {
