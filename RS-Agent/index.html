@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RS-Agent: Automating Remote Sensing Tasks through Intelligent Agents</title>
+
+    <!-- Link to Bulma CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
+
+    <!-- Link to FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            background-color: #ffffff;
+            background-color: #ffffff; /* White background */
             margin: 0;
             padding: 0;
             text-align: center; /* Center all content */
@@ -22,15 +29,6 @@
         }
         .button-group {
             margin: 20px 0;
-        }
-        .button-group a {
-            margin: 0 15px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
         }
         .content-image {
             display: block;
@@ -82,8 +80,20 @@
 
     <!-- Interactive Buttons -->
     <div class="button-group">
-        <a href="https://arxiv.org/abs/2406.07089" target="_blank">arxiv</a>
-        <a href="https://github.com/IntelliSensing/IntelliSensing.github.io" target="_blank">code</a>
+        <!-- arxiv button with Bulma styling and FontAwesome icon -->
+        <a href="https://arxiv.org/abs/2406.07089" target="_blank" class="button is-normal is-rounded is-dark">
+            <span class="icon">
+                <i class="ai ai-arxiv"></i>
+            </span>
+            <span>arXiv</span>
+        </a>
+
+        <a href="https://github.com/IntelliSensing/IntelliSensing.github.io" target="_blank" class="button is-normal is-rounded is-primary">
+            <span class="icon">
+                <i class="fab fa-github"></i>
+            </span>
+            <span>Code</span>
+        </a>
     </div>
 
     <!-- Abstract -->
