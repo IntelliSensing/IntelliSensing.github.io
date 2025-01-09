@@ -1,1 +1,119 @@
+/*
+ * Style tweaks
+ * --------------------------------------------------
+ */
+html,
+body {
+  overflow-x: hidden;  /* Prevent scroll on narrow devices */
+  padding-top: 30px;
+  text-align: justify;
+}
+footer {
+  padding: 10px 0;
+}
+
+.authors {
+  font-size: 20px;
+  text-align: center;  /* 居中显示作者 */
+}
+
+.container {
+  max-width: 1000px;
+}
+
+p {
+  font-size: 18px;  /* 增大字体大小 */
+  text-align: center;  /* 摘要和段落文本居中 */
+}
+
+li {
+  font-size: 16px;
+}
+
+h2 {
+  font-size: 36px;  /* 调整标题字体大小 */
+  text-align: center;  /* 标题居中 */
+}
+
+.jumbotron {
+  text-align: center;
+}
+
+.btn {
+  font-size: 18px;
+}
+
+.btn-disabled {
+  /* background-color: #f4f4f4; */
+}
+
+.jumbotron h2 {
+  font-size: 36px;
+}
+
+.section {
+  padding-top: 30px;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vcontainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+}
+
+.video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gif {
+  padding: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.caption {
+  width: 75%;
+  font-size: 14px;
+}
+
+.bibtexsection {
+  font-family: "Courier", monospace;
+  font-size: 16px;
+  white-space: pre;
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+.canvas-row canvas {
+  max-width: 100%;
+}
+
+.padding-0 {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.vspace-top {
+  margin-top: 30px;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* Adjust this if you don't want it to take the full height of the viewport */
+}
 
