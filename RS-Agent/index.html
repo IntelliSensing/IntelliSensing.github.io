@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,6 +45,14 @@
             font-style: italic;
         }
 
+        /* New class for 24px font size, keeping other styles from p */
+        .author-unit {
+            font-size: 24px; /* Set font size to 24px */
+            color: #555; /* Same color as paragraphs */
+            margin-bottom: 10px; /* Add some spacing between the lines */
+            text-align: center; /* Center align the text */
+        }
+
         /* Button group */
         .button-group {
             margin: 20px 0;
@@ -56,7 +63,7 @@
 
         /* Project Content */
         p {
-            font-size: 28px; /* Slightly larger for paragraphs */
+            font-size: 24px; /* Slightly larger for paragraphs */
             color: #555;
             margin-bottom: 15px;
         }
@@ -111,10 +118,10 @@
     </div>
 
     <!-- Author Affiliations -->
-    <div class="author-info">
-        <p>Beijing University of Posts and Telecommunications
-           Department of Computer Science, City University of Hong Kong
-        </p>
+    <div class="author-unit">
+        <!-- Adding break lines between the institutions -->
+        Beijing University of Posts and Telecommunications<br>
+        Department of Computer Science, City University of Hong Kong
     </div>
 
     <!-- Interactive Buttons -->
