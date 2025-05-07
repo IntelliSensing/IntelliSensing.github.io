@@ -199,24 +199,24 @@
                                         style="color:#008AD7;font-weight:normal;">Wenjia Xu<sup>*</sup></a>,
                                 </span>
                                 <span class="author-block">
-                                    <a href="https://sites.google.com/site/"
-                                        style="color:#008AD7;font-weight:normal;">Zijian Yu</a>,
+                                    <a href="https://scholar.google.com/citations?user=iZ3TxmoAAAAJ"
+                                        style="color:#008AD7;font-weight:normal;">Zijian Yu<sup>*</sup></a>,
                                 </span>
                             </div>
 
                             <!-- Second Group of 3 Authors -->
                             <div class="author-group">
                                 <span class="author-block">
-                                    <a href="https://scholar.google.com/citations?user=gAfFuhsAAAAJ&hl"
-                                        style="color:#008AD7;font-weight:normal;">Yujie Li</a>,
-                                </span>
-                                <span class="author-block">
                                     <a href="https://sites.google.com/view/baiyangmu/home"
                                         style="color:#008AD7;font-weight:normal;">Baiyang Mu</a>,
                                 </span>
+				<span class="author-block">
+                                    <a href="https://trentonwei.github.io/"
+                                        style="color:#008AD7;font-weight:normal;">Zhiwei Wei</a>,
+                                </span>
                                 <span class="author-block">
-                                    <a href="https://people.ucas.ac.cn/~liguangzuo"
-                                        style="color:#008AD7;font-weight:normal;">Guangzuo Li</a>,
+                                    <a href="https://sites.google.com/site/"
+                                        style="color:#008AD7;font-weight:normal;">Yuanben Zhang</a>,
                                 </span>
                                 <span class="author-block">
                                     <a href="https://jiuniu.ruantang.top/"
@@ -267,16 +267,7 @@
         <div class="container is-max-desktop">
             <div class="hero-body">
                   <h4 class="subtitle has-text-justified">
-                        A increasing number of models have achieved great performance in remote sensing tasks with the recent development of
-	                Large Language Models (LLMs) and Visual Language Models (VLMs). However, these models are constrained to basic vision and
-	                language instruction-tuning tasks, facing challenges in complex remote sensing applications. Additionally, these models
-	                lack specialized expertise in professional domains. To address these limitations, we propose a LLM-driven remote sensing 
-	                intelligent agent named RS-Agent. Firstly, RS-Agent is powered by a large language model (LLM) that acts as its "Central 
-	                Controller," enabling it to understand and respond to various problems intelligently. Secondly, our RS-Agent integrates 
-	                many high-performance remote sensing image processing tools, facilitating multi-tool and multi-turn conversations. 
-	                Thirdly, our RS-Agent can answer professional questions by leveraging robust knowledge documents.
-	                We conducted experiments using several datasets, e.g., RSSDIVCS, RSVQA, and DOTAv1. 
-	                The experimental results demonstrate that our RS-Agent delivers outstanding performance in many tasks, i.e., scene classification, visual question answering, and object counting tasks.
+                        With the recent advancements in Large Language Models (LLMs) and Multi-modal Large Language Models (MLLMs), an increasing number of models have demonstrated impressive performance in various remote sensing tasks.  However, these models are constrained to basic vision and language instruction-tuning tasks, facing challenges in complex remote sensing applications. Additionally, these models lack specialized expertise in professional domains. To address these limitations, we propose RS-Agent, an intelligent agent for remote sensing applications. Firstly, RS-Agent is powered by an LLM that acts as its ``Central Controller'', enabling it to understand and respond to various problems intelligently. Secondly, our RS-Agent integrates existing high-performance remote sensing image processing tools, facilitating multi-tool and multi-turn conversations that enhance its capability to tackle more complex applications. Thirdly, our RS-Agent leverages a knowledge graph-enhanced Retrieval-Augmented Generation (RAG) framework to access and utilize professional remote sensing knowledge, enabling accurate responses to expert-level queries. We conducted experiments on multiple datasets, and the results show that RS-Agent achieves over 95\% task planning accuracy. It also demonstrates strong domain-specific knowledge retrieval capabilities and delivers outstanding performance across a wide range of tasks.
                 </h4>
             </div>
         </div>
@@ -312,16 +303,13 @@
                     <h2 class="title is-3">🏆 Contributions</h2>
                     <div class="content has-text-justified">
                         <ol type="1">
-                            <li>RS-Agent employs an LLM to understand the user's requirements. The RS-Agent is powered by a large language model (LLM) as the central controller. 
-                                These models accurately comprehend and interpret user intentions, adeptly analyzing the context and nuances of user inputs to discern the underlying needs and objectives behind queries. </li>
+                            <li> We present RS-Agent, a novel architecture designed to interpret user queries and orchestrate diverse tools for accurate and efficient remote sensing task execution. Its four core components—Central Controller, Toolkits, Solution Space, and Knowledge Space—work in concert, seamlessly interacting and complementing one another to enable robust, adaptive performance across a wide range of applications.</li>
                             <br>
-                            <li>RS-Agent can utilize multiple tools and engage in multiturn conversations. The RS-Agent can integrate many high-performance remote sensing image processing models. 
-                                It can utilize a single model to address straightforward problems or sequentially invoke multiple models for continuous reasoning to tackle complex issues. Moreover,
-                                the RS-Agent can facilitate multiple rounds of dialogue and maintain coherence and contextual understanding throughout the conversation. 
-                                Its powerful capabilities enable users to engage in in-depth interactions, receiving more personalized and accurate responses. </li>
+                            <li>To enhance the agent’s task planning accuracy, we propose an innovative Task-Aware Retrieval method. By retrieving and understanding expert-level task solutions, RS-Agent is able to emulate the decision-making and tool selection processes of professional remote sensing analysts.</li>
                             <br>
-                            <li>RS-Agent is capable of answering questions in specialized fields. RAG technology is employed to broaden the Agent's knowledge database by integrating a specialized
-                                knowledge repository, enabling it to address specific questions related to remote sensing.</li>
+                            <li>To strengthen RS-Agent’s domain-specific knowledge, we propose DualRAG, a retrieval augmented generation method that assigns weights to extracted keywords and performs dual path retrieval, thereby enhancing the accuracy and relevance of knowledge retrieval.</li>
+			    <br>
+			    <li>Extensive experiments demonstrate that RS-Agent consistently surpasses previous SOTA Multimodal Large Language Models across a range of remote sensing applications, and significantly boosts the task planning accuracy. These results establish RS-Agent as a major step forward in adapting AI agents to the remote sensing field, and, for the first time, present a comprehensive and modular architecture tailored for remote sensing applications.</li>
                         </ol>
                     </div>
                 </div>
