@@ -114,12 +114,12 @@ The output is in `dist/` — deploy to any static hosting service (Netlify, Verc
 
 ### Deploy to GitHub Pages
 
-The workflow in `.github/workflows/deploy.yml` builds and deploys the site whenever `main` is updated.
+The workflow in `.github/workflows/deploy.yml` builds and deploys the site whenever `master` is updated.
 
 1. Open the repository's **Settings > Secrets and variables > Actions > Variables**.
 2. Add `PUBLIC_MAPBOX_TOKEN` with your public Mapbox token as its value.
 3. Open **Settings > Pages** and select **GitHub Actions** as the source.
-4. Push to `main`, then follow the deployment in the repository's **Actions** tab.
+4. Push to `master`, then follow the deployment in the repository's **Actions** tab.
 
 The production site is published at [https://intellisensing.github.io](https://intellisensing.github.io).
 
