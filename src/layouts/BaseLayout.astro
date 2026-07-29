@@ -1,0 +1,96 @@
+---
+import '../styles/global.css';
+import LangSwitch from '../components/LangSwitch.astro';
+import StarsCanvas from '../components/StarsCanvas.astro';
+
+const {
+  title = 'Space Lab',
+  description = 'Space Lab - Exploring the frontiers of science.',
+  headerMode = 'auto',
+  bodyClass = ''
+} = Astro.props;
+
+const isSpaceTheme = bodyClass.includes('space-theme');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <script src="/assets/js/i18n.js" defer></script>
+  </head>
+  <body class={bodyClass}>
+    <header class={`site-header ${headerMode === 'glass' ? 'is-visible' : ''}`} data-scroll-header data-header-mode={headerMode}>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="/">
+          <img class="brand-logo" src="/assets/logo/spacelab.svg" alt="Space Lab" />
+        </a>
+        <div class="nav-links">
+          <a href="/our-team/" data-en="Our Team" data-zh="团队">Our Team</a>
+          <a href="/news/" data-en="News" data-zh="新闻">News</a>
+          <a href="/publications/" data-en="Publications" data-zh="论文">Publications</a>
+          <a href="/collections/" data-en="Collections" data-zh="开源">Collections</a>
+          <a href="/blogs/" data-en="Blogs" data-zh="博客">Blogs</a>
+          <a href="/faq/" data-en="FAQ" data-zh="常见问题">FAQ</a>
+          <a href="/contact/" data-en="Contact" data-zh="联系我们">Contact</a>
+        </div>
+        <LangSwitch />
+      </nav>
+    </header>
+    {isSpaceTheme && <StarsCanvas />}
+    <slot />
+    <footer class="footer">
+      <div class="footer-illustration" aria-hidden="true">
+        <img class="footer-illustration-image" src="/assets/footer/footer.png" alt="" loading="lazy" />
+      </div>
+      <div class="container footer-inner">
+        <span>@2026 Space Lab</span>
+        <span class="footer-note" data-en="Exploring the frontiers of science." data-zh="探索科学前沿。">
+          Exploring the frontiers of science.
+        </span>
+        <span class="footer-credit">
+          Template by <a href="https://github.com/choucisan/SpaceLab" target="_blank" rel="noreferrer">choucisan</a>
+        </span>
+      </div>
+    </footer>
+    <script>
+      const header = document.querySelector('[data-scroll-header]');
+      const hero = document.querySelector('.hero');
+
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      const updateScene = () => {
+        const fixedGlass = header?.dataset.headerMode === 'glass';
+        header?.classList.toggle('is-visible', fixedGlass || window.scrollY > 80);
+
+        if (!hero) return;
+
+        const progress = clamp(window.scrollY / Math.min(hero.clientHeight * 0.34, 420), 0, 1);
+        const cloudDriftX = -progress * Math.min(window.innerWidth * 0.22, 360);
+        const cloudDriftY = -progress * Math.min(window.innerHeight * 0.18, 150);
+        const geeseDriftX = progress * Math.min(window.innerWidth * 0.16, 260);
+        const geeseDriftY = -progress * Math.min(window.innerHeight * 0.06, 54);
+
+        hero.style.setProperty('--hero-cloud-drift-x', `${cloudDriftX}px`);
+        hero.style.setProperty('--hero-cloud-drift-y', `${cloudDriftY}px`);
+        hero.style.setProperty('--hero-geese-drift-x', `${geeseDriftX}px`);
+        hero.style.setProperty('--hero-geese-drift-y', `${geeseDriftY}px`);
+      };
+
+      updateScene();
+      window.addEventListener('scroll', updateScene, { passive: true });
+      window.addEventListener('resize', updateScene);
+
+      const revealScenes = document.querySelectorAll('[data-reveal-scene]');
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('is-visible');
+        });
+      }, { threshold: 0.28 });
+
+      revealScenes.forEach((scene) => revealObserver.observe(scene));
+    </script>
+  </body>
+</html>

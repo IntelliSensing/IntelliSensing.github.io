@@ -1,0 +1,20 @@
+---
+const { item } = Astro.props;
+const tag = item.data.tags?.[0] ?? 'News';
+const href = `/news/${item.id}/`;
+const searchText = [
+  item.data.title,
+  item.data.description,
+  ...item.data.tags
+].join(' ').toLowerCase();
+const filterText = item.data.tags.join('|').toLowerCase();
+---
+<a class="card" href={href} data-news-card data-search={searchText} data-filters={filterText}>
+  <span class="card-media">
+    <img class="card-image" src={item.data.image} alt="" loading="lazy" />
+  </span>
+  <span class="tag-pill">{tag}</span>
+  <h3>{item.data.title}</h3>
+  <p>{item.data.description}</p>
+  <span class="card-meta">{item.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+</a>

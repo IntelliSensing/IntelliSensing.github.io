@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const blogItems = (await getCollection('blogs')).filter((item) => !item.data.draft);
+  return blogItems.map((item) => ({ params: { slug: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+const date = item.data.pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+<BaseLayout title={`${item.data.title} | Blogs`} description={item.data.description} headerMode="glass" bodyClass="space-theme">
+  <main class="collection-detail">
+    <section class="detail-hero">
+      <div class="container detail-hero-stack">
+        <a class="detail-back" href="/blogs/" data-en="← Blogs" data-zh="← 博客">← Blogs</a>
+        <p class="detail-kicker-pill">{item.data.category}</p>
+        <h1>{item.data.title}</h1>
+        <p class="detail-description">{item.data.description}</p>
+        <div class="detail-meta">
+          <span>{date}</span>
+          {item.data.tags.map((tag) => <span>{tag}</span>)}
+        </div>
+        <div class="detail-cover detail-cover-wide">
+          <img src={item.data.image} alt="" />
+        </div>
+      </div>
+    </section>
+    <article class="prose detail-page">
+      <Content />
+    </article>
+  </main>
+</BaseLayout>

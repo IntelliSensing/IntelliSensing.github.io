@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CollectionCard from '../../components/CollectionCard.astro';
+
+const collectionItems = (await getCollection('collections'))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const filterLabels = Array.from(
+  new Set(collectionItems.flatMap((item) => [item.data.platform, ...item.data.tags]))
+).filter(Boolean);
+---
+<BaseLayout title="Collections | Space Lab" description="Open-source projects, datasets, and research artifacts." headerMode="glass" bodyClass="space-theme">
+  <main class="collection-archive">
+    <section class="collection-hero">
+      <div class="container collection-hero-inner">
+        <h1 class="collection-title" data-en="Collections, projects, and open resources" data-zh="开源项目、数据集与公共资源">Collections, projects, and open resources</h1>
+        <p class="collection-lede" data-en="Search open-source projects, datasets, and research artifacts released on GitHub and Hugging Face." data-zh="检索在 GitHub 和 Hugging Face 上发布的开源项目、数据集和研究资源。">Search open-source projects, datasets, and research artifacts released on GitHub and Hugging Face.</p>
+      </div>
+    </section>
+
+    <section class="section collection-results">
+      <div class="container">
+        <div class="collection-search-panel">
+          <label class="collection-search" for="collection-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" />
+            </svg>
+            <input id="collection-search" type="search" placeholder={`Search ${collectionItems.length} items...`} autocomplete="off" data-collection-search data-count={collectionItems.length} data-i18n-placeholder-en={`Search {n} items...`} data-i18n-placeholder-zh={`搜索 {n} 个项目...`} />
+          </label>
+          <div class="filter-pills" aria-label="Collection filters">
+            <button class="filter-pill is-active" type="button" data-filter="all" data-en="All" data-zh="全部">All</button>
+            {filterLabels.map((label) => (
+              <button class="filter-pill" type="button" data-filter={label.toLowerCase()}>{label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="card-grid collection-grid" data-collection-grid>
+          {collectionItems.map((item) => <CollectionCard item={item} />)}
+        </div>
+        <p class="empty-results" data-empty-results hidden data-en="No collections match your search yet." data-zh="暂无匹配的项目。">No collections match your search yet.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const searchInput = document.querySelector('[data-collection-search]');
+    const filterButtons = Array.from(document.querySelectorAll('[data-filter]'));
+    const cards = Array.from(document.querySelectorAll('[data-collection-card]'));
+    const empty = document.querySelector('[data-empty-results]');
+    let activeFilter = 'all';
+
+    const applyFilters = () => {
+      const query = searchInput?.value.trim().toLowerCase() ?? '';
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const text = card.dataset.search ?? '';
+        const filters = card.dataset.filters ?? '';
+        const matchesQuery = !query || text.includes(query);
+        const matchesFilter = activeFilter === 'all' || filters.includes(activeFilter);
+        const isVisible = matchesQuery && matchesFilter;
+
+        card.toggleAttribute('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (empty) empty.hidden = visibleCount !== 0;
+    };
+
+    searchInput?.addEventListener('input', applyFilters);
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeFilter = button.dataset.filter ?? 'all';
+        filterButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+        applyFilters();
+      });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqs = [
+  { q: 'What research areas does Space Lab focus on?', qZh: 'Space Lab 主要研究哪些方向？', a: 'Space Lab focuses on computer vision, natural language processing, multimodal learning, and their intersections.', aZh: 'Space Lab 专注于计算机视觉、自然语言处理、多模态学习及其交叉领域。' },
+  { q: 'How can I join Space Lab?', qZh: '如何加入 Space Lab？', a: 'Please visit our Contact page and send us your CV and research interests. We are always looking for motivated researchers.', aZh: '请访问联系我们页面，发送您的简历和研究兴趣。我们始终欢迎有志向的研究者加入。' },
+  { q: 'Do you offer internship positions?', qZh: '是否提供实习机会？', a: 'Yes, we offer internships for outstanding students. Please reach out via email with your resume and a brief research statement.', aZh: '是的，我们为优秀学生提供实习机会。请通过电子邮件发送您的简历和简短的研究陈述。' },
+  { q: 'Where can I find your published papers?', qZh: '在哪里可以找到你们发表的论文？', a: 'All our publications are listed on the Publications page, with links to the full papers.', aZh: '我们所有的论文都列在论文页面，附有全文链接。' },
+  { q: 'Are your datasets and code open-sourced?', qZh: '你们的数据集和代码是否开源？', a: 'Yes, most of our datasets and code are available on GitHub and Hugging Face. Check the Collections page for details.', aZh: '是的，我们的大部分数据集和代码都在 GitHub 和 Hugging Face 上开放。详情请查看开源页面。' },
+  { q: 'How can I collaborate with Space Lab?', qZh: '如何与 Space Lab 合作？', a: 'We welcome collaborations. Please contact us through the Contact page with a brief description of your proposed collaboration.', aZh: '我们欢迎合作。请通过联系我们页面简要描述您的合作意向。' },
+];
+---
+<BaseLayout title="FAQ | Space Lab" description="Frequently asked questions about Space Lab." headerMode="glass" bodyClass="space-theme">
+  <main class="publication-archive">
+    <section class="publication-hero">
+      <div class="container publication-hero-inner">
+        <h1 class="publication-title" data-en="FAQ" data-zh="常见问题">FAQ</h1>
+        <p class="publication-lede" data-en="Frequently asked questions about Space Lab" data-zh="关于 Space Lab 的常见问题">Frequently asked questions about Space Lab</p>
+      </div>
+    </section>
+
+    <section class="section faq-section">
+      <div class="container faq-list">
+        {faqs.map((item) => (
+          <details class="faq-item">
+            <summary class="faq-question" data-en={item.q} data-zh={item.qZh}>{item.q}</summary>
+            <p class="faq-answer" data-en={item.a} data-zh={item.aZh}>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 800px;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 24px 0;
+  }
+
+  .faq-item:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .faq-question {
+    font-size: clamp(16px, 1.05vw, 20px);
+    line-height: 1.35;
+    letter-spacing: -0.04em;
+    color: var(--space-text-muted, rgba(232, 232, 240, 0.6));
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question::after {
+    content: '+';
+    font-size: 20px;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-question::after {
+    content: '−';
+  }
+
+  .faq-answer {
+    margin: 14px 0 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+</style>

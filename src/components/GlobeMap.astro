@@ -1,0 +1,1089 @@
+---
+import { getCollection } from 'astro:content';
+
+const markers = (await getCollection('markers'))
+  .filter(m => !m.data.draft)
+  .map(m => ({
+    title: m.data.title,
+    description: m.data.description,
+    category: m.data.category,
+    lng: m.data.lng,
+    lat: m.data.lat,
+    images: m.data.images,
+    author: m.data.author,
+    date: m.data.date.toISOString(),
+  }));
+---
+<section class="globe-section" data-galaxy>
+  <div id="globe-container" data-markers={JSON.stringify(markers)}></div>
+  <div class="globe-overlay"></div>
+  <div class="globe-welcome-overlay" id="globe-welcome-overlay"></div>
+  <div class="globe-welcome" id="globe-welcome">
+    <div class="globe-welcome-title" data-en="Welcome to Space Lab" data-zh="欢迎来到 Space Lab">Welcome to Space Lab</div>
+    <div class="globe-welcome-sub" data-en="Exploring the frontiers of science" data-zh="探索科学前沿">Exploring the frontiers of science</div>
+  </div>
+  <div class="globe-search-bar" id="globe-search-bar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <span class="globe-search-bar-text" data-en="Search place or coordinates" data-zh="搜索地点或坐标">Search place or coordinates</span>
+  </div>
+  <div class="globe-search-overlay" id="globe-search-overlay" hidden>
+    <div class="globe-search-panel">
+      <div class="globe-search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="globe-search-input"
+          placeholder="Search place or coordinates..."
+          data-i18n-placeholder-en="Search place or coordinates..."
+          data-i18n-placeholder-zh="搜索地点或坐标..."
+          autocomplete="off" />
+        <button class="globe-search-close" id="globe-search-close">&times;</button>
+      </div>
+      <div class="globe-search-options">
+        <div class="globe-search-hint" data-en="latitude, longitude (e.g. 37.87, -117.54)" data-zh="纬度, 经度 (如 37.87, -117.54)" data-resolved-en="✓ Location resolved — select zoom, press Enter to go" data-resolved-zh="✓ 已定位 — 选择缩放级别后按回车跳转">latitude, longitude (e.g. 37.87, -117.54)</div>
+        <div class="globe-zoom-legends" id="globe-zoom-legends">
+          <button data-zoom="10" data-en="10km" data-zh="10公里">10km</button>
+          <button data-zoom="12" data-en="5km" data-zh="5公里">5km</button>
+          <button data-zoom="13" data-en="1km" data-zh="1公里">1km</button>
+          <button data-zoom="16" data-en="100m" data-zh="100米">100m</button>
+          <button data-zoom="19" data-en="10m" data-zh="10米">10m</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="globe-scroll-hint" data-galaxy-hint onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
+    <span data-en="Scroll to explore" data-zh="滚动探索">Scroll to explore</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7" />
+    </svg>
+  </div>
+  <div class="marker-popup" id="marker-popup" hidden>
+    <div class="marker-popup-card">
+      <button class="marker-popup-close" id="marker-popup-close">&times;</button>
+      <div class="marker-popup-carousel" id="marker-popup-carousel">
+        <img class="marker-popup-image" id="marker-popup-image" src="" alt="" />
+        <button class="carousel-arrow carousel-prev" id="carousel-prev">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="carousel-arrow carousel-next" id="carousel-next">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+      </div>
+      <div class="marker-popup-body">
+        <span class="marker-popup-category" id="marker-popup-category"></span>
+        <h3 class="marker-popup-title" id="marker-popup-title"></h3>
+        <p class="marker-popup-desc" id="marker-popup-desc"></p>
+        <span class="marker-popup-date" id="marker-popup-date"></span>
+        <span class="marker-popup-author" id="marker-popup-author"></span>
+        <button class="marker-search-btn" id="marker-search-btn" aria-label="Search photos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="marker-search-overlay" id="marker-search-overlay" hidden>
+    <div class="marker-search-panel">
+      <div class="marker-search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="search" id="marker-search-input" placeholder="Search photos..." autocomplete="off" />
+        <button class="marker-search-close" id="marker-search-close">&times;</button>
+      </div>
+      <div class="marker-search-results" id="marker-search-results"></div>
+    </div>
+  </div>
+</section>
+
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.16.0/mapbox-gl.css" rel="stylesheet" />
+<script>
+  import mapboxgl from 'mapbox-gl';
+
+  const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+
+  const container = document.getElementById('globe-container');
+  const markersData = JSON.parse(container?.getAttribute('data-markers') || '[]');
+
+  let mapRef: any = null;
+
+  if (container) {
+    const map = new mapboxgl.Map({
+      container,
+      style: 'mapbox://styles/onethree/cmhlxuxs1002n01pj28o0hhx6',
+      zoom: 2.3,
+      center: [104, 35],
+      attributionControl: false,
+      devIndicator: false,
+    });
+    mapRef = map;
+
+    let userInteracting = false;
+    const secondsPerRevolution = 180;
+    const maxSpinZoom = 5;
+    const slowSpinZoom = 3;
+
+    function spinGlobe() {
+      const zoom = map.getZoom();
+      if (!userInteracting && zoom < maxSpinZoom) {
+        let distancePerSecond = 360 / secondsPerRevolution;
+        if (zoom > slowSpinZoom) {
+          distancePerSecond *= (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+        }
+        const center = map.getCenter();
+        center.lng -= distancePerSecond;
+        map.easeTo({ center, duration: 1000, easing: (n) => n });
+      }
+    }
+
+    map.on('mousedown', () => { userInteracting = true; });
+    map.on('mouseup', () => { userInteracting = false; spinGlobe(); });
+    map.on('dragend', () => { userInteracting = false; spinGlobe(); });
+    map.on('pitchend', () => { userInteracting = false; spinGlobe(); });
+    map.on('rotateend', () => { userInteracting = false; spinGlobe(); });
+    map.on('moveend', spinGlobe);
+
+    // Add markers after map loads
+    map.on('load', () => {
+      for (const m of markersData) {
+        const el = document.createElement('div');
+        el.className = 'marker-thumb';
+        el.innerHTML = `<img src="${m.images[0]}" alt="${m.title}" />`;
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showPopup(m);
+        });
+
+        new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([m.lng, m.lat])
+          .addTo(map);
+      }
+    });
+
+    spinGlobe();
+
+    // Globe search overlay
+    const globeSearchOverlay = document.getElementById('globe-search-overlay');
+    const globeSearchInput = document.getElementById('globe-search-input') as HTMLInputElement;
+    const globeSearchHint = document.querySelector('.globe-search-hint');
+
+    let selectedZoom = 10;
+    let resolvedCenter: [number, number] | null = null;
+
+    // Open overlay
+    document.getElementById('globe-search-bar')?.addEventListener('click', () => {
+      if (globeSearchOverlay) globeSearchOverlay.hidden = false;
+      if (globeSearchInput) {
+        globeSearchInput.value = '';
+        resolvedCenter = null;
+        setTimeout(() => globeSearchInput.focus(), 50);
+      }
+    });
+
+    // Close overlay
+    document.getElementById('globe-search-close')?.addEventListener('click', () => {
+      if (globeSearchOverlay) globeSearchOverlay.hidden = true;
+    });
+    globeSearchOverlay?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) globeSearchOverlay.hidden = true;
+    });
+
+    // Search on Enter — step 1: resolve location; step 2: fly
+    globeSearchInput?.addEventListener('keydown', async (e) => {
+      if (e.key !== 'Enter') return;
+      const q = globeSearchInput.value.trim();
+      if (!q) return;
+
+      // If we already resolved a center, fly there
+      if (resolvedCenter) {
+        globeSearchOverlay!.hidden = true;
+        userInteracting = true;
+        map.flyTo({ center: resolvedCenter, zoom: selectedZoom, duration: 2000 });
+        setTimeout(() => { userInteracting = false; }, 2100);
+        resolvedCenter = null;
+        return;
+      }
+
+      const lang = document.documentElement.lang === 'zh-CN' ? 'zh' : 'en';
+
+      // Try parsing as coordinates (lat, lng)
+      const coordMatch = q.match(/^(-?\d+\.?\d*)\s*[,\s]\s*(-?\d+\.?\d*)$/);
+      if (coordMatch) {
+        const lat = parseFloat(coordMatch[1]);
+        const lng = parseFloat(coordMatch[2]);
+        if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+          resolvedCenter = [lng, lat];
+          if (globeSearchHint) {
+            const label = globeSearchHint.getAttribute(`data-resolved-${lang}`) || '✓ Location resolved — select zoom, press Enter to go';
+            globeSearchHint.textContent = label;
+            globeSearchHint.classList.add('resolved');
+          }
+          return;
+        }
+      }
+
+      // Geocode via Mapbox
+      try {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?access_token=${MAPBOX_TOKEN}&limit=1`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.features?.length > 0) {
+          const [lng, lat] = data.features[0].center;
+          resolvedCenter = [lng, lat];
+          if (globeSearchHint) {
+            const name = data.features[0].place_name || q;
+            globeSearchHint.textContent = `✓ ${name}`;
+            globeSearchHint.classList.add('resolved');
+          }
+        } else {
+          if (globeSearchHint) {
+            const noResult = lang === 'zh' ? '未找到结果' : 'No results found';
+            globeSearchHint.textContent = noResult;
+            globeSearchHint.classList.remove('resolved');
+          }
+        }
+      } catch (err) {
+        console.error('Geocoding failed:', err);
+      }
+    });
+
+    // Reset hint when input changes
+    globeSearchInput?.addEventListener('input', () => {
+      resolvedCenter = null;
+      if (globeSearchHint) {
+        const defaultText = globeSearchHint.getAttribute(
+          `data-${document.documentElement.lang === 'zh-CN' ? 'zh' : 'en'}`
+        ) || globeSearchHint.getAttribute('data-en') || '';
+        globeSearchHint.textContent = defaultText;
+        globeSearchHint.classList.remove('resolved');
+      }
+    });
+
+    // Zoom legend buttons — just select, don't fly
+    const zoomLegends = document.getElementById('globe-zoom-legends');
+    zoomLegends?.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('button') as HTMLButtonElement;
+      if (!btn) return;
+      selectedZoom = parseInt(btn.dataset.zoom || '10');
+      zoomLegends.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  }
+
+  // Popup logic
+  let currentIndex = 0;
+  let currentImages: string[] = [];
+
+  function showPopup(m) {
+    const popup = document.getElementById('marker-popup');
+    const img = document.getElementById('marker-popup-image') as HTMLImageElement;
+    const title = document.getElementById('marker-popup-title');
+    const desc = document.getElementById('marker-popup-desc');
+    const cat = document.getElementById('marker-popup-category');
+    const date = document.getElementById('marker-popup-date');
+    const author = document.getElementById('marker-popup-author');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    const dots = document.getElementById('carousel-dots');
+
+    currentImages = m.images || [m.image];
+    currentIndex = 0;
+
+    if (img) img.src = currentImages[0];
+    if (title) title.textContent = m.title;
+    if (desc) desc.textContent = m.description;
+    if (cat) cat.textContent = m.category;
+    if (date) date.textContent = new Date(m.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+    if (author) author.textContent = m.author;
+
+    // Carousel controls
+    const hasMultiple = currentImages.length > 1;
+    if (prevBtn) prevBtn.style.display = hasMultiple ? 'flex' : 'none';
+    if (nextBtn) nextBtn.style.display = hasMultiple ? 'flex' : 'none';
+    if (dots) {
+      dots.innerHTML = hasMultiple
+        ? currentImages.map((_, i) => `<span class="carousel-dot${i === 0 ? ' active' : ''}" data-index="${i}"></span>`).join('')
+        : '';
+    }
+
+    if (popup) popup.hidden = false;
+  }
+
+  function goToImage(index: number) {
+    const img = document.getElementById('marker-popup-image') as HTMLImageElement;
+    const dots = document.getElementById('carousel-dots');
+    currentIndex = (index + currentImages.length) % currentImages.length;
+    if (img) img.src = currentImages[currentIndex];
+    if (dots) {
+      dots.querySelectorAll('.carousel-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === currentIndex);
+      });
+    }
+  }
+
+  document.getElementById('carousel-prev')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    goToImage(currentIndex - 1);
+  });
+  document.getElementById('carousel-next')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    goToImage(currentIndex + 1);
+  });
+  document.getElementById('carousel-dots')?.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('carousel-dot')) {
+      e.stopPropagation();
+      goToImage(parseInt(target.dataset.index || '0'));
+    }
+  });
+
+  document.getElementById('marker-popup-close')?.addEventListener('click', () => {
+    const popup = document.getElementById('marker-popup');
+    if (popup) popup.hidden = true;
+  });
+
+  document.getElementById('marker-popup')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      const popup = document.getElementById('marker-popup');
+      if (popup) popup.hidden = true;
+    }
+  });
+
+  // Search logic
+  const searchOverlay = document.getElementById('marker-search-overlay');
+  const searchInput = document.getElementById('marker-search-input') as HTMLInputElement;
+  const searchResults = document.getElementById('marker-search-results');
+
+  document.getElementById('marker-search-btn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const popup = document.getElementById('marker-popup');
+    if (popup) popup.hidden = true;
+    if (searchOverlay) searchOverlay.hidden = false;
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.focus();
+      renderSearchResults('');
+    }
+  });
+
+  document.getElementById('marker-search-close')?.addEventListener('click', () => {
+    if (searchOverlay) searchOverlay.hidden = true;
+  });
+
+  searchOverlay?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      searchOverlay.hidden = true;
+    }
+  });
+
+  searchInput?.addEventListener('input', () => {
+    renderSearchResults(searchInput.value);
+  });
+
+  function renderSearchResults(query: string) {
+    if (!searchResults) return;
+    const q = query.toLowerCase().trim();
+    const matched = markersData.filter((m: any) => {
+      if (!q) return true;
+      const text = [m.title, m.description, m.category, m.author].join(' ').toLowerCase();
+      return text.includes(q);
+    });
+
+    searchResults.innerHTML = matched.map((m: any) => `
+      <div class="marker-search-item" data-marker-index="${markersData.indexOf(m)}">
+        <img src="${m.images[0]}" alt="${m.title}" />
+        <div>
+          <div class="marker-search-item-title">${m.title}</div>
+          <div class="marker-search-item-meta">${m.category} &middot; ${m.author}</div>
+        </div>
+      </div>
+    `).join('') || '<div class="marker-search-empty">No results found</div>';
+
+    searchResults.querySelectorAll('.marker-search-item').forEach((el) => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.getAttribute('data-marker-index') || '0');
+        const m = markersData[idx];
+        if (m && mapRef) {
+          searchOverlay!.hidden = true;
+          mapRef.flyTo({ center: [m.lng, m.lat], zoom: 5, duration: 1500 });
+          setTimeout(() => showPopup(m), 1600);
+        }
+      });
+    });
+  }
+
+  // Welcome title — click to dismiss, auto-dismiss after 3s
+  const welcome = document.getElementById('globe-welcome');
+  const welcomeOverlay = document.getElementById('globe-welcome-overlay');
+  function dismissWelcome() {
+    if (!welcome || welcome.classList.contains('fade-out')) return;
+    welcome.classList.add('fade-out');
+    if (welcomeOverlay) welcomeOverlay.hidden = true;
+    welcome.addEventListener('animationend', () => {
+      if (welcome) welcome.hidden = true;
+    }, { once: true });
+  }
+  welcomeOverlay?.addEventListener('click', dismissWelcome);
+  setTimeout(dismissWelcome, 3000);
+
+  // Fade out scroll hint on scroll
+  const hint = document.querySelector('[data-galaxy-hint]');
+  window.addEventListener('scroll', () => {
+    if (hint) hint.style.opacity = String(Math.max(0, 1 - window.scrollY / 200));
+  }, { passive: true });
+</script>
+
+<style>
+  .globe-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: #050510;
+    z-index: 1;
+  }
+
+  #globe-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  :global(#globe-container .mapboxgl-canvas-container),
+  :global(#globe-container .mapboxgl-canvas) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .globe-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .globe-scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 2;
+    cursor: pointer;
+    animation: fadeInUp 1.2s ease-out 0.6s both, float 3s ease-in-out infinite 1.8s;
+  }
+
+  .globe-scroll-hint:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Marker thumbnails */
+  :global(.marker-thumb) {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+  }
+
+  :global(.marker-thumb:hover) {
+    transform: scale(1.2);
+  }
+
+  :global(.marker-thumb img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Popup overlay */
+  .marker-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .marker-popup[hidden] {
+    display: none !important;
+  }
+
+  .marker-popup-card {
+    position: relative;
+    max-width: 640px;
+    width: 90vw;
+    background: rgba(15, 15, 25, 0.95);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: popIn 0.3s ease-out;
+  }
+
+  .marker-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s;
+  }
+
+  .marker-popup-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .marker-popup-carousel {
+    position: relative;
+    width: 100%;
+  }
+
+  .marker-popup-image {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s;
+    backdrop-filter: blur(4px);
+  }
+
+  .carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+  }
+
+  .carousel-prev {
+    left: 12px;
+  }
+
+  .carousel-next {
+    right: 12px;
+  }
+
+  .carousel-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .carousel-dot.active {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .marker-popup-body {
+    padding: 20px 24px 24px;
+  }
+
+  .marker-popup-category {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(100, 140, 255, 0.15);
+    color: rgba(120, 170, 255, 0.9);
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .marker-popup-title {
+    margin: 0 0 8px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .marker-popup-desc {
+    margin: 0 0 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .marker-popup-date {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 13px;
+  }
+
+  .marker-popup-author {
+    display: block;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 13px;
+  }
+
+  /* Search button on popup card */
+  .marker-search-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .marker-search-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  /* Search overlay */
+  .marker-search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .marker-search-overlay[hidden] {
+    display: none !important;
+  }
+
+  .marker-search-panel {
+    width: min(520px, 90vw);
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    background: rgba(15, 15, 25, 0.95);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: popIn 0.2s ease-out;
+  }
+
+  .marker-search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .marker-search-input-wrap svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .marker-search-input-wrap input {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .marker-search-input-wrap input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .marker-search-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .marker-search-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .marker-search-results {
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  :global(.marker-search-item) {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  :global(.marker-search-item:hover) {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  :global(.marker-search-item img) {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  :global(.marker-search-item-title) {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  :global(.marker-search-item-meta) {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
+  :global(.marker-search-empty) {
+    padding: 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Welcome overlay — transparent click area */
+  .globe-welcome-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: pointer;
+  }
+
+  .globe-welcome-overlay[hidden] {
+    display: none;
+  }
+
+  /* Welcome — centered, simple fade */
+  .globe-welcome {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 11;
+    pointer-events: none;
+    animation: welcomeFadeIn 1.5s ease-out both;
+  }
+
+  .globe-welcome.fade-out {
+    animation: welcomeFadeOut 1.5s ease-in forwards;
+  }
+
+  .globe-welcome-title {
+    font-family: "Faire Octave", Georgia, "Times New Roman", serif;
+    font-size: clamp(48px, 8vw, 100px);
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .globe-welcome-sub {
+    font-family: inherit;
+    font-size: clamp(20px, 2vw, 32px);
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  @keyframes welcomeFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes welcomeFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  /* Globe search trigger bar */
+  .globe-search-bar {
+    position: absolute;
+    bottom: 20px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    height:45px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    z-index: 12;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .globe-search-bar:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .globe-search-bar svg {
+    width: 14px;
+    height: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
+  }
+
+  .globe-search-bar-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  /* Globe search overlay */
+  .globe-search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .globe-search-overlay[hidden] {
+    display: none !important;
+  }
+
+  .globe-search-panel {
+    width: min(640px, 90vw);
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    overflow: hidden;
+    animation: popIn 0.25s ease-out;
+  }
+
+  .globe-search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+  }
+
+  .globe-search-input-wrap svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.4);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.3;
+  }
+
+  .globe-search-input-wrap input {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #fff;
+    font-size: clamp(16px, 1.2vw, 20px);
+    letter-spacing: -0.03em;
+  }
+
+  .globe-search-input-wrap input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .globe-search-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .globe-search-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .globe-search-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 22px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .globe-search-hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+
+  .globe-search-hint.resolved {
+    color: rgba(100, 220, 150, 0.8);
+  }
+
+  .globe-zoom-legends {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .globe-zoom-legends button {
+    padding: 5px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .globe-zoom-legends button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  .globe-zoom-legends button.active {
+    color: #000;
+    background: #fff;
+    border-color: transparent;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (max-width: 640px) {
+    .globe-search-bar {
+      bottom: 70px;
+      right: 12px;
+    }
+    .globe-search-options {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .globe-zoom-legends {
+      flex-wrap: wrap;
+    }
+  }
+</style>

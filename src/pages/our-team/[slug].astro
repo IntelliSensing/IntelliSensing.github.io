@@ -1,0 +1,388 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { team } from '../../data/team';
+
+export const getStaticPaths = () => {
+  return team.map((m) => ({ params: { slug: m.slug } }));
+};
+
+const slug = Astro.params.slug;
+const member = team.find((m) => m.slug === slug)!;
+const pubs = member.publications;
+const honors = member.honors;
+---
+<BaseLayout title={`${member.name} | Space Lab`} description={`Profile page of ${member.name}.`} headerMode="glass" bodyClass="space-theme">
+  <main class="publication-archive">
+    <section class="section member-page">
+      <div class="container">
+        <a class="member-back" href="/our-team/" data-en="← Back to Our Team" data-zh="← 返回团队">← Back to Our Team</a>
+
+        <div class="member-header">
+          <div class="member-photo">
+            <img src={member.img} alt={member.name} />
+          </div>
+          <div class="member-info">
+            <h1 class="member-name">{member.name}</h1>
+            <p class="member-role" data-en={member.role} data-zh={member.roleZh}>{member.role}</p>
+            <p class="member-desc" data-en={member.desc} data-zh={member.descZh}>{member.desc}</p>
+            <div class="member-social">
+              {member.email && (
+                <a class="member-social-link" href={`mailto:${member.email}`} aria-label="Email" title={member.email}>
+                  <img src="/assets/icons/gmail.svg" alt="Email" />
+                </a>
+              )}
+              {member.x && (
+                <a class="member-social-link" href={member.x} target="_blank" rel="noreferrer" aria-label="X" title="X">
+                  <img src="/assets/icons/x.svg" alt="X" />
+                </a>
+              )}
+              {member.github && (
+                <a class="member-social-link" href={member.github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+                  <img src="/assets/icons/github.svg" alt="GitHub" />
+                </a>
+              )}
+              {member.scholar && (
+                <a class="member-social-link" href={member.scholar} target="_blank" rel="noreferrer" aria-label="Google Scholar" title="Google Scholar">
+                  <svg class="member-social-svg" viewBox="0 0 24 24" fill="#4285F4"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+                </a>
+              )}
+              {member.huggingface && (
+                <a class="member-social-link" href={member.huggingface} target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
+                  <img src="/assets/icons/huggingface.svg" alt="Hugging Face" />
+                </a>
+              )}
+              {member.linkedin && (
+                <a class="member-social-link" href={member.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn">
+                  <img src="/assets/icons/linkedin.svg" alt="LinkedIn" />
+                </a>
+              )}
+              {member.facebook && (
+                <a class="member-social-link" href={member.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" title="Facebook">
+                  <img src="/assets/icons/facebook.svg" alt="Facebook" />
+                </a>
+              )}
+              {member.instagram && (
+                <a class="member-social-link" href={member.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" title="Instagram">
+                  <img src="/assets/icons/instagram.svg" alt="Instagram" />
+                </a>
+              )}
+              {member.wechat && (
+                <a class="member-social-link" href={`weixin://dl/chat?${member.wechat}`} aria-label="WeChat" title={`WeChat: ${member.wechat}`}>
+                  <img src="/assets/icons/wechat.svg" alt="WeChat" />
+                </a>
+              )}
+              {member.weibo && (
+                <a class="member-social-link" href={member.weibo} target="_blank" rel="noreferrer" aria-label="Weibo" title="Weibo">
+                  <img src="/assets/icons/weibo.svg" alt="Weibo" />
+                </a>
+              )}
+              {member.bilibili && (
+                <a class="member-social-link" href={member.bilibili} target="_blank" rel="noreferrer" aria-label="Bilibili" title="Bilibili">
+                  <img src="/assets/icons/bilibili.svg" alt="Bilibili" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <!-- Publications -->
+        <div class="member-section">
+          <h2 class="member-section-title" data-en="Publications" data-zh="论文">Publications <span class="pub-count">{pubs.length}</span></h2>
+          <div class="pub-list">
+            {pubs.map((pub) => (
+              <div class="pub-item">
+                <div class="pub-thumb">
+                  <img src={pub.img} alt={pub.title} />
+                </div>
+                <div class="pub-info">
+                  <p class="pub-title">{pub.title}</p>
+                  <p class="pub-authors">{pub.authors}</p>
+                  <p class="pub-venue">{pub.venue}</p>
+                  <div class="pub-links">
+                    {pub.links.map((link) => (
+                      <a class="pub-link" href={link.url} target="_blank" rel="noreferrer">{link.label}</a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Honors & Awards -->
+        {honors.length > 0 && (
+          <div class="member-section">
+            <h2 class="member-section-title" data-en="Honors &amp; Awards" data-zh="荣誉与奖项">Honors & Awards</h2>
+            <ul class="member-list">
+              {honors.map((h, i) => <li data-en={h} data-zh={member.honorsZh[i] || h}>{h}</li>)}
+            </ul>
+          </div>
+        )}
+
+        <!-- Personal -->
+        {member.personal && (
+          <div class="member-section">
+            <h2 class="member-section-title" data-en="Personal" data-zh="个人">Personal</h2>
+            <p class="member-text" data-en={member.personal} data-zh={member.personalZh}>{member.personal}</p>
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .member-page {
+    padding-top: 120px;
+    min-height: 80vh;
+  }
+
+  .member-back {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+  }
+
+  .member-back:hover {
+    color: #fff;
+  }
+
+  .member-header {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+    margin-bottom: 48px;
+  }
+
+  .member-photo {
+    flex-shrink: 0;
+    width: 320px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .member-photo img {
+    width: 100%;
+    display: block;
+  }
+
+  .member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 8px;
+    flex: 1;
+  }
+
+  .member-name {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(30px, 3.5vw, 44px);
+    font-weight: 600;
+  }
+
+  .member-role {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+  }
+
+  .member-desc {
+    margin: 8px 0 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-line;
+  }
+
+  .member-social {
+    display: flex;
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .member-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .member-social-link:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+  }
+
+  .member-social-link img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .member-social-svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .member-section {
+    margin-bottom: 40px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .member-section-title {
+    margin: 0 0 24px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pub-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .pub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .pub-item {
+    display: flex;
+    gap: 20px;
+    padding: 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.2s;
+  }
+
+  .pub-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .pub-thumb {
+    flex-shrink: 0;
+    width: 160px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .pub-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pub-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .pub-title {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .pub-authors {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .pub-venue {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+  }
+
+  .pub-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .pub-link {
+    color: rgba(120, 170, 255, 0.8);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .pub-link:hover {
+    color: #fff;
+  }
+
+  .member-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .member-list li {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .member-text {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .member-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .member-photo {
+      width: 220px;
+    }
+    .member-social {
+      justify-content: center;
+    }
+    .pub-item {
+      flex-direction: column;
+    }
+    .pub-thumb {
+      width: 100%;
+      height: 160px;
+    }
+  }
+</style>

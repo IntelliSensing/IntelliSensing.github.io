@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Humanoid Visual Search in the Wild</title>
+        <link rel="icon" type="image/x-icon" href="figs/header_360.png">
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Open Graph -->
+        <meta property="og:url" content="https://humanoid-vstar.github.io/" />
+        <meta property="og:image" content="https://humanoid-vstar.github.io/figs/header_360.png" />
+        <meta property="og:title" content="Thinking in 360°" />
+        <meta property="og:description" content="Humanoid Visual Search in the Wild" />
+
+        <!-- Twitter -->
+        <meta name="twitter:url" content="https://humanoid-vstar.github.io/" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content="https://humanoid-vstar.github.io/figs/header_360.png" />
+        <meta name="twitter:title" content="Thinking in 360°" />
+        <meta name="twitter:description" content="Humanoid Visual Search in the Wild" />
+
+        <script src="./static/js/distill_template.v2.js"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+
+        <script defer="" src="./static/js/hider.js"></script>
+        <script src="./static/js/image_interact.js"></script>
+        <script src="./static/js/switch_videos.js"></script>
+
+        <link rel="preload" as="image" href="figs/header_360.png" fetchpriority="high">
+        <link rel="stylesheet" href="./static/css/style.css">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);"></script>
+        <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+        <!-- medium zoom -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script defer src="./static/js/medium-zoom.min.js"></script>
+        <script defer src="./static/js/zoom.js"></script>
+        <script>
+            function toggleAnswer(answerId, element) {
+                var answerDiv = document.getElementById(answerId);
+                if (answerDiv.style.display === "none" || answerDiv.style.display === "") {
+                    answerDiv.style.display = "block";
+                    element.textContent = "Click to hide answer";
+                } else {
+                    answerDiv.style.display = "none";
+                    element.textContent = "Click to view Ground Truth";
+                }
+            }
+            
+            // Set default playback speed to 1.25x for video_46
+            document.addEventListener('DOMContentLoaded', function() {
+                var video46 = document.getElementById('video_46');
+                if (video46) {
+                    video46.addEventListener('loadedmetadata', function() {
+                        this.playbackRate = 1.25;
+                    });
+                    // Also set it immediately if video is already loaded
+                    if (video46.readyState >= 1) {
+                        video46.playbackRate = 1.25;
+                    }
+                }
+            });
+        </script>
+        <style>
+            .authors a,
+            .authors a * {
+                text-decoration: none !important;
+                border-bottom: none !important;
+                text-decoration-line: none !important;
+                text-decoration-style: none !important;
+                text-decoration-color: transparent !important;
+            }
+            .authors a:visited,
+            .authors a:focus,
+            .authors a:active,
+            .authors a:visited *,
+            .authors a:focus *,
+            .authors a:active * {
+                text-decoration: none !important;
+                border-bottom: none !important;
+                text-decoration-line: none !important;
+                text-decoration-style: none !important;
+                text-decoration-color: transparent !important;
+            }
+            .authors a:hover,
+            .authors a:hover * {
+                color: #007bff !important;
+                text-decoration: underline !important;
+                text-decoration-line: underline !important;
+                text-decoration-style: solid !important;
+                text-decoration-color: #007bff !important;
+            }
+            /* ==== Panorama viewer styles ==== */
+            #hvs-pano-block {
+                margin-top: 2rem;
+            }
+            #pano-viewer {
+                width: 100%;
+                max-width: 960px;
+                height: 540px;
+                margin: 0 auto;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 18px 45px rgba(0,0,0,0.55);
+                background: #000;
+            }
+            .pano-scene-bar {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+                margin: 0 0 1rem;
+            }
+            .pano-scene-btn {
+                padding: 4px 12px;
+                border-radius: 999px;
+                border: 1px solid rgba(0, 0, 0, 0.15);
+                background: #f5f5f5;
+                font-size: 0.9rem;
+                cursor: pointer;
+            }
+            .pano-scene-btn.active {
+                background: #3b82f6;
+                border-color: #3b82f6;
+                color: #fff;
+            }
+            #teaser-video {
+            padding: 40px 0;
+            }
+            #teaser-video .container {
+            display: flex;
+            justify-content: center;   
+            }
+            #teaser-video .video-wrapper {
+            width: 100%;
+            max-width: 960px;          
+            }
+            #teaser-video .video-wrapper video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            }
+
+        </style>
+
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core@5.7.3/index.css">
+
+    </head>
+    <body>
+        <div class="header-wrapper">
+            <div class="header-container" id="header-container">
+                <div class="header-content">
+                    <h1 style="margin-top: 0px"><i>Thinking in 360°</i></h1>
+                    <h2>Humanoid Visual Search in the Wild</h2>
+
+                    <div class="icon-container">
+                        <div class="icon-item">
+                            <img src="./static/img/icons/positioning.png" alt="Visual Representation Icon">
+                            <div><strong>Position</strong>: We argue that achieving human-level visual search requires a shift from disembodied reasoning over a 2D image to embodied active reasoning in an immersive 360° world: the capacity not only to identify relevant information within a single view, but to strategically control the viewpoint to construct a visual chain-of-thought, perform situational reasoning, and generate embodied plans.</div>
+                        </div>
+                        <div class="icon-item">
+                            <img src="./static/img/icons/eval.svg" alt="Connector Design Icon">
+                            <div><strong>Benchmark</strong>: We build H* Bench, a new benchmark that moves beyond constrained household scenes to challenging in-the-wild environments that necessitate advanced visual-spatial reasoning capabilities, such as transportation hubs, large-scale retail spaces, urban streets, and public institutions.</div>
+                        </div>
+                        <div class="icon-item">
+                            <img src="./static/img/icons/data_v2.svg" alt="Speech Logo" class="icon">
+                            <div><strong>Data</strong>: We argue that human reasoning is intermittent and invoked only at critical decision points. Focusing on these critical points enables us to build a closed-loop search environment from a single real-world 360° panorama, bypassing the need for 3D simulation or physical hardware and yielding a scalable testbed.</div>
+                        </div>
+                        <div class="icon-item">
+                            <img src="./static/img/icons/nn_model.svg" alt="Vision Logo" class="icon">
+                            <div><strong>Model</strong>: We build HVS-3B by applying cold-start SFT and GRPO to Qwen2.5-VL-3B-Instruct, increasing its success rate by more than threefold for both object search (14.83% → 47.38%) and path search (6.44% → 24.94%). The lower ceiling of path search reveals its inherent difficulty due to the need for sophisticated physical, spatial, and social commonsense.
+                            </div>
+                        </div>
+                        <div class="icon-item">
+                            <img src="./static/img/icons/visual.svg" alt="Vision Logo" class="icon">
+                            <div><strong>Humanoid Visual Search</strong>: We prototype humanoid visual search, where head and eyes operate as a nested, synergistic system— the head explores unseen regions while the eyes exploit already visible content. This lays the foundation for future humanoid robots that must reason and act across diverse human-made environments.</div>
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <a href="https://arxiv.org/abs/2511.20351" class="button">
+                            <span class="icon is-small">
+                                <i class="ai ai-arxiv"></i>
+                            </span>
+                            <span>arXiv</span>
+                        </a>
+                        <a href="https://github.com/humanoid-vstar/hstar" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <i class="fab fa-github"></i>
+                            </span>
+                            <span>Code</span>
+                        </a>
+                        <a href="https://huggingface.co/collections/humanoid-vstar/hvs-models" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;">
+                            </span>
+                            <span>Models</span>
+                        </a>
+                        <a href="https://huggingface.co/collections/humanoid-vstar/hvs-train-datasets" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;">
+                            </span>
+                            <span>Data</span>
+                        </a>
+                        <a href="https://huggingface.co/datasets/humanoid-vstar/hstar_bench/tree/main" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;">
+                            </span>
+                            <span>Benchmark</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="header-image">
+                    <img src="figs/header_360.png" class="header-hero-image" alt="humanoid_visual_search" draggable="false" loading="eager" fetchpriority="high" decoding="async">
+                </div>
+            </div>
+        </div>
+        <d-article>
+            <div class="byline">
+                <div class="byline-container">
+                    <div class="authors" style="text-align: center; margin-bottom: 1rem;">
+                        <div style="margin-bottom: 0.5rem;">
+                            <a href="https://scholar.google.com/citations?user=GVI6jVsAAAAJ&hl=en" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Heyang Yu</span></a><sup>1*</sup>,
+                            <span class="author-name">Yinan Han</span><sup>3*</sup>,
+                            <a href="https://painkillerzzz.github.io/xiangyu_zhang.github.io/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Xiangyu Zhang</span></a><sup>4</sup>,
+                            <a href="https://yyyybq.github.io/BaiqiaoYIN.github.io/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Baiqiao Yin</span></a><sup>1</sup>,
+                            <span class="author-name">Bowen Chang</span><sup>1</sup>,
+                            <a href="https://han-xiangyu.github.io/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Xiangyu Han</span></a><sup>1</sup>,
+                            <span class="author-name">Xinhao Liu</span><sup>1</sup>,
+                            <a href="https://jingz6676.github.io/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Jing Zhang</span></a><sup>1</sup>
+                        </div>
+                        <div>
+                            <a href="https://web.stanford.edu/~pavone/index.html" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name"><span class="author-name">Marco Pavone</span></a><sup>2,5</sup>,
+                            <a href="https://ai4ce.github.io/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Chen Feng</span></a><sup>1&dagger;</sup>,
+                            <a href="https://www.sainingxie.com/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name">Saining Xie</span></a><sup>1&dagger;</sup>,
+                            <a href="https://yimingli-page.github.io/" target="_blank" style="color: inherit; text-decoration: none !important;"><span class="author-name"><span class="author-name">Yiming Li</span></a><sup>1,2&dagger;</sup>
+                        </div>
+                    </div>
+                    <div style="text-align: center; font-size: 1.1rem; color: #666;"><span><sup>*</sup>Equal contribution</span> &nbsp; <span><sup>&dagger;</sup>Corresponding author</span></div>
+                    <div class="affiliations" style="text-align: center; font-size: 1.1rem; color: #666;">
+                        <span><sup>1</sup>New York University</span> &nbsp;
+                        <span><sup>2</sup>NVIDIA</span> &nbsp;
+                        <span><sup>3</sup>TU Darmstadt</span> &nbsp;
+                        <span><sup>4</sup>UC Berkeley</span> &nbsp;
+                        <span><sup>5</sup>Stanford University</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div style="max-width: 100%; margin: 30px auto; width: 100%;">
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <iframe 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                        src="https://www.youtube.com/embed/denldZGVyzM" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div> -->
+            <section id="teaser-video" class="section-block">
+                <div class="container">
+                    <div class="video-wrapper">
+                    <video controls preload="metadata">
+                        <source src="static/videos/video.mp4" type="video/mp4">
+                    </video>
+                    </div>
+                </div>
+            </section>
+
+            <section id="introduction">
+            <h1 class="text">Introduction</h1>
+            <p class="text">
+                The human visual system is highly efficient, capturing sharp detail only at the fovea while leaving other regions blurred or unseen. Despite the sensor limitations, humans efficiently perform visual search tasks in 360° (e.g., locating the next exit in a crowded subway station) by rapidly executing saccades and deliberately reorienting their head, minimizing sensory redundancy and computational cost.
+            </p>
+            <p class="text" >
+                We prototype <strong><em>humanoid visual search (HVS)</em></strong>, where a humanoid agent synergizes its head and eyes to search for information in visually cluttered 360° environments. 
+            </p> 
+            <ul class="text"> 
+                <li><strong>HVS is interactive</strong>: the agent starts with a narrow field of view and updates perception through head rotations.</li>
+                <li><strong>HVS is embodied</strong>: visual reasoning is tightly coupled with actions in the physical world, driven by two embodied tasks: <strong>(a) humanoid object search (HOS)</strong>—foveating targets for manipulation, and <strong>(b) humanoid path search (HPS)</strong>—orienting toward navigable paths.</li>
+            </ul>
+            </section>
+
+            <section id="teaser" style="margin-top: 2rem; margin-bottom: 4rem;">
+                <d-figure>
+                    <figure>
+                        <img src="figs/teaserv4.png" alt="Spatial supersensing teaser" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                        <figcaption>
+                            <strong>Figure:</strong> <strong>We pose a fundamental question:</strong>  <i>can an AI agent actively search for objects or paths in a 3D world like a human, rather than just passively describe what it sees?</i> We transition agents from passive captioners to active searchers, moving them from constrained household scenes into the rich complexity of the wild. A key enabler is our scalable paradigm where a single 360° panorama closes the perception-action loop for head rotation, freeing active embodied reasoning in real life from hardware constraints.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </section>
+            <section id="dataset">
+                <h1 class="text">H*Bench</h1>
+                <h2 class="text">Dataset Overview</h2>
+                <p class="text">
+                    We introduce <em><strong>H* Bench</strong></em> to evaluate humanoid visual search in rich, dense, and visually-cluttered real-world environments. 
+                    The benchmark comprises approximately <strong>3,000</strong> annotated task instances, expanding to <strong>12,000</strong> search episodes through diverse starting orientations. In this work, We split 4,000 samples for benchmark evaluation and label 2,000 samples with CoT to build SFT dataset. The remained samples are used for RL post-training.
+                    Sourced from high-resolution panoramas across <strong>12</strong> countries, the dataset covers <strong>6</strong> major scene categories—including retail environments, transportation hubs, and urban streets—ensuring substantial geographical and distinct scene diversity.
+                </p>
+                <d-figure>
+                    <figure>
+                        <img src="figs/geographical_distribution.png" alt="scene dis" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                        <figcaption><strong>Figure: </strong> Places of the scenes collected in the dataset.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            <section id="data-fig" style="margin-top: 2rem; margin-bottom: 4rem;">
+                <d-figure>
+                    <figure>
+                        <img src="figs/combined_chart.png" alt="data chart" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                        <figcaption><strong>Figure: </strong>
+                            <strong>Top Left:</strong> Distribution of scene categories. 
+                            <strong>Top Right:</strong> Sub-category composition per category. 
+                            <strong>Bottom Left:</strong> Category-wise object instance distribution for <strong><em>HOS</em></strong>. 
+                            <strong>Bottom Right:</strong> Task difficulty distribution and definition for <strong><em>HOS</em></strong> and <strong><em>HPS</em></strong>.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+
+
+
+                <p class="text">
+                    Below, we provide interactive demos sampled from H* Bench. These panoramas illustrate information-cluttered scenarios where effective and efficienct visual search is required for the agent to complete its task.
+                </p>
+
+                <div id="hvs-pano-block" class="text">
+                    <div class="pano-scene-bar">
+                        <button class="pano-scene-btn active" data-pano="retail">
+                            Large-Scale Retail Space
+                        </button>
+                        <button class="pano-scene-btn" data-pano="station">
+                            Transportation Hub
+                        </button>
+                        <!-- <button class="pano-scene-btn" data-pano="street">
+                            Urban Street View
+                        </button> -->
+                        <button class="pano-scene-btn" data-pano="public">
+                            Public Institution
+                        </button>
+                        <button class="pano-scene-btn" data-pano="office">
+                            Residential & Office
+                        </button>
+                        <button class="pano-scene-btn" data-pano="entertainment">
+                            Entertainment & Leisure
+                        </button>
+                    </div>
+                    <div id="pano-viewer"></div>
+                </div>
+
+                <h2 class="text">Annotation & Curation</h2>
+                <p class="text">
+                    <strong>Task Annotation:</strong> Using a perspective-view interface, annotators identified search tasks and drew bounding boxes to define the optimal target direction 
+                    <span class="math">\( (\phi^*, \gamma^*) \)</span>.
+                </p>
+                <p class="text">
+                    <strong>Cold-Start Data:</strong> To facilitate Supervised Fine-Tuning (SFT), we curated <strong>2,000</strong> multi-turn trajectories. 
+                    We utilized a human-in-the-loop protocol where GPT-4o generated observation-grounded Chain-of-Thought (CoT) rationales, which were subsequently refined by human annotators to eliminate hallucinations and ensure consistency.
+                </p>
+            
+                <h2 class="text">Difficulty Taxonomy</h2>
+                <p class="text">
+                    <strong>Humanoid Object Search (HOS):</strong> Difficulty is categorized into <em>Easy</em>, <em>Medium</em>, and <em>Hard</em> based on the initial visibility ratio 
+                    <span class="math">\( d \)</span>—the fraction of the object visible from the starting viewpoint.
+                </p>
+                <d-figure>
+                    <figure>
+                        <img src="figs/HOS_example.png"
+                            alt="Visualizations of <strong>HOS</strong> task instances."
+                            class="pdf-figure"
+                            style="width: auto; height: auto; border: none;"
+                            data-zoomable
+                            draggable="false">
+                        <figcaption class="text">
+                            <strong>Figure:</strong> Visualizations of <strong>HOS</strong> task instances.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+                <p class="text">
+                    <strong>Humanoid Path Search (HPS):</strong> Difficulty is defined by four levels, determined by the presence of textual cues in the scene and the alignment between visual/textual cues and the actual path direction.
+                </p>
+                <d-figure>
+                    <figure>
+                        <img src="figs/HPS_example1.png"
+                            alt="Visualizations of easy-level and mid-level <strong>HPS</strong> task instances."
+                            class="pdf-figure"
+                            style="width: auto; height: auto; border: none;"
+                            data-zoomable
+                            draggable="false">
+                        <figcaption class="text">
+                            <strong>Figure:</strong> Visualizations of easy-level and midium-level <strong>HPS</strong> task instances.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+                    <figure>
+                        <img src="figs/HPS_example2.png"
+                            alt="Visualizations of hard-level and extreme-level <strong>HPS</strong> task instances."
+                            class="pdf-figure"
+                            style="width: auto; height: auto; border: none;"
+                            data-zoomable
+                            draggable="false">
+                        <figcaption class="text">
+                            <strong>Figure:</strong> Visualizations of hard-level and extreme-level <strong>HPS</strong> task instances.
+                        </figcaption>
+                    </figure>
+            </section>
+
+            </section>
+            <section id="methodology">
+                <h1 class="text">Methodology</h1>
+            
+                <h2 class="text">Objective</h2>
+                <p class="text">
+                    Imagine a humanoid agent equipped with a limited field-of-view (FoV) navigating a complex, multi-corridor junction in a subway station, tasked with locating an exit as quickly as possible. The limited FoV necessitates tight coordination between head and eye movements: the head explores the unknown by rotating to new vantage points, while the eyes exploit the already-seen information by fixating on task-relevant details.
+                </p>
+                <p class="text">
+                    We model the environment as a single 360° panoramic image. The set of all possible observations, 
+                    <span class="math">\( \mathcal{S}_o = \{ o_{\phi,\gamma} \} \)</span>, comprises narrow-FoV perspective images sampled from this panorama, each defined by azimuth 
+                    <span class="math">\( \phi \)</span> and polar angle <span class="math">\( \gamma \)</span>. 
+                    The goal of humanoid visual search is to identify the optimal direction 
+                    <span class="math">\( (\phi^*, \gamma^*) \)</span> 
+                    that maximizes the probability of success 
+                    <span class="math">\( r_s \)</span> 
+                    given language instruction <span class="math">\( x \)</span> and observation <span class="math">\( o_{\phi,\gamma} \)</span>:
+                </p>
+                <p class="math text">
+                    \( (\phi^*,\gamma^*) = \arg \max_{\phi,\gamma} P(r_s \mid o_{\phi,\gamma}, x) \).
+                </p>
+            
+                <h2 class="text">Humanoid Object Search (HOS)</h2>
+                <p class="text">
+                    Humanoid Object Search (HOS) focuses on active target search in an unknown 3D environment. 
+                    The objective is to determine the viewing direction 
+                    <span class="math">\( (\phi^*,\gamma^*) \)</span> 
+                    that places the target within the central foveal region of a narrow-FoV perspective image.
+                </p>
+            
+                <h2 class="text">Humanoid Path Search (HPS)</h2>
+                <p class="text">
+                    Humanoid Path Search (HPS) requires the agent to identify a navigable path toward a target location as a high-level planning step before locomotion. 
+                    The goal is to determine a final viewing direction 
+                    <span class="math">\( \phi^* \)</span> 
+                    that aligns with the direction of the path.
+                </p>
+            
+                <h2 class="text">Humanoid Visual Search with MLLMs</h2>
+                <p class="text">
+                    We cast humanoid visual search as a multimodal reasoning problem by integrating MLLM tool use with physical head rotation. 
+                    The agent policy is defined as 
+                    <span class="math">\( \pi_\theta (y_t, a_t \mid o_t, x, \mathcal{H}_t) \)</span>, 
+                    where at each timestep <span class="math">\( t \)</span> the agent produces a chain-of-thought 
+                    <span class="math">\( y_t \)</span> and an action <span class="math">\( a_t \)</span> based on:
+                    the current observation <span class="math">\( o_t = o_{\phi_t,\gamma_t} \)</span>, 
+                    the instruction <span class="math">\( x \)</span>, 
+                    and history 
+                    <span class="math">\( \mathcal{H}_t = \{(o_i, y_i, a_i)\}_{i=1}^{t-1} \)</span>.
+                </p>
+                <p class="text">
+                    Each search episode consists of a sequence of rotation actions followed by a submission action. 
+                    The action space contains:
+                </p>
+                <ul class="text">
+                    <li>
+                        <strong>Rotate</strong> 
+                        <span class="math">\( a_t^{rot} = (\Delta\phi, \Delta\gamma) \)</span>:  
+                        Adjusts the head orientation by updating 
+                        <span class="math">\( \phi_{t+1} = \phi_t + \Delta\phi \)</span> and 
+                        <span class="math">\( \gamma_{t+1} = \gamma_t + \Delta\gamma \)</span>. 
+                        Right/up rotations are positive; yaw is circular.
+                    </li>
+                    <li>
+                        <strong>Submit</strong> 
+                        <span class="math">\( a_t^{sub} \)</span>:  
+                        Submits the current orientation as the final estimate 
+                        <span class="math">\( (\hat{\phi},\hat{\gamma}) \)</span> 
+                        and terminates the episode.
+                    </li>
+                </ul>
+            
+            </section>
+            <section id="main" style="margin-top: 2rem; margin-bottom: 4rem;">
+                <d-figure>
+                    <figure>
+                        <img src="figs/main.png" alt="mllm pipeline" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                        <figcaption><strong>Figure: </strong>
+                            <strong>Pipeline Illustration.</strong> Stage 1 (SFT) provides the foundational ability to map perspective images to plausible actions (e.g., turning around upon seeing nothing). Stage 2 (RL) refines this into a strategic policy: the model learns to explore (outputting rotate action) until it acquires a view with sufficient evidence (e.g., spotting the gate sign), at which point it confidently submits the final estimate (submit action).
+                        </figcaption>
+                    </figure>
+                </d-figure>
+                <h2 class="text">MLLM Post-Training</h2>
+                <p class="text">
+                    Trained on static, disembodied Internet-scale data, modern MLLMs inherently lack the spatial commonsense and active 3D planning capabilities required for humanoid visual search. Our evaluations reveal that even state-of-the-art proprietary models such as GPT-4o achieve only ~20% success on these tasks. To transform MLLMs into effective visual search agents, we adopt a two-stage post-training pipeline.
+                </p>
+
+                <h3 class="text">Stage 1: Supervised Fine-Tuning (SFT)</h3>
+                <p class="text">
+                    We first apply supervised fine-tuning on a curated multi-turn dataset to instill basic task-oriented reasoning and tool-use abilities. This stage teaches the model to produce structured, interpretable action plans from multimodal inputs, forming a strong behavioral prior.
+                </p>
+
+                <h3 class="text">Stage 2: Multi-Turn Reinforcement Learning (RL)</h3>
+                <p class="text">
+                    We further refine the policy using Group Relative Policy Optimization (GRPO), encouraging long-horizon reasoning and enabling the model to develop generalizable search strategies. This RL phase proves essential for surpassing the limitations of imitation learning baselines.
+                </p>
+            </section>
+            
+            <section id="experiments"> 
+                    <h1 class="text">Experiment<h1>
+                    
+                    <h2 class="text">Experiment Setup</h2>
+                    <p class="text">
+                        <strong>Implementation:</strong> We finetune the model on a mixed dataset comprising both object and path search tasks. 
+                        The Supervised Fine-Tuning (SFT) stage uses <strong>Qwen2.5-VL-3B-Instruct</strong> for 3 epochs via LLaMA-Factory. 
+                        Subsequently, Reinforcement Learning (RL) is applied for 70 steps using the VAGEN framework, resulting in the final model <strong>HVS-3B</strong> .
+                    </p>
+                    <p class="text">
+                        <strong>Evaluation Metric:</strong> A trial is deemed successful if the final viewing direction 
+                        <span class="math">\( (\hat{\phi}, \hat{\gamma}) \)</span> 
+                        falls within a tolerance region centered on the ground truth bounding box:
+                    </p>
+                    <p class="math text">
+                        \( [\phi^{*}-\tau_{\phi}, \phi^{*}+\tau_{\phi}] \times [\gamma^{*}-\tau_{\gamma}, \gamma^{*}+\tau_{\gamma}] \)
+                    </p>
+                    <p class="text">
+                        For <strong>Humanoid Object Search (HOS)</strong>, we evaluate both azimuth and elevation with tolerances 
+                        <span class="math">\( \tau_{\phi}=30^\circ \)</span> and <span class="math">\( \tau_{\gamma}=20^\circ \)</span> to mimic human foveation. 
+                        For <strong>Humanoid Path Search (HPS)</strong>, we evaluate only the azimuth <span class="math">\( \hat{\phi} \)</span> with a stricter tolerance 
+                        <span class="math">\( \tau_{\phi}=10^\circ \)</span> to ensure precise motion direction.
+                    </p>
+                    
+                    <h2 class="text">Probing Embodied Visual Search in MLLMs</h2>
+                    <div id="tab:humanoid_search_results_colored" style="display: flex; flex-direction: column; align-items: center; font-family: 'Latin Modern Roman', 'Times New Roman', serif;">
+                        <div class="table-container" style="overflow-x: auto; width: 140%;">
+                            <table class="data-table" style="border-collapse: collapse; width: 100%; font-size: 0.9em; color: #000;">
+                                <thead>
+                                    <tr style="border-top: 2px solid #000;">
+                                        <th rowspan="2" style="text-align: left; padding: 6px; border-bottom: 1px solid #000;">Method</th>
+                                        <th colspan="4" style="background-color: #f2f2f2; padding: 6px; text-align: center;"><strong>Humanoid Object Search</strong></th>
+                                        <th style="width: 10px;"></th> <th colspan="5" style="background-color: #f2f2f2; padding: 6px; text-align: center;"><strong>Humanoid Path Search</strong></th>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #000;">
+                                        <th style="text-align: center; padding: 6px;">Overall</th>
+                                        <th style="text-align: center; padding: 6px;">Easy</th>
+                                        <th style="text-align: center; padding: 6px;">Medium</th>
+                                        <th style="text-align: center; padding: 6px;">Hard</th>
+                                        <th></th>
+                                        <th style="text-align: center; padding: 6px;">Overall</th>
+                                        <th style="text-align: center; padding: 6px;">Easy</th>
+                                        <th style="text-align: center; padding: 6px;">Medium</th>
+                                        <th style="text-align: center; padding: 6px;">Hard</th>
+                                        <th style="text-align: center; padding: 6px;">Extreme</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr style="background-color: #f2f2f2;">
+                                        <td colspan="11" style="font-style: italic; padding: 6px; text-align: left;">Open-Weight Multi Image Models</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">InternVL3.5-4B</td>
+                                        <td style="text-align: center;">3.08</td>
+                                        <td style="text-align: center;">7.32</td>
+                                        <td style="text-align: center;">2.84</td>
+                                        <td style="text-align: center;">1.49</td>
+                                        <td></td>
+                                        <td style="text-align: center;">4.81</td>
+                                        <td style="text-align: center;">6.00</td>
+                                        <td style="text-align: center;">5.70</td>
+                                        <td style="text-align: center;">4.67</td>
+                                        <td style="text-align: center;">0.46</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">InternVL3.5-8B</td>
+                                        <td style="text-align: center;">6.38</td>
+                                        <td style="text-align: center;">9.76</td>
+                                        <td style="text-align: center;">9.10</td>
+                                        <td style="text-align: center;">4.79</td>
+                                        <td></td>
+                                        <td style="text-align: center;">7.25</td>
+                                        <td style="text-align: center;">10.00</td>
+                                        <td style="text-align: center;">7.68</td>
+                                        <td style="text-align: center;">5.14</td>
+                                        <td style="text-align: center;">4.17</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">Qwen2.5-VL-3B-Instruct</td>
+                                        <td style="text-align: center;">14.83</td>
+                                        <td style="text-align: center;">27.97</td>
+                                        <td style="text-align: center;">13.07</td>
+                                        <td style="text-align: center;">10.01</td>
+                                        <td></td>
+                                        <td style="text-align: center;">6.44</td>
+                                        <td style="text-align: center;">7.00</td>
+                                        <td style="text-align: center;">8.77</td>
+                                        <td style="text-align: center;">4.91</td>
+                                        <td style="text-align: center;">3.24</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">Qwen2.5-VL-7B-Instruct</td>
+                                        <td style="text-align: center;">11.38</td>
+                                        <td style="text-align: center;">23.42</td>
+                                        <td style="text-align: center;">9.10</td>
+                                        <td style="text-align: center;">7.02</td>
+                                        <td></td>
+                                        <td style="text-align: center;">6.31</td>
+                                        <td style="text-align: center;">9.00</td>
+                                        <td style="text-align: center;">5.92</td>
+                                        <td style="text-align: center;">5.84</td>
+                                        <td style="text-align: center;">1.85</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">Gemma-3-4B-it</td>
+                                        <td style="text-align: center;">17.13</td>
+                                        <td style="text-align: center;">32.85</td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>26.14</strong></td>
+                                        <td style="text-align: center;">10.13</td>
+                                        <td></td>
+                                        <td style="text-align: center;">14.44</td>
+                                        <td style="text-align: center;">17.20</td>
+                                        <td style="text-align: center;">14.47</td>
+                                        <td style="text-align: center;">14.72</td>
+                                        <td style="text-align: center;">7.41</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">Gemma-3-12B-it</td>
+                                        <td style="text-align: center;">10.21</td>
+                                        <td style="text-align: center;">24.72</td>
+                                        <td style="text-align: center;">17.33</td>
+                                        <td style="text-align: center;">3.88</td>
+                                        <td></td>
+                                        <td style="text-align: center;">14.50</td>
+                                        <td style="text-align: center;">16.80</td>
+                                        <td style="text-align: center;">14.25</td>
+                                        <td style="text-align: center;">14.49</td>
+                                        <td style="text-align: center;">9.72</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #000;">Kimi-VL-A3B-Instruct</td>
+                                        <td style="text-align: center;">4.92</td>
+                                        <td style="text-align: center;">12.85</td>
+                                        <td style="text-align: center;">0.57</td>
+                                        <td style="text-align: center;">2.36</td>
+                                        <td></td>
+                                        <td style="text-align: center;">4.32</td>
+                                        <td style="text-align: center;">8.79</td>
+                                        <td style="text-align: center;">3.32</td>
+                                        <td style="text-align: center;">2.21</td>
+                                        <td style="text-align: center;">4.17</td>
+                                    </tr>
+                    
+                                    <tr style="background-color: #f2f2f2;">
+                                        <td colspan="11" style="font-style: italic; padding: 6px; text-align: left;">Proprietary Models</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;">GPT-4o</td>
+                                        <td style="text-align: center;">19.75</td>
+                                        <td style="text-align: center;">18.17</td>
+                                        <td style="text-align: center;">17.35</td>
+                                        <td style="text-align: center;">20.92</td>
+                                        <td></td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>23.69</strong></td>
+                                        <td style="text-align: center;">26.80</td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>22.59</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>26.17</strong></td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>13.89</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #000;">Gemini2.5-Pro</td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>31.96</strong></td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>33.58</strong></td>
+                                        <td style="text-align: center;">23.78</td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>32.13</strong></td>
+                                        <td></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>33.00</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>41.60</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>29.39</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>35.75</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>15.28</strong></td>
+                                    </tr>
+                    
+                                    <tr style="background-color: #f2f2f2;">
+                                        <td colspan="11" style="font-style: italic; padding: 6px; text-align: left;">Fine-Tuned Models <strong>(Ours)</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 6px; border-bottom: 1px solid #eee;"><strong>HVS-3B (w/ SFT only)</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>40.83</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>53.82</strong></td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>23.86</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>37.73</strong></td>
+                                        <td></td>
+                                        <td style="text-align: center;">23.00</td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>28.00</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>23.03</strong></td>
+                                        <td style="text-align: center;">21.26</td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>14.81</strong></td>
+                                    </tr>
+                                    <tr style="border-bottom: 2px solid #000;">
+                                        <td style="padding: 6px;"><strong>HVS-3B</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>47.38</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>60.49</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>24.43</strong></td>
+                                        <td style="text-align: center; background-color: #ffebeb;"><strong>44.87</strong></td>
+                                        <td></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>24.94</strong></td>
+                                        <td style="text-align: center; background-color: #e8f8e8;"><strong>34.80</strong></td>
+                                        <td style="text-align: center;">20.18</td>
+                                        <td style="text-align: center; background-color: #eef6ff;"><strong>25.00</strong></td>
+                                        <td style="text-align: center;">12.04</td>
+                                    </tr>
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                        <figcaption style="text-align: center; width: 100%; margin-top: 10px; font-size: 1.0em;">
+                            <strong>Table: </strong> Quantitative results of open-source, proprietary, and fine-tuned models on Humanoid Object Search. Top-three performances are highlighted with <span style="background-color: #ffebeb; padding: 0 4px;">red</span>, <span style="background-color: #e8f8e8; padding: 0 4px;">green</span> and <span style="background-color: #eef6ff; padding: 0 4px;">blue</span>.
+                        </figcaption>
+                    </div>
+                    <p class="text">
+                        <strong>Performance:</strong> There is a significant gap between proprietary and open-weight models. 
+                        Gemini2.5-Pro is the strongest performer overall. Among open-weight models, the Gemma-3 series leads. 
+                        Notably, smaller models (4B/3B) in the Gemma-3 and Qwen2.5-VL series often outperform their larger counterparts (12B/7B) in object search.
+                    </p>
+                    <p class="text">
+                        <strong>Error Analysis:</strong>
+                    </p>
+                    <ul class="text">
+                        <li>
+                            <strong>Object Search Errors:</strong> Stem from <strong>limited visual grounding</strong> (failure to identify targets in clutter) and the <strong>perception-action gap</strong> (detection without fine-grained foveation).
+                        </li>
+                        <li>
+                            <strong>Path Search Errors:</strong> Arise from <strong>vision-action mismatch</strong>, <strong>lack of physical commonsense</strong> (e.g., trying to walk through walls), and <strong>lack of socio-spatial commonsense</strong> (ignoring stairs or norms like police tape).
+                        </li>
+                    </ul>
+                    <d-figure>
+                        <figure>
+                            <img src="figs/error_analysis.png" alt="mllm pipeline" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                            <figcaption><strong>Figure: </strong>
+                                <strong>Left:</strong> Failure cases in HPS.(a) Vision-action mismatch. (b) Attempting to traverse an impassable surface instead of using an adjacent staircase. (c) Missing socio-spatial conventions (e.g., airport entrance cues), resulting in a fruitless search. <strong> Right: </strong>H* results breakdown of Gemma3-4B-it.
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+
+                    <div style="margin: 2rem auto; max-width: auto; padding: 1.5rem; background-color: #f5f5f5; border: 2px solid #008080; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <p style="margin: 0; color: #000; font-size: 1.1em; line-height: 1.6;">
+                            <i class="fas fa-bookmark" style="color: #000; margin-right: 10px;"></i>
+                            MLLMs can form linguistically grounded spatial models for passive world description, but not physically grounded ones for embodied world interaction.
+                        </p>
+                    </div>
+                   
+                    
+                    <h2 class="text">On the Role and Limits of Post-Training</h2>
+                    <p class="text">
+                        <strong>Efficacy:</strong> Post-training efficacy is task-dependent. While our model outperforms state-of-the-art proprietary models in object search, it falls short in complex path search. 
+                        This indicates that post-training has limits in enhancing higher-order spatial reasoning.
+                    </p>
+                    <p class="text">
+                        <strong>SFT vs. RL:</strong> Supervised Fine-Tuning (SFT) provides the majority of performance gains, establishing fundamental task capabilities. 
+                        Reinforcement Learning (RL) acts as a refinement step, improving rotation control and exploration. 
+                        However, in complex path search scenarios, RL can degrade performance due to reward hacking, highlighting the difficulty of aligning reward functions with complex reasoning objectives.
+                    </p>
+                    <div style="margin: 2rem auto; max-width: auto; padding: 1.5rem; background-color: #f5f5f5; border: 2px solid #008080; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <p style="margin: 0; color: #000; font-size: 1.1em; line-height: 1.6;">
+                            <i class="fas fa-bookmark" style="color: #000; margin-right: 10px;"></i>
+                            Post-training can improve visual grounding and exploration for object search, but struggles to impart physical, spatial, and social commonsense for path search, as these are often implicit, situational, and procedural.
+                        </p>
+                    </div>
+                    <h2 class="text">Dissecting Object and Path Search</h2>
+                    <p class="text">
+                        <strong>Cross-Task Generalization:</strong> We observe a clear bidirectional synergy: training on object search boosts path search performance from 6.4% to 20.7%, while training on path search elevates object search from 14.8% to 29.5%. This is because skills acquired from learning path search, like active exploration and path reasoning, confer a direct performance advantage in object search, while the visual grounding honed in object search reciprocally benefits path search..
+                    </p>
+                    <p class="text">
+                        <strong>Mixed-Data Training:</strong> Training on a mixed object and path search dataset yields the best overall performance. Yet this comes with a key challenge: performance gains are unevenly distributed, as improvements on certain splits can reduce performance on others. Balancing this trade-off is essential for developing generalist humanoid agents.
+                    </p>
+                    <d-figure>
+                        <figure>
+                            <img src="figs/task_performance.png" alt="mllm pipeline" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                            <figcaption><strong>Figure: </strong>
+                                Comparison of <strong>In-task</strong> (train and test on the same task family) and <strong>Cross-task</strong> (train on one task family and test on the other).
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+            
+            </section>
+            <section id="ablation">
+                <h1 class="text">Ablation Study & Analysis</h1>
+            <div class="content-block">
+            <h2 class="text">Reward Shaping</h2>
+                <d-figure>
+                    <figure style="margin: 2rem 0;">
+                        <div style="overflow-x: auto; width: 80%; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); align-items: center;">
+                            
+                            <table style="width: 100%; border-collapse: collapse; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.9rem; text-align: center;">
+                                
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #4a4a4a;">
+                                        <th style="padding: 12px; text-align: left; background-color: #f8f9fa; width: 25%;">Method</th>
+                                        <th colspan="5" style="padding: 12px; background-color: #f3e5f5; color: #4a148c; border-left: 2px solid #dee2e6;">
+                                            <strong>Humanoid Path Search</strong>
+                                        </th>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #ccc; color: #555; font-size: 0.85rem;">
+                                        <th style="padding: 8px; background-color: #fff;"></th>
+                                        <th style="padding: 8px; background-color: #fcf2ff; border-left: 2px solid #dee2e6;">Overall</th>
+                                        <th style="padding: 8px; background-color: #fcf2ff;">Easy</th>
+                                        <th style="padding: 8px; background-color: #fcf2ff;">Medium</th>
+                                        <th style="padding: 8px; background-color: #fcf2ff;">Hard</th>
+                                        <th style="padding: 8px; background-color: #fcf2ff;">Extreme</th>
+                                    </tr>
+                                </thead>
+                    
+                                <tbody>
+                                    <tr style="background-color: #f0f0f0; color: #333;">
+                                        <td colspan="6" style="padding: 8px 12px; text-align: left; font-style: italic; font-weight: 600;">
+                                            GRPO on HPS
+                                        </td>
+                                    </tr>
+                    
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 12px; text-align: left;">sft (baseline)</td>
+                                        <td style="background-color: #e3f2fd; border-left: 2px solid #dee2e6;"><strong>23.44</strong></td> <td>26.00</td>
+                                        <td style="background-color: #e3f2fd;"><strong>24.56</strong></td> <td style="background-color: #e3f2fd;"><strong>24.77</strong></td> <td style="background-color: #e3f2fd;"><strong>12.50</strong></td> </tr>
+                    
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 12px; text-align: left;">form+corr</td>
+                                        <td style="border-left: 2px solid #dee2e6;">22.38</td>
+                                        <td>33.80</td>
+                                        <td>17.32</td>
+                                        <td>21.73</td>
+                                        <td>7.87</td>
+                                    </tr>
+                    
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px 12px; text-align: left;">form+corr+dist</td>
+                                        <td style="border-left: 2px solid #dee2e6;">21.37</td>
+                                        <td style="background-color: #e3f2fd;"><strong>34.40</strong></td> <td>15.13</td>
+                                        <td>20.09</td>
+                                        <td>6.94</td>
+                                    </tr>
+                    
+                                    <tr>
+                                        <td style="padding: 10px 12px; text-align: left;">form+dist</td>
+                                        <td style="border-left: 2px solid #dee2e6;">21.31</td>
+                                        <td>29.80</td>
+                                        <td>17.54</td>
+                                        <td>20.56</td>
+                                        <td>11.11</td>
+                                    </tr>
+                    
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                        
+                    </figure>
+                    <figcaption class="text" style="margin-top: 10px; text-align: center; font-size: 0.9rem; color: #666;">
+                            <strong>Table:</strong> Results of GRPO with different reward shaping on <em>HPS</em>. 
+                            Blue highlights indicate top performance.
+                        </figcaption>
+                </d-figure>
+                    <p class="text">
+                        We ablate three types of rewards for path search: 
+                        (1) format + correctness, 
+                        (2) format + correctness + distance-to-goal, and 
+                        (3) format + distance-to-goal. 
+                        All variants improve performance only on the <em>easy</em> split, often degrading harder levels. 
+                        This underlines the inherent difficulty of path search and highlights the need for more advanced learning algorithms beyond simple reward engineering.
+                    </p>
+                </div>
+            
+                <div class="content-block">
+                    <h2 class="text">Training Rollout and Context Length</h2>
+                    <p class="text">
+                        Models trained with short GRPO rollouts can achieve satisfactory performance through test-time scaling, matching the performance of models trained with longer rollouts (10 turns) while converging faster. This ensures training efficiency without sacrificing final performance. Meanwhile, empirical results show that a short context length of 2 rounds is sufficient for <span class="math">HVS</span>.
+                    </p>
+                    <d-figure>
+                        <figure>
+                            <img src="figs/fig6.png" alt="tts" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                            <figcaption><strong>Figure: </strong>
+                                <strong>Left:</strong> Cumulative success rate by step before and after RL (t indicates maximum turn limit in RL training). <strong>Right:</strong> Impact of test-time context length on success rate.
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+                </div>
+            
+                <div class="content-block">
+                    <h2 class="text">Embodied vs. Disembodied Benchmarks</h2>
+                    <d-figure>
+                        <figure>
+                            <img src="figs/final_all_bold_chart.png" alt="comparison" class="pdf-figure" style="width: auto; height: auto; border: none;" data-zoomable="" draggable="false">
+                            <figcaption><strong>Figure: </strong>
+                                <strong>Left:</strong> Comparison of active and passive visual search. <strong>Right:</strong> Comparison of different visual search paradigms.
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+                    <p class="text">
+                        As shown in our analysis, 2D methods like Mini-o3 and Chain-of-Focus achieve near-saturation performance on the disembodied <strong><em>V* Bench</em></strong> (88.2% and 88.0%, respectively), indicating that <em>visual search within a static 2D image is no longer challenging for MLLMs</em>. 
+                    </p>
+                    <p class="text">
+                        However, their performance plummets on our embodied <strong>H*Bench</strong>, with success rates dropping to a mere <strong>2.5%</strong> and <strong>11.6%</strong>. This stark contrast demonstrates that <em>capabilities learned from passive Internet data do not transfer to embodied active interaction in 3D</em>. 
+                    </p>
+                    <p class="text">
+                        Actually, our HVS-3B model achieves a success rate of 38.4%, highlighting that <em>HVS remains a wide-open research problem</em>. Notably, our model maintains a satisfactory <strong>65.5%</strong> success rate on <em>V* Bench</em>.
+                    </p>
+                </div>
+                <div style="margin: 2rem auto; max-width: auto; padding: 1.5rem; background-color: #f5f5f5; border: 2px solid #008080; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <p style="margin: 0; color: #000; font-size: 1.1em; line-height: 1.6;">
+                        <i class="fas fa-bookmark" style="color: #000; margin-right: 10px;"></i>
+                        Our model learns 3D embodied search without compromising its 2D visual search ability too much, indicating a promising path toward a unified model capable of operating in both physical and digital realms.
+                    </p>
+                </div>
+            
+            
+            </section>
+        <section id="conclusion">   
+            <h1 class="text">Conclusion</h1>
+            <p class="text">
+                We study MLLM-powered humanoid visual search in the wild by introducing the <em><strong>H* Bench</strong></em> and leveraging post-training to enhance the performance. Our analysis reveals that while post-training effectively improves low-level perceptual-motor abilities—such as visual grounding and exploration—it exposes fundamental bottlenecks in higher-level reasoning, which requires physical, spatial, and social commonsense. Furthermore, while RL boosts performance on simpler tasks, it can paradoxically degrade performance in complex scenarios. Future work should focus on designing more robust reward functions as well as more efficient vision tokenizers, developing pre-training methods that instill action-oriented spatial world knowledge, and balancing performance across task difficulties. Meanwhile, scaling up the collection of embodied search data is essential for fully unlocking visual-spatial reasoning in the wild.
+            </p>
+            </section>
+        <script type="module">
+            import { Viewer as PSVViewer } from 'https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core@5.7.3/+esm';
+
+            // 不同场景对应的一张全景图
+            const PANOS = {
+                retail: {
+                    src: 'figs/pano_retail.jpg',
+                    caption: '<strong>Task:</strong> Seach for the instant dry milk.'
+                },
+                station: {
+                    src: 'figs/pano_station.jpg',
+                    caption: '<strong>Task:</strong> You want to take the subwayline 2, where are you going to move?'
+                },
+                street: {
+                    src: 'figs/pano_street.jpg',
+                    caption: '<strong>Task:</strong> You want to play Phoenix Roller Coaster, where are you going to move?.'
+                },
+                public: {
+                    src: 'figs/pano_public.jpg',
+                    caption: '<strong>Task:</strong> You want to play Phoenix Roller Coaster, where are you going to move?'
+                },
+                office: {
+                    src: 'figs/pano_office.jpg',
+                    caption: '<strong>Task:</strong> Look for the blue umbrella.'
+                },
+                entertainment: {
+                    src: 'figs/pano_entertainment.jpg',
+                    caption: '<strong>Task:</strong> Find the monitor on the wall.'
+                },
+            };
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const container = document.querySelector('#pano-viewer');
+                if (!container) return;
+
+                // 默认加载 retail
+                let currentKey = 'retail';
+                const viewer = new PSVViewer({
+                    container,
+                    panorama: PANOS[currentKey].src,
+                    caption: PANOS[currentKey].caption,
+                    defaultZoomLvl: 30,
+                    navbar: ['zoom', 'move', 'caption', 'fullscreen'],
+                    mousewheelCtrlKey: true,
+                    touchmoveTwoFingers: true,
+                });
+
+                const buttons = document.querySelectorAll('.pano-scene-btn');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const key = btn.dataset.pano;
+                        if (!key || !PANOS[key] || key === currentKey) return;
+
+                        currentKey = key;
+
+                        // 按钮高亮
+                        buttons.forEach(b => b.classList.toggle('active', b === btn));
+
+                        // 切换全景图
+                        await viewer.setPanorama(PANOS[key].src, {
+                            caption: PANOS[key].caption,
+                            transition: { effect: 'fade', speed: 700 },
+                        });
+                    });
+                });
+            });
+        </script>
+
+
+        <div id="bibtex" style="position: relative; margin-top: 40px; margin-bottom: 0px; color: gray;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:10px">BibTeX</h2>
+            
+            <pre><code>@misc{yu2025thinking360deghumanoidvisual,
+      title={Thinking in 360°: Humanoid Visual Search in the Wild}, 
+      author={Heyang Yu and Yinan Han and Xiangyu Zhang and Baiqiao Yin and Bowen Chang and Xiangyu Han and Xinhao Liu and Jing Zhang and Marco Pavone and Chen Feng and Saining Xie and Yiming Li},
+      year={2025},
+      eprint={2511.20351},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2511.20351}, 
+}</code></pre>
+        </div>
+        </d-article>
+    </body>
+</html>
+</html>

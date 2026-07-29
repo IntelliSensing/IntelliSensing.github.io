@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { team } from '../../data/team';
+---
+<BaseLayout title="Our Team | Space Lab" description="Meet the Space Lab team." headerMode="glass" bodyClass="space-theme">
+  <main class="publication-archive">
+    <section class="publication-hero">
+      <div class="container publication-hero-inner">
+        <h1 class="publication-title" data-en="Our Team" data-zh="团队成员">Our Team</h1>
+        <p class="publication-lede" data-en="Meet the brilliant minds behind Space Lab" data-zh="认识 Space Lab 的优秀团队成员">Meet the brilliant minds behind Space Lab</p>
+      </div>
+    </section>
+
+    <section class="section team-section">
+      <div class="container team-grid">
+        {team.map((member) => (
+          <a class="team-card" href={`/our-team/${member.slug}/`}>
+            <img class="team-img" src={member.img} alt={member.name} loading="lazy" />
+            <div class="team-overlay">
+              <p class="team-name">{member.name}</p>
+              <p class="team-role" data-en={member.role} data-zh={member.roleZh}>{member.role}</p>
+              <p class="team-desc" data-en={member.desc} data-zh={member.descZh}>{member.desc}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .team-section {
+    padding-top: 0;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 300px);
+    gap: 36px;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .team-card {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    border: 4px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .team-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .team-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .team-card:hover .team-img {
+    transform: scale(1.05);
+  }
+
+  .team-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .team-card:hover .team-overlay {
+    opacity: 1;
+  }
+
+  @media (max-width: 1400px) {
+    .team-grid {
+      grid-template-columns: repeat(auto-fill, 320px);
+    }
+  }
+
+  .team-name {
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .team-role {
+    margin: 4px 0 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+  }
+
+  .team-desc {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+</style>

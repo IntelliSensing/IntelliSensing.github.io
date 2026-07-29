@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const collectionItems = (await getCollection('collections')).filter((item) => !item.data.draft);
+  return collectionItems.map((item) => ({ params: { slug: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+const date = item.data.pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+<BaseLayout title={`${item.data.title} | Collections`} description={item.data.description} headerMode="glass" bodyClass="space-theme">
+  <main class="collection-detail">
+    <section class="detail-hero">
+      <div class="container detail-hero-stack">
+        <a class="detail-back" href="/collections/" data-en="← Collections" data-zh="← 开源">← Collections</a>
+        <p class="detail-kicker-pill">{item.data.platform}</p>
+        <h1>{item.data.title}</h1>
+        <p class="detail-description">{item.data.description}</p>
+        <div class="detail-meta">
+          <span>{date}</span>
+          {item.data.tags.map((tag) => <span>{tag}</span>)}
+          {item.data.githubUrl && <a class="detail-meta-link is-github" href={item.data.githubUrl} target="_blank" rel="noreferrer">GitHub</a>}
+          {item.data.huggingfaceUrl && <a class="detail-meta-link is-huggingface" href={item.data.huggingfaceUrl} target="_blank" rel="noreferrer">Hugging Face</a>}
+        </div>
+        <div class="detail-cover detail-cover-wide">
+          <img src={item.data.image} alt="" />
+        </div>
+      </div>
+    </section>
+    <article class="prose detail-page">
+      <Content />
+    </article>
+  </main>
+</BaseLayout>

@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsCard from '../../components/NewsCard.astro';
+
+const newsItems = (await getCollection('news'))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const filterLabels = Array.from(
+  new Set(newsItems.flatMap((item) => item.data.tags))
+).filter(Boolean);
+---
+<BaseLayout title="News | Space Lab" description="Latest news and updates from Space Lab." headerMode="glass" bodyClass="space-theme">
+  <main class="news-archive publication-archive">
+    <section class="publication-hero">
+      <div class="container publication-hero-inner">
+        <h1 class="publication-title" data-en="News &amp; Updates" data-zh="新闻与动态">News &amp; Updates</h1>
+        <p class="publication-lede" data-en="Stay updated with the latest happenings at Space Lab." data-zh="了解 Space Lab 的最新动态。">Stay updated with the latest happenings at Space Lab.</p>
+      </div>
+    </section>
+
+    <section class="section publication-results">
+      <div class="container">
+        <div class="publication-search-panel">
+          <label class="publication-search" for="news-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" />
+            </svg>
+            <input id="news-search" type="search" placeholder={`Search ${newsItems.length} news...`} autocomplete="off" data-news-search data-count={newsItems.length} data-i18n-placeholder-en={`Search {n} news...`} data-i18n-placeholder-zh={`搜索 {n} 条新闻...`} />
+          </label>
+          <div class="filter-pills" aria-label="News filters">
+            <button class="filter-pill is-active" type="button" data-filter="all" data-en="All" data-zh="全部">All</button>
+            {filterLabels.map((label) => (
+              <button class="filter-pill" type="button" data-filter={label.toLowerCase()}>{label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="card-grid publication-grid" data-news-grid>
+          {newsItems.map((item) => <NewsCard item={item} />)}
+        </div>
+        <p class="empty-results" data-news-empty-results hidden data-en="No news match your search yet." data-zh="暂无匹配的新闻。">No news match your search yet.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const newsSearchInput = document.querySelector('[data-news-search]');
+    const newsFilterButtons = Array.from(document.querySelectorAll('[data-filter]'));
+    const newsCards = Array.from(document.querySelectorAll('[data-news-card]'));
+    const newsEmpty = document.querySelector('[data-news-empty-results]');
+    let activeNewsFilter = 'all';
+
+    const applyNewsFilters = () => {
+      const query = newsSearchInput?.value.trim().toLowerCase() ?? '';
+      let visibleCount = 0;
+
+      newsCards.forEach((card) => {
+        const text = card.dataset.search ?? '';
+        const filters = card.dataset.filters ?? '';
+        const matchesQuery = !query || text.includes(query);
+        const matchesFilter = activeNewsFilter === 'all' || filters.includes(activeNewsFilter);
+        const isVisible = matchesQuery && matchesFilter;
+
+        card.toggleAttribute('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (newsEmpty) newsEmpty.hidden = visibleCount !== 0;
+    };
+
+    newsSearchInput?.addEventListener('input', applyNewsFilters);
+    newsFilterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeNewsFilter = button.dataset.filter ?? 'all';
+        newsFilterButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+        applyNewsFilters();
+      });
+    });
+  </script>
+</BaseLayout>

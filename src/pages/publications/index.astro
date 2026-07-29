@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicationCard from '../../components/PublicationCard.astro';
+
+const publications = (await getCollection('publications'))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const filterLabels = Array.from(
+  new Set(publications.flatMap((item) => [item.data.venue, ...item.data.tags]))
+).filter(Boolean);
+---
+<BaseLayout title="Publications | Space Lab" description="Accepted papers, conference publications, and journal articles." headerMode="glass" bodyClass="space-theme">
+  <main class="publication-archive">
+    <section class="publication-hero">
+      <div class="container publication-hero-inner">
+        <h1 class="publication-title" data-en="Publications, papers, and research notes" data-zh="论文、学术文章与研究笔记">Publications, papers, and research notes</h1>
+        <p class="publication-lede" data-en="Search accepted papers, conference work, and journal articles." data-zh="检索已发表的会议论文和期刊文章。">Search accepted papers, conference work, and journal articles.</p>
+      </div>
+    </section>
+
+    <section class="section publication-results">
+      <div class="container">
+        <div class="publication-search-panel">
+          <label class="publication-search" for="publication-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" />
+            </svg>
+            <input id="publication-search" type="search" placeholder={`Search ${publications.length} papers...`} autocomplete="off" data-publication-search data-count={publications.length} data-i18n-placeholder-en={`Search {n} papers...`} data-i18n-placeholder-zh={`搜索 {n} 篇论文...`} />
+          </label>
+          <div class="filter-pills" aria-label="Publication filters">
+            <button class="filter-pill is-active" type="button" data-filter="all" data-en="All" data-zh="全部">All</button>
+            {filterLabels.map((label) => (
+              <button class="filter-pill" type="button" data-filter={label.toLowerCase()}>{label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="card-grid publication-grid" data-publication-grid>
+          {publications.map((item) => <PublicationCard item={item} />)}
+        </div>
+        <p class="empty-results" data-publication-empty-results hidden data-en="No publications match your search yet." data-zh="暂无匹配的论文。">No publications match your search yet.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const publicationSearchInput = document.querySelector('[data-publication-search]');
+    const publicationFilterButtons = Array.from(document.querySelectorAll('[data-filter]'));
+    const publicationCards = Array.from(document.querySelectorAll('[data-publication-card]'));
+    const publicationEmpty = document.querySelector('[data-publication-empty-results]');
+    let activePublicationFilter = 'all';
+
+    const applyPublicationFilters = () => {
+      const query = publicationSearchInput?.value.trim().toLowerCase() ?? '';
+      let visibleCount = 0;
+
+      publicationCards.forEach((card) => {
+        const text = card.dataset.search ?? '';
+        const filters = card.dataset.filters ?? '';
+        const matchesQuery = !query || text.includes(query);
+        const matchesFilter = activePublicationFilter === 'all' || filters.includes(activePublicationFilter);
+        const isVisible = matchesQuery && matchesFilter;
+
+        card.toggleAttribute('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (publicationEmpty) publicationEmpty.hidden = visibleCount !== 0;
+    };
+
+    publicationSearchInput?.addEventListener('input', applyPublicationFilters);
+    publicationFilterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activePublicationFilter = button.dataset.filter ?? 'all';
+        publicationFilterButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+        applyPublicationFilters();
+      });
+    });
+  </script>
+</BaseLayout>

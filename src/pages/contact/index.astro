@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Contact | Space Lab" description="Get in touch with Space Lab." headerMode="glass" bodyClass="space-theme">
+  <main class="publication-archive">
+    <section class="publication-hero">
+      <div class="container publication-hero-inner">
+        <h1 class="publication-title" data-en="Contact Us" data-zh="联系我们">Contact Us</h1>
+        <p class="publication-lede" data-en="Want to collaborate or have questions? Reach out to us." data-zh="想合作或有疑问？请联系我们。">Want to collaborate or have questions? Reach out to us.</p>
+      </div>
+    </section>
+
+    <section class="section contact-section">
+      <div class="container contact-grid">
+        <a class="contact-card" href="mailto:choucisan@gmail.com" aria-label="Gmail" title="choucisan@gmail.com">
+          <img class="contact-icon" src="/assets/icons/gmail.svg" alt="Gmail" />
+        </a>
+        <a class="contact-card" href="https://x.com/spacelab" target="_blank" rel="noreferrer" aria-label="X" title="X">
+          <img class="contact-icon" src="/assets/icons/x.svg" alt="X" />
+        </a>
+        <a class="contact-card" href="https://github.com/choucisan" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+          <img class="contact-icon" src="/assets/icons/github.svg" alt="GitHub" />
+        </a>
+        <a class="contact-card" href="https://huggingface.co/choucisan" target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
+          <img class="contact-icon" src="/assets/icons/huggingface.svg" alt="Hugging Face" />
+        </a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .contact-section {
+    padding-top: 0;
+  }
+
+  .contact-grid {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .contact-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    border-radius: 50%;
+    background: #fff;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .contact-card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+  }
+
+  .contact-icon {
+    width: 32px;
+    height: 32px;
+  }
+</style>

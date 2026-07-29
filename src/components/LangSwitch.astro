@@ -1,0 +1,53 @@
+---
+---
+<div class="lang-switch" id="langSwitch" data-active="en">
+  <span class="lang-option active" data-lang="en">EN</span>
+  <span class="lang-option" data-lang="zh">中文</span>
+  <div class="lang-slider"></div>
+</div>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    justify-content: center;
+    position: relative;
+    background: #fff;
+    min-height: 40px;
+    padding: 4px;
+    border-radius: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .lang-option {
+    padding: 0 14px;
+    font-size: clamp(14px, 0.9vw, 16px);
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.35);
+    z-index: 1;
+    position: relative;
+    transition: color 0.3s ease;
+    line-height: 30px;
+  }
+
+  .lang-option.active {
+    color: #000;
+  }
+
+  .lang-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background-color: rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+  }
+
+  .lang-switch[data-active="zh"] .lang-slider {
+    transform: translateX(100%);
+  }
+</style>

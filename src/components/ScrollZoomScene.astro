@@ -1,0 +1,263 @@
+---
+---
+<section class="galaxy-hero" data-galaxy>
+  <canvas class="galaxy-canvas" data-galaxy-canvas></canvas>
+  <div class="galaxy-content">
+    <img src="/assets/logo/spacelab.svg" alt="Space Lab" class="galaxy-logo" />
+    <p class="galaxy-tagline" data-en="Exploring the frontiers of science" data-zh="探索科学前沿">Exploring the frontiers of science</p>
+  </div>
+  <div class="galaxy-scroll-hint" data-galaxy-hint>
+    <span data-en="Scroll to explore" data-zh="滚动探索">Scroll to explore</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7" />
+    </svg>
+  </div>
+</section>
+
+<style>
+  .galaxy-hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: auto;
+    cursor: grab;
+  }
+
+  .galaxy-hero:active {
+    cursor: grabbing;
+  }
+
+  .galaxy-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+
+  .galaxy-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .galaxy-logo {
+    width: min(55vw, 420px);
+    height: auto;
+    filter: drop-shadow(0 0 60px rgba(100, 140, 255, 0.3));
+    animation: fadeInUp 1.2s ease-out both;
+  }
+
+  .galaxy-tagline {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: clamp(14px, 1.8vw, 20px);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-shadow: 0 0 40px rgba(100, 140, 255, 0.3);
+    animation: fadeInUp 1.2s ease-out 0.3s both;
+  }
+
+  .galaxy-scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 2;
+    animation: fadeInUp 1.2s ease-out 0.6s both, float 3s ease-in-out infinite 1.8s;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector('[data-galaxy]') as HTMLElement;
+  const canvas = document.querySelector('[data-galaxy-canvas]') as HTMLCanvasElement;
+  const hint = document.querySelector('[data-galaxy-hint]') as HTMLElement;
+  if (!canvas || !hero) throw new Error('Missing elements');
+  const ctx = canvas.getContext('2d')!;
+
+  let W = 0, H = 0;
+  let mouseX = 0.5, mouseY = 0.5;
+  let camX = 0, camY = 0;
+  let time = 0;
+
+  // --- Stars ---
+  const STAR_COUNT = 400;
+  const starColors = [
+    [255, 255, 255], [200, 220, 255], [255, 240, 220],
+    [220, 200, 255], [180, 210, 255],
+  ];
+  const stars = Array.from({ length: STAR_COUNT }, () => ({
+    x: Math.random() * 2 - 1,
+    y: Math.random() * 2 - 1,
+    z: Math.random(),
+    size: Math.random() < 0.05 ? 1.2 + Math.random() * 1.5 : 0.3 + Math.random() * 0.9,
+    opacity: 0.3 + Math.random() * 0.7,
+    twinkleSpeed: 0.5 + Math.random() * 2,
+    twinkleOffset: Math.random() * Math.PI * 2,
+    color: starColors[Math.floor(Math.random() * starColors.length)].join(','),
+  }));
+
+  // --- Nebulae ---
+  const nebulaColors = [
+    [30, 50, 120], [40, 80, 140], [20, 60, 100],
+    [50, 40, 100], [30, 60, 110],
+  ];
+  const nebulae = Array.from({ length: 4 }, (_, i) => {
+    const c = nebulaColors[i % nebulaColors.length];
+    return {
+      x: Math.random() * 2 - 1,
+      y: Math.random() * 2 - 1,
+      radius: 0.1 + Math.random() * 0.12,
+      r: c[0], g: c[1], b: c[2],
+      opacity: 0.06 + Math.random() * 0.08,
+    };
+  });
+
+  // --- Shooting stars ---
+  interface ShootingStar { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; }
+  const shootingStars: ShootingStar[] = [];
+
+  const spawnShootingStar = () => {
+    const angle = Math.PI / 5 + Math.random() * 0.4;
+    const speed = 300 + Math.random() * 400;
+    shootingStars.push({
+      x: Math.random() * W * 0.8,
+      y: Math.random() * H * 0.4,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 0,
+      maxLife: 0.4 + Math.random() * 0.4,
+    });
+  };
+
+  // --- Resize ---
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio, 2);
+    const rect = hero.getBoundingClientRect();
+    W = rect.width;
+    H = rect.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = `${W}px`;
+    canvas.style.height = `${H}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  // --- Main loop ---
+  let lastTime = performance.now();
+
+  const animate = () => {
+    const now = performance.now();
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+    time += dt;
+
+    camX += (mouseX - 0.5 - camX) * 0.03;
+    camY += (mouseY - 0.5 - camY) * 0.03;
+
+    // Clear — transparent so body CSS background shows through
+    ctx.clearRect(0, 0, W, H);
+
+    // Nebulae
+    for (const n of nebulae) {
+      const nx = (n.x + 1) / 2 * W + camX * 80;
+      const ny = (n.y + 1) / 2 * H + camY * 60;
+      const r = n.radius * Math.min(W, H);
+      const grad = ctx.createRadialGradient(nx, ny, 0, nx, ny, r);
+      grad.addColorStop(0, `rgba(${n.r},${n.g},${n.b},${n.opacity})`);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(nx - r, ny - r, r * 2, r * 2);
+    }
+
+    // Stars
+    for (const star of stars) {
+      const parallax = 10 + star.z * 30;
+      const sx = (star.x + 1) / 2 * W + camX * 30 + camX * parallax;
+      const sy = (star.y + 1) / 2 * H + camY * 25 + camY * parallax;
+      const wx = ((sx % W) + W) % W;
+      const wy = ((sy % H) + H) % H;
+      const twinkle = 0.5 + 0.5 * Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
+      ctx.globalAlpha = star.opacity * twinkle;
+      ctx.fillStyle = `rgb(${star.color})`;
+      ctx.beginPath();
+      ctx.arc(wx, wy, star.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Shooting stars
+    if (Math.random() < 0.008) spawnShootingStar();
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      const s = shootingStars[i];
+      s.life += dt;
+      if (s.life > s.maxLife) { shootingStars.splice(i, 1); continue; }
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      const progress = s.life / s.maxLife;
+      const alpha = 1 - progress;
+      const len = 50 + progress * 30;
+      const d = Math.sqrt(s.vx * s.vx + s.vy * s.vy);
+      const grad = ctx.createLinearGradient(s.x, s.y, s.x - (s.vx / d) * len, s.y - (s.vy / d) * len);
+      grad.addColorStop(0, `rgba(255,255,255,${alpha})`);
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x - (s.vx / d) * len, s.y - (s.vy / d) * len);
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(animate);
+  };
+
+  // --- Events ---
+  hero.addEventListener('mousemove', (e) => {
+    const rect = hero.getBoundingClientRect();
+    mouseX = (e.clientX - rect.left) / rect.width;
+    mouseY = (e.clientY - rect.top) / rect.height;
+  });
+  hero.addEventListener('mouseleave', () => { mouseX = 0.5; mouseY = 0.5; });
+  hero.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const rect = hero.getBoundingClientRect();
+    mouseX = (touch.clientX - rect.left) / rect.width;
+    mouseY = (touch.clientY - rect.top) / rect.height;
+  }, { passive: true });
+
+  window.addEventListener('scroll', () => {
+    if (hint) hint.style.opacity = String(Math.max(0, 1 - window.scrollY / 200));
+  }, { passive: true });
+  window.addEventListener('resize', resize);
+
+  // --- Init ---
+  resize();
+  animate();
+</script>

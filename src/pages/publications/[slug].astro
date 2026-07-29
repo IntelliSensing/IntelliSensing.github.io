@@ -1,0 +1,108 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const publications = (await getCollection('publications')).filter((item) => !item.data.draft);
+  return publications.map((item) => ({ params: { slug: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const paperSite = item.data.paperSite ?? 'sis-motion';
+const safePaperSite = paperSite.replace(/[^a-zA-Z0-9_-]/g, '');
+const publicBase = `/paper-sites/${safePaperSite}/`;
+const templatePath = path.join(process.cwd(), 'public', 'paper-sites', safePaperSite, 'index.html');
+
+if (!fs.existsSync(templatePath)) {
+  throw new Error(`Missing publication paper site template: ${templatePath}`);
+}
+
+const sourceHtml = fs.readFileSync(templatePath, 'utf8');
+const headContent = sourceHtml.match(/<head[^>]*>([\s\S]*?)<\/head>/i)?.[1] ?? '';
+const bodyContent = sourceHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? sourceHtml;
+
+const rewriteAssetPaths = (html) => html
+  .replace(/(["'(])\.\/static\//g, `$1${publicBase}static/`)
+  .replace(/(["'(])static\//g, `$1${publicBase}static/`)
+  .replace(/(["'(])\.\/figs\//g, `$1${publicBase}figs/`)
+  .replace(/(["'(])figs\//g, `$1${publicBase}figs/`);
+
+const renderedHead = rewriteAssetPaths(headContent);
+const renderedBody = rewriteAssetPaths(bodyContent);
+---
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <Fragment set:html={renderedHead} />
+    <style>
+      .theme-toggle,
+      .back-to-top {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+      }
+
+      .theme-toggle i,
+      .theme-toggle svg,
+      .back-to-top i,
+      .back-to-top svg {
+        display: block !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+      }
+
+      .paper-site-back {
+        position: fixed;
+        left: 2rem;
+        bottom: 5.5rem;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border: none;
+        border-radius: 50%;
+        color: #fff;
+        background-color: var(--primary-color, #3182ce);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        transition: var(--transition, all 0.3s ease);
+      }
+
+      .paper-site-back svg {
+        display: block;
+        width: 1.18rem;
+        height: 1.18rem;
+        transform: translateX(-1px);
+      }
+
+      .paper-site-back:hover {
+        transform: translateY(-3px);
+        background-color: var(--secondary-color, #2c5282);
+      }
+
+      @media (max-width: 640px) {
+        .paper-site-back {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+
+        .paper-site-back svg {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="paper-site-back" href="/publications/" aria-label="Back to publications" title="Back to publications">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+    <Fragment set:html={renderedBody} />
+  </body>
+</html>

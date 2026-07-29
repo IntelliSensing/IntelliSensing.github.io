@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+
+const blogItems = (await getCollection('blogs'))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const filterLabels = Array.from(
+  new Set(blogItems.flatMap((item) => [item.data.category, ...item.data.tags]))
+).filter(Boolean);
+---
+<BaseLayout title="Blogs | Space Lab" description="Notes on computer vision, natural language processing, and research practice." headerMode="glass" bodyClass="space-theme">
+  <main class="blog-archive publication-archive">
+    <section class="blog-hero publication-hero">
+      <div class="container blog-hero-inner publication-hero-inner">
+        <h1 class="blog-title publication-title" data-en="Blogs, notes, and research fragments" data-zh="博客、笔记与研究随笔">Blogs, notes, and research fragments</h1>
+        <p class="blog-lede publication-lede" data-en="Search notes on computer vision, natural language processing, multimodal learning, and research practice." data-zh="检索关于计算机视觉、自然语言处理、多模态学习和研究实践的笔记。">Search notes on computer vision, natural language processing, multimodal learning, and research practice.</p>
+      </div>
+    </section>
+
+    <section class="section blog-results publication-results">
+      <div class="container">
+        <div class="blog-search-panel publication-search-panel">
+          <label class="blog-search publication-search" for="blog-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" />
+            </svg>
+            <input id="blog-search" type="search" placeholder={`Search ${blogItems.length} posts...`} autocomplete="off" data-blog-search data-count={blogItems.length} data-i18n-placeholder-en={`Search {n} posts...`} data-i18n-placeholder-zh={`搜索 {n} 篇文章...`} />
+          </label>
+          <div class="filter-pills" aria-label="Blog filters">
+            <button class="filter-pill is-active" type="button" data-filter="all" data-en="All" data-zh="全部">All</button>
+            {filterLabels.map((label) => (
+              <button class="filter-pill" type="button" data-filter={label.toLowerCase()}>{label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="card-grid blog-grid publication-grid" data-blog-grid>
+          {blogItems.map((item) => <BlogCard item={item} />)}
+        </div>
+        <p class="empty-results" data-blog-empty-results hidden data-en="No blog posts match your search yet." data-zh="暂无匹配的博客文章。">No blog posts match your search yet.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const blogSearchInput = document.querySelector('[data-blog-search]');
+    const blogFilterButtons = Array.from(document.querySelectorAll('[data-filter]'));
+    const blogCards = Array.from(document.querySelectorAll('[data-blog-card]'));
+    const blogEmpty = document.querySelector('[data-blog-empty-results]');
+    let activeBlogFilter = 'all';
+
+    const applyBlogFilters = () => {
+      const query = blogSearchInput?.value.trim().toLowerCase() ?? '';
+      let visibleCount = 0;
+
+      blogCards.forEach((card) => {
+        const text = card.dataset.search ?? '';
+        const filters = card.dataset.filters ?? '';
+        const matchesQuery = !query || text.includes(query);
+        const matchesFilter = activeBlogFilter === 'all' || filters.includes(activeBlogFilter);
+        const isVisible = matchesQuery && matchesFilter;
+
+        card.toggleAttribute('hidden', !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (blogEmpty) blogEmpty.hidden = visibleCount !== 0;
+    };
+
+    blogSearchInput?.addEventListener('input', applyBlogFilters);
+    blogFilterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeBlogFilter = button.dataset.filter ?? 'all';
+        blogFilterButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+        applyBlogFilters();
+      });
+    });
+  </script>
+</BaseLayout>

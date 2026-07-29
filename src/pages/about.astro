@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="About | OneThree" description="A short note about the belief behind this personal website." bodyClass="about-body">
+  <main class="about-page" data-about-page>
+    <section class="about-story">
+      <div class="container about-story-grid">
+        <p class="about-label">My story</p>
+        <div class="about-copy">
+          <h1>
+            <em>A simple belief:</em>
+            <span>They will not labor in vain, nor will they bear children doomed to misfortune; for they will be a people blessed by the Lord, they and their descendants with them.</span>
+          </h1>
+        </div>
+      </div>
+      <div class="about-clouds" aria-hidden="true">
+        <img class="about-cloud about-cloud-left" src="/assets/hero/cloud-large.png" alt="" />
+        <img class="about-cloud about-cloud-right" src="/assets/hero/cloud-large.png" alt="" />
+      </div>
+    </section>
+    <section class="about-contact">
+      <div class="container about-contact-grid">
+        <p class="about-label">Contact Me</p>
+        <div class="contact-links" aria-label="Contact links">
+          <a class="contact-card" href="mailto:choucisan@gmail.com" aria-label="Email choucisan@gmail.com" title="choucisan@gmail.com">
+            <img class="contact-icon contact-icon-gmail" src="/assets/icons/gmail.svg" alt="" loading="lazy" />
+          </a>
+          <a class="contact-card" href="https://github.com/choucisan" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+            <img class="contact-icon contact-icon-github" src="/assets/icons/github.svg" alt="" loading="lazy" />
+          </a>
+          <a class="contact-card" href="https://huggingface.co/choucisan" target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
+            <img class="contact-icon contact-icon-hf" src="https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg" alt="" loading="lazy" />
+          </a>
+        </div>
+      </div>
+    </section>
+    <section class="pink-cloud-transition about-pink-cloud-transition" data-reveal-scene aria-hidden="true">
+      <img class="pink-cloud pink-cloud-left" src="/assets/scene/pink-cloud.png" alt="" loading="lazy" />
+      <img class="pink-cloud pink-cloud-right" src="/assets/scene/pink-cloud.png" alt="" loading="lazy" />
+      <img class="pink-cloud-bird pink-cloud-bird-large" src="/assets/hero/goose-main.png" alt="" loading="lazy" />
+      <img class="pink-cloud-bird pink-cloud-bird-small" src="/assets/hero/goose-left.png" alt="" loading="lazy" />
+    </section>
+    <section class="garden-transition about-garden-transition" data-reveal-scene aria-hidden="true">
+      <img class="transition-branch transition-branch-left" src="/assets/scene/branch-left.png" alt="" loading="lazy" />
+      <img class="transition-branch transition-branch-right" src="/assets/scene/branch-right.png" alt="" loading="lazy" />
+      <img class="transition-dove transition-dove-large" src="/assets/scene/dove-large.png" alt="" loading="lazy" />
+      <img class="transition-dove transition-dove-small" src="/assets/scene/dove-small.png" alt="" loading="lazy" />
+    </section>
+    <section class="about-footer-garden" data-reveal-scene aria-hidden="true">
+      <img class="about-bottom-logo" src="/assets/logo/title.png" alt="" loading="lazy" />
+      <img class="about-footer-flower" src="/assets/footer/footer.png" alt="" loading="lazy" />
+    </section>
+  </main>
+  <script>
+    const aboutPage = document.querySelector('[data-about-page]');
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const updateAboutClouds = () => {
+      if (!aboutPage) return;
+
+      const progress = clamp(window.scrollY / Math.min(window.innerHeight * 1.1, 900), 0, 1);
+      aboutPage.style.setProperty('--about-cloud-left-x', `${-progress * Math.min(window.innerWidth * 0.16, 230)}px`);
+      aboutPage.style.setProperty('--about-cloud-left-y', `${-progress * Math.min(window.innerHeight * 0.1, 115)}px`);
+      aboutPage.style.setProperty('--about-cloud-right-x', `${progress * Math.min(window.innerWidth * 0.07, 105)}px`);
+      aboutPage.style.setProperty('--about-cloud-right-y', `${-progress * Math.min(window.innerHeight * 0.045, 54)}px`);
+    };
+
+    updateAboutClouds();
+    window.addEventListener('scroll', updateAboutClouds, { passive: true });
+    window.addEventListener('resize', updateAboutClouds);
+  </script>
+</BaseLayout>
