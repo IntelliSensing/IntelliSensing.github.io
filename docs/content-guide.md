@@ -287,7 +287,7 @@ draft: false
 
 ## 7. 添加照片墙与地球足迹
 
-首页的 **Moments across Earth** 照片墙与 Earth Explorer 地球标记使用同一份数据：
+首页的 **Moments across Earth** 照片墙与首页交互地球标记使用同一份数据：
 
 ```text
 src/content/markers/
@@ -304,7 +304,7 @@ src/content/markers/cvpr-2026.md
 - 首页照片墙按 `date` 从新到旧读取条目并自动来回滚动。
 - 照片墙默认显示 `images` 中的第一张图片。
 - 鼠标移到图片上会显示分类、日期、标题和描述。
-- 点击照片墙卡片会打开 Earth Explorer，并定位到该文件中的 `lng`、`lat`。
+- 点击照片墙卡片会返回首页地球，并定位到该文件中的 `lng`、`lat`。
 - 地球标记弹窗会轮播 `images` 中的全部图片。
 
 ### 存放图片
@@ -447,19 +447,28 @@ src/components/ResearchHub.astro
 
 ### 首页主视觉
 
-首页标题、简介、三个按钮及中英文文案位于：
+首页标题、简介、两个按钮及中英文文案位于：
 
 ```text
 src/components/HomeHero.astro
 ```
 
-首页背景图为：
+首页背景由交互式 Mapbox 地球与星空层组成，相关组件为：
 
 ```text
-public/assets/logo/bg.png
+src/components/GlobeMap.astro
+src/components/StarsCanvas.astro
 ```
 
-替换背景图时可以保持同名文件，也可以修改 `HomeHero.astro` 中的 `src`。应使用足够清晰的横向图片，并分别检查桌面端和手机端裁切。
+双击首页文案区域以外的位置会隐藏或恢复文案。照片墙的定位事件也由 `HomeHero.astro` 转发给首页地球。
+
+Research 页面首屏背景图为：
+
+```text
+public/assets/research/research-hero.jpg
+```
+
+图片裁切位置由 `src/components/ResearchHub.astro` 中 `.research-hub-hero` 的 `background-position` 控制。
 
 ### 首页研究模块标题
 
@@ -542,7 +551,7 @@ public/assets/js/i18n.js
 
 ## 13. Mapbox 与部署配置
 
-Earth Explorer 依赖公开环境变量：
+首页交互地球依赖公开环境变量：
 
 ```text
 PUBLIC_MAPBOX_TOKEN
@@ -586,7 +595,7 @@ Mapbox public token 会进入浏览器代码，因此不要使用 secret token�
 - 论文的 `authors` 与团队成员的署名形式一致。
 - 中英文新闻已检查语言切换。
 - 照片墙条目的经纬度顺序正确，`images[0]` 适合作为横向封面。
-- 点击照片墙卡片后，Earth Explorer 能定位到正确地点并显示全部图片。
+- 点击照片墙卡片后，首页地球能定位到正确地点并显示全部图片。
 - 未完成内容设置了 `draft: true`。
 - `npm run check` 和 `npm run build` 均通过。
 
@@ -624,6 +633,6 @@ Mapbox public token 会进入浏览器代码，因此不要使用 secret token�
 
 检查 `role` 是否严格使用 `PhD Student`、`Master Student` 或 `Research Assistant`。显示中文不影响统计，统计读取的是英文 `role`。
 
-### 本地 Earth Explorer 没有地图
+### 本地首页没有地图
 
 确认项目根目录 `.env` 中存在 `PUBLIC_MAPBOX_TOKEN`，重新启动开发服务器，并检查 Mapbox token 的 URL 限制是否允许 `http://localhost:4321`。

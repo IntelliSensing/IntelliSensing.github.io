@@ -4,16 +4,12 @@ import StarsCanvas from './StarsCanvas.astro';
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
-  <img
-    class="home-hero-background"
-    src="/assets/logo/bg.png"
-    alt="Earth seen from orbit with an astronaut floating above the horizon"
-    fetchpriority="high"
-    decoding="async"
-  />
+  <div class="home-hero-earth">
+    <GlobeMap />
+  </div>
   <StarsCanvas mode="overlay" />
 
-  <div class="home-hero-content">
+  <div class="home-hero-content" data-home-hero-content>
     <h1
       id="home-hero-title"
       data-en="Building machines that perceive and reason — at the crossroads of vision, language and remote sensing"
@@ -26,48 +22,37 @@ import StarsCanvas from './StarsCanvas.astro';
     >Led by Dr. Wenjia Xu, our group works at the intersection of computer vision, natural language processing and remote sensing, with a focus on multi-modal large language models, agents, and few-shot learning.</p>
     <div class="home-hero-actions">
       <a class="home-hero-button is-primary" href="/research/" data-en="Explore research" data-zh="探索研究">Explore research</a>
-      <button class="home-hero-button" id="explore-earth-button" type="button" data-en="Explore earth" data-zh="探索地球">Explore earth</button>
       <a class="home-hero-button" href="/join-us/" data-en="Join us" data-zh="加入我们">Join us</a>
     </div>
   </div>
-
 </section>
 
-<div class="earth-explorer" id="earth-explorer" role="dialog" aria-modal="true" aria-label="Explore Earth" aria-hidden="true" hidden>
-  <button class="earth-explorer-close" id="earth-explorer-close" type="button" aria-label="Close Earth explorer" title="Close">
-    &times;
-  </button>
-  <GlobeMap deferred />
-</div>
-
 <script>
-  const explorer = document.getElementById('earth-explorer');
-  const openButton = document.getElementById('explore-earth-button');
-  const closeButton = document.getElementById('earth-explorer-close');
-  let previousFocus: HTMLElement | null = null;
+  const homeHero = document.querySelector<HTMLElement>('.home-hero');
+  const homeHeroContent = homeHero?.querySelector<HTMLElement>('[data-home-hero-content]');
 
-  const openExplorer = () => {
-    if (!explorer) return;
-    previousFocus = document.activeElement as HTMLElement;
-    explorer.hidden = false;
-    explorer.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('earth-explorer-open');
-    window.dispatchEvent(new CustomEvent('earth-explorer:open'));
-    closeButton?.focus();
+  const setHeroContentHidden = (hidden: boolean) => {
+    if (!homeHero || !homeHeroContent) return;
+    homeHero.classList.toggle('is-content-hidden', hidden);
+    homeHeroContent.setAttribute('aria-hidden', String(hidden));
   };
 
-  const closeExplorer = () => {
-    if (!explorer) return;
-    explorer.hidden = true;
-    explorer.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('earth-explorer-open');
-    previousFocus?.focus();
+  homeHero?.addEventListener('dblclick', (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-home-hero-content]')) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setHeroContentHidden(!homeHero.classList.contains('is-content-hidden'));
+  }, { capture: true });
+
+  const focusEarth = () => {
+    setHeroContentHidden(true);
+    homeHero?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  openButton?.addEventListener('click', openExplorer);
   window.addEventListener('earth-explorer:open-marker', ((event: CustomEvent<{ id?: string }>) => {
     if (!event.detail?.id) return;
-    openExplorer();
+    focusEarth();
     window.requestAnimationFrame(() => {
       window.dispatchEvent(new CustomEvent('earth-explorer:focus-marker', {
         detail: { id: event.detail.id },
@@ -75,14 +60,15 @@ import StarsCanvas from './StarsCanvas.astro';
     });
   }) as EventListener);
   window.addEventListener('earth-explorer:view-moments', () => {
-    openExplorer();
+    focusEarth();
     window.requestAnimationFrame(() => {
       window.dispatchEvent(new CustomEvent('earth-explorer:open-moments'));
     });
   });
-  closeButton?.addEventListener('click', closeExplorer);
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && explorer && !explorer.hidden) closeExplorer();
+    if (event.key === 'Escape' && homeHero?.classList.contains('is-content-hidden')) {
+      setHeroContentHidden(false);
+    }
   });
 </script>
 
@@ -91,24 +77,35 @@ import StarsCanvas from './StarsCanvas.astro';
     position: relative;
     isolation: isolate;
     width: 100%;
-    height: 88vh;
-    height: 88svh;
+    height: 100vh;
+    height: 100svh;
     min-height: 720px;
-    max-height: 940px;
+    max-height: none;
     overflow: hidden;
     background: #000;
   }
 
-  .home-hero-background {
+  .home-hero-earth {
     position: absolute;
     inset: 0;
     z-index: 0;
     width: 100%;
     height: 100%;
-    max-width: none;
-    object-fit: cover;
-    object-position: 50% 50%;
-    filter: brightness(0.88);
+  }
+
+  .home-hero-earth :global(.globe-section) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .home-hero-earth :global(.globe-scroll-hint) {
+    display: none;
+  }
+
+  :global(.home-hero > .stars-canvas) {
+    opacity: 0.72;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 82%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 48%, transparent 82%);
   }
 
   .home-hero-content {
@@ -122,6 +119,14 @@ import StarsCanvas from './StarsCanvas.astro';
     align-items: flex-start;
     color: #fff;
     text-shadow: 0 3px 24px rgba(0, 0, 0, 0.65);
+    transition: opacity 360ms ease, transform 360ms ease, visibility 360ms;
+  }
+
+  .home-hero.is-content-hidden .home-hero-content {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
   }
 
   .home-hero-content h1 {
@@ -183,49 +188,9 @@ import StarsCanvas from './StarsCanvas.astro';
     background: #c92f2b;
   }
 
-  .home-hero-button:focus-visible,
-  .earth-explorer-close:focus-visible {
+  .home-hero-button:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 4px;
-  }
-
-  .earth-explorer {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    background: #050510;
-  }
-
-  .earth-explorer[hidden] {
-    display: none;
-  }
-
-  .earth-explorer-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 301;
-    display: grid;
-    width: 44px;
-    height: 44px;
-    place-items: center;
-    padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    color: #fff;
-    background: rgba(4, 5, 12, 0.64);
-    backdrop-filter: blur(16px);
-    font-size: 28px;
-    line-height: 1;
-    cursor: pointer;
-  }
-
-  :global(body.earth-explorer-open) {
-    overflow: hidden;
-  }
-
-  :global(.earth-explorer .globe-scroll-hint) {
-    display: none;
   }
 
   @media (max-width: 900px) {
@@ -236,12 +201,8 @@ import StarsCanvas from './StarsCanvas.astro';
 
   @media (max-width: 640px) {
     .home-hero {
-      height: 760px;
+      height: 100svh;
       min-height: 760px;
-    }
-
-    .home-hero-background {
-      object-position: 55% 50%;
     }
 
     .home-hero-content {
@@ -268,11 +229,6 @@ import StarsCanvas from './StarsCanvas.astro';
       min-height: 44px;
       padding-inline: 18px;
       font-size: 14px;
-    }
-
-    .earth-explorer-close {
-      top: 14px;
-      right: 14px;
     }
   }
 
