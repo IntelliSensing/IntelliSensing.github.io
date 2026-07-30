@@ -1,0 +1,477 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  items?: CollectionEntry<'news'>[];
+}
+
+const { items = [] } = Astro.props;
+
+const sourceSlides = items.map((item) => ({
+  id: item.id,
+  titleEn: item.data.titleEn ?? item.data.title,
+  titleZh: item.data.titleZh ?? item.data.title,
+  descriptionEn: item.data.descriptionEn ?? item.data.description,
+  descriptionZh: item.data.descriptionZh ?? item.data.description,
+  image: item.data.image,
+  dateEn: item.data.pubDate.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  }),
+  dateZh: item.data.pubDate.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+  }),
+}));
+
+// Keep the homepage carousel active while the News collection is still being populated.
+const slides = sourceSlides.length > 0 && sourceSlides.length < 5
+  ? Array.from({ length: 5 }, (_, index) => sourceSlides[index % sourceSlides.length])
+  : sourceSlides;
+---
+
+<section class="featured-news" id="news" aria-labelledby="featured-news-title">
+  <div class="featured-news-inner">
+    <header class="featured-news-header">
+      <div class="featured-news-header-top">
+        <h2 id="featured-news-title" data-en="Featured News" data-zh="焦点新闻">Featured News</h2>
+        <a class="featured-news-all" href="/news/">
+          <span data-en="View News" data-zh="查看新闻">View News</span>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="16" cy="16" r="16"></circle>
+            <path d="M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z"></path>
+          </svg>
+        </a>
+      </div>
+      <p
+        data-en="Follow our latest publications, awards, field activities, student achievements, and research updates from IntelliSensing Lab."
+        data-zh="了解 IntelliSensing Lab 最新的论文发表、获奖、学术活动、学生成果与研究进展。"
+      >Follow our latest publications, awards, field activities, student achievements, and research updates from IntelliSensing Lab.</p>
+    </header>
+
+    {slides.length > 0 && (
+      <div class="featured-news-carousel" data-featured-news-carousel tabindex="0" aria-roledescription="carousel">
+        <div class="featured-news-slides" aria-live="polite">
+          {slides.map((slide, index) => (
+            <a
+              class:list={['featured-news-slide', { 'is-active': index === 0 }]}
+              href={`/news/${slide.id}/`}
+              data-news-slide
+              aria-hidden={index === 0 ? 'false' : 'true'}
+            >
+              <img src={slide.image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+              <span class="featured-news-shade"></span>
+              <span class="featured-news-date" data-en={slide.dateEn} data-zh={slide.dateZh}>{slide.dateEn}</span>
+              <span class="featured-news-copy">
+                <strong data-en={slide.titleEn} data-zh={slide.titleZh}>{slide.titleEn}</strong>
+                <span data-en={slide.descriptionEn} data-zh={slide.descriptionZh}>{slide.descriptionEn}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+
+        {slides.length > 1 && (
+          <>
+            <button class="featured-news-arrow is-previous" type="button" data-news-previous aria-label="Previous news" title="Previous news">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <button class="featured-news-arrow is-next" type="button" data-news-next aria-label="Next news" title="Next news">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+            <div class="featured-news-dots" aria-label="Choose featured news">
+              {slides.map((slide, index) => (
+                <button
+                  class:list={['featured-news-dot', { 'is-active': index === 0 }]}
+                  type="button"
+                  data-news-dot={index}
+                  aria-label={`Show news ${index + 1}: ${slide.titleEn}`}
+                  aria-current={index === 0 ? 'true' : 'false'}
+                ></button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  const initializeFeaturedNews = () => {
+    document.querySelectorAll<HTMLElement>('[data-featured-news-carousel]').forEach((carousel) => {
+      if (carousel.dataset.ready === 'true') return;
+      carousel.dataset.ready = 'true';
+
+      const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-news-slide]'));
+      const dots = Array.from(carousel.querySelectorAll<HTMLButtonElement>('[data-news-dot]'));
+      const previous = carousel.querySelector<HTMLButtonElement>('[data-news-previous]');
+      const next = carousel.querySelector<HTMLButtonElement>('[data-news-next]');
+      if (slides.length < 2) return;
+
+      let activeIndex = 0;
+      let timer = 0;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      const showSlide = (index: number) => {
+        activeIndex = (index + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+          const active = slideIndex === activeIndex;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+        });
+        dots.forEach((dot, dotIndex) => {
+          const active = dotIndex === activeIndex;
+          dot.classList.toggle('is-active', active);
+          dot.setAttribute('aria-current', String(active));
+        });
+      };
+
+      const startTimer = () => {
+        window.clearInterval(timer);
+        if (reducedMotion.matches || document.hidden) return;
+        timer = window.setInterval(() => showSlide(activeIndex + 1), 5200);
+      };
+
+      const chooseSlide = (index: number) => {
+        showSlide(index);
+        startTimer();
+      };
+
+      previous?.addEventListener('click', () => chooseSlide(activeIndex - 1));
+      next?.addEventListener('click', () => chooseSlide(activeIndex + 1));
+      dots.forEach((dot) => {
+        dot.addEventListener('click', () => chooseSlide(Number(dot.dataset.newsDot ?? 0)));
+      });
+      carousel.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') chooseSlide(activeIndex - 1);
+        if (event.key === 'ArrowRight') chooseSlide(activeIndex + 1);
+      });
+      document.addEventListener('visibilitychange', startTimer);
+      startTimer();
+    });
+  };
+
+  initializeFeaturedNews();
+  document.addEventListener('astro:page-load', initializeFeaturedNews);
+</script>
+
+<style>
+  .featured-news {
+    padding: var(--home-section-gap) 0 0;
+    color: #111;
+    background: #fff;
+  }
+
+  .featured-news-inner {
+    width: min(calc(100% - 96px), 1260px);
+    margin-inline: auto;
+  }
+
+  .featured-news-header {
+    margin-bottom: 40px;
+  }
+
+  .featured-news-header-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 48px;
+  }
+
+  .featured-news-header h2 {
+    margin: 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+
+  .featured-news-header p {
+    max-width: 670px;
+    margin: 20px 0 0;
+    color: #5b5b5b;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .featured-news-all {
+    display: inline-grid;
+    grid-template-columns: max-content 28px;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 0;
+    border: 0;
+    color: #111;
+    background: transparent;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 760;
+  }
+
+  .featured-news-all svg {
+    display: block;
+    width: 28px;
+    height: 28px;
+    transition: transform 180ms ease;
+  }
+
+  .featured-news-all circle {
+    fill: #e53935;
+  }
+
+  .featured-news-all path {
+    fill: #fff;
+  }
+
+  .featured-news-all:hover svg {
+    transform: translateX(3px);
+  }
+
+  .featured-news-all:focus-visible {
+    outline: 2px solid #e53935;
+    outline-offset: 5px;
+  }
+
+  .featured-news-carousel {
+    position: relative;
+    aspect-ratio: 16 / 6.7;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #101820;
+  }
+
+  .featured-news-carousel:focus-visible {
+    outline: 3px solid #e53935;
+    outline-offset: 4px;
+  }
+
+  .featured-news-slides,
+  .featured-news-slide {
+    position: absolute;
+    inset: 0;
+  }
+
+  .featured-news-slide {
+    z-index: 0;
+    color: #fff;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 700ms ease;
+  }
+
+  .featured-news-slide.is-active {
+    z-index: 1;
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .featured-news-slide > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.01);
+    transition: transform 5.6s ease-out;
+  }
+
+  .featured-news-slide.is-active > img {
+    transform: scale(1.045);
+  }
+
+  .featured-news-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(3, 8, 14, 0.16) 18%, rgba(3, 8, 14, 0.78) 100%);
+  }
+
+  .featured-news-date {
+    position: absolute;
+    top: 42px;
+    left: 52px;
+    z-index: 2;
+    display: grid;
+    width: 66px;
+    height: 66px;
+    padding: 8px;
+    border-radius: 50%;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(3, 8, 14, 0.34);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .featured-news-copy {
+    position: absolute;
+    right: 13%;
+    bottom: 21%;
+    left: 13%;
+    z-index: 2;
+    display: block;
+  }
+
+  .featured-news-copy strong {
+    display: block;
+    max-width: 980px;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 34px;
+    font-weight: 760;
+    line-height: 1.18;
+    letter-spacing: 0;
+  }
+
+  .featured-news-copy > span {
+    display: -webkit-box;
+    max-width: 760px;
+    margin-top: 14px;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .featured-news-arrow {
+    position: absolute;
+    top: 54%;
+    z-index: 3;
+    display: grid;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-radius: 50%;
+    place-items: center;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transform: translateY(-50%);
+  }
+
+  .featured-news-arrow.is-previous {
+    left: 28px;
+  }
+
+  .featured-news-arrow.is-next {
+    right: 28px;
+  }
+
+  .featured-news-arrow svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .featured-news-dots {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    z-index: 3;
+    display: flex;
+    gap: 12px;
+    transform: translateX(-50%);
+  }
+
+  .featured-news-dot {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.46);
+    cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .featured-news-dot.is-active {
+    background: #fff;
+    transform: scale(1.15);
+  }
+
+  @media (max-width: 760px) {
+    .featured-news {
+      padding: var(--home-section-gap) 0 0;
+    }
+
+    .featured-news-inner {
+      width: calc(100% - 40px);
+    }
+
+    .featured-news-header-top {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .featured-news-header {
+      margin-bottom: 30px;
+    }
+
+    .featured-news-header h2 {
+      font-size: 36px;
+    }
+
+    .featured-news-header p {
+      font-size: 16px;
+    }
+
+    .featured-news-all {
+      justify-self: start;
+      margin-top: 0;
+    }
+
+    .featured-news-carousel {
+      aspect-ratio: 4 / 5;
+    }
+
+    .featured-news-date {
+      top: 22px;
+      left: 22px;
+      width: 58px;
+      height: 58px;
+      font-size: 11px;
+    }
+
+    .featured-news-copy {
+      right: 54px;
+      bottom: 18%;
+      left: 54px;
+    }
+
+    .featured-news-copy strong {
+      font-size: 24px;
+    }
+
+    .featured-news-copy > span {
+      font-size: 15px;
+    }
+
+    .featured-news-arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .featured-news-arrow.is-previous {
+      left: 8px;
+    }
+
+    .featured-news-arrow.is-next {
+      right: 8px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .featured-news-slide,
+    .featured-news-slide > img {
+      transition: none;
+    }
+  }
+</style>

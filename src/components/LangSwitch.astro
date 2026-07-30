@@ -1,53 +1,128 @@
 ---
 ---
 <div class="lang-switch" id="langSwitch" data-active="en">
-  <span class="lang-option active" data-lang="en">EN</span>
-  <span class="lang-option" data-lang="zh">中文</span>
-  <div class="lang-slider"></div>
+  <button class="language-trigger" id="language-trigger" type="button" aria-expanded="false" aria-controls="language-options">
+    <span data-en="Language" data-zh="语言">Language</span>
+    <span class="language-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="language-options" id="language-options" role="menu" hidden>
+    <button class="lang-option active" type="button" role="menuitemradio" aria-checked="true" data-lang="en">English</button>
+    <button class="lang-option" type="button" role="menuitemradio" aria-checked="false" data-lang="zh">中文</button>
+  </div>
 </div>
 
 <style>
   .lang-switch {
-    display: inline-flex;
-    align-items: center;
+    display: block;
     justify-self: end;
-    justify-content: center;
     position: relative;
-    background: #fff;
-    min-height: 40px;
-    padding: 4px;
-    border-radius: 14px;
-    cursor: pointer;
     user-select: none;
   }
 
+  .language-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 30px 0;
+    border: 0;
+    color: #fff;
+    background: transparent;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 720;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+
+  .language-chevron {
+    font-size: 16px;
+    line-height: 1;
+    transition: transform 180ms ease;
+  }
+
+  .language-trigger[aria-expanded="true"] .language-chevron {
+    transform: rotate(180deg);
+  }
+
+  .language-options {
+    position: absolute;
+    top: calc(100% + 2px);
+    right: 0;
+    display: grid;
+    width: 164px;
+    padding: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    background: #090909;
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.38);
+  }
+
+  .language-options[hidden] {
+    display: none;
+  }
+
   .lang-option {
-    padding: 0 14px;
-    font-size: clamp(14px, 0.9vw, 16px);
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.35);
-    z-index: 1;
-    position: relative;
-    transition: color 0.3s ease;
-    line-height: 30px;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.68);
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .lang-option:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .lang-option.active {
-    color: #000;
+    color: #fff;
+    background: rgba(229, 57, 53, 0.22);
   }
 
-  .lang-slider {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: calc(50% - 4px);
-    height: calc(100% - 8px);
-    background-color: rgba(0, 0, 0, 0.07);
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-  }
-
-  .lang-switch[data-active="zh"] .lang-slider {
-    transform: translateX(100%);
+  @media (max-width: 560px) {
+    .language-trigger {
+      padding: 22px 0;
+      font-size: 13px;
+    }
   }
 </style>
+
+<script>
+  const languageTrigger = document.getElementById('language-trigger');
+  const languageOptions = document.getElementById('language-options');
+
+  const closeLanguageMenu = () => {
+    if (!languageTrigger || !languageOptions) return;
+    languageOptions.hidden = true;
+    languageTrigger.setAttribute('aria-expanded', 'false');
+  };
+
+  languageTrigger?.addEventListener('click', () => {
+    if (!languageOptions) return;
+    const willOpen = languageOptions.hidden;
+    languageOptions.hidden = !willOpen;
+    languageTrigger.setAttribute('aria-expanded', String(willOpen));
+  });
+
+  languageOptions?.querySelectorAll('.lang-option').forEach((option) => {
+    option.addEventListener('click', closeLanguageMenu);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!languageTrigger?.parentElement?.contains(event.target as Node)) closeLanguageMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && languageOptions && !languageOptions.hidden) {
+      closeLanguageMenu();
+      languageTrigger?.focus();
+    }
+  });
+</script>

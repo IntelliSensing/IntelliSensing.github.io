@@ -1,17 +1,69 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { team } from '../../data/team';
+import { getPublicationPrimaryHref } from '../../utils/publications';
 
-export const getStaticPaths = () => {
-  return team.map((m) => ({ params: { slug: m.slug } }));
+export async function getStaticPaths() {
+  const normalizeAuthorName = (name: string) => name
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
+    .toLowerCase();
+
+  const publications = (await getCollection('publications'))
+    .filter((publication) => !publication.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return team.map((member) => {
+    const authorNames = new Set(
+      [member.name, member.nameZh, ...(member.publicationNames ?? [])]
+        .filter((name): name is string => Boolean(name))
+        .map(normalizeAuthorName)
+    );
+    const pubs = publications.filter((publication) =>
+      publication.data.authors.some((author) => authorNames.has(normalizeAuthorName(author)))
+    );
+
+    return {
+      params: { slug: member.slug },
+      props: { member, pubs },
+    };
+  });
+}
+
+const publicationLinks = (publication: CollectionEntry<'publications'>) => {
+  const primaryUrl = getPublicationPrimaryHref(publication);
+  const primaryLabel = publication.data.paperSite || publication.data.projectUrl
+    ? { label: 'Project page', labelZh: '项目主页' }
+    : publication.data.paperUrl
+      ? { label: 'Paper', labelZh: '论文' }
+      : { label: 'View details', labelZh: '查看详情' };
+  const links = [
+    {
+      ...primaryLabel,
+      url: primaryUrl,
+    },
+    ...publication.data.links
+      .filter((link) => link.url !== primaryUrl)
+      .map((link) => ({ ...link, labelZh: link.label })),
+  ];
+
+  if (publication.data.paperUrl && publication.data.paperUrl !== primaryUrl) {
+    links.push({ label: 'Paper', labelZh: '论文', url: publication.data.paperUrl });
+  }
+  if (publication.data.codeUrl) {
+    links.push({ label: 'Code', labelZh: '代码', url: publication.data.codeUrl });
+  }
+
+  return links;
 };
 
-const slug = Astro.params.slug;
-const member = team.find((m) => m.slug === slug)!;
-const pubs = member.publications;
+const { member, pubs } = Astro.props;
 const honors = member.honors;
 ---
-<BaseLayout title={`${member.name} | Space Lab`} description={`Profile page of ${member.name}.`} headerMode="glass" bodyClass="space-theme">
+<BaseLayout title={`${member.name} | IntelliSensing Lab`} description={`Profile page of ${member.name}.`} headerMode="glass" bodyClass="archive-light-theme">
   <main class="publication-archive">
     <section class="section member-page">
       <div class="container">
@@ -22,10 +74,15 @@ const honors = member.honors;
             <img src={member.img} alt={member.name} />
           </div>
           <div class="member-info">
-            <h1 class="member-name">{member.name}</h1>
+            <h1 class="member-name" data-en={member.name} data-zh={member.nameZh ?? member.name}>{member.name}</h1>
             <p class="member-role" data-en={member.role} data-zh={member.roleZh}>{member.role}</p>
             <p class="member-desc" data-en={member.desc} data-zh={member.descZh}>{member.desc}</p>
             <div class="member-social">
+              {member.homepage && (
+                <a class="member-social-link" href={member.homepage} target="_blank" rel="noreferrer" aria-label="Homepage" title="Homepage">
+                  <img class="member-homepage-icon" src="/assets/icons/homepage.svg" alt="Homepage" />
+                </a>
+              )}
               {member.email && (
                 <a class="member-social-link" href={`mailto:${member.email}`} aria-label="Email" title={member.email}>
                   <img src="/assets/icons/gmail.svg" alt="Email" />
@@ -43,7 +100,7 @@ const honors = member.honors;
               )}
               {member.scholar && (
                 <a class="member-social-link" href={member.scholar} target="_blank" rel="noreferrer" aria-label="Google Scholar" title="Google Scholar">
-                  <svg class="member-social-svg" viewBox="0 0 24 24" fill="#4285F4"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+                  <img src="/assets/icons/scholar.svg" alt="Google Scholar" />
                 </a>
               )}
               {member.huggingface && (
@@ -88,25 +145,40 @@ const honors = member.honors;
         <!-- Publications -->
         <div class="member-section">
           <h2 class="member-section-title" data-en="Publications" data-zh="论文">Publications <span class="pub-count">{pubs.length}</span></h2>
-          <div class="pub-list">
-            {pubs.map((pub) => (
-              <div class="pub-item">
-                <div class="pub-thumb">
-                  <img src={pub.img} alt={pub.title} />
-                </div>
-                <div class="pub-info">
-                  <p class="pub-title">{pub.title}</p>
-                  <p class="pub-authors">{pub.authors}</p>
-                  <p class="pub-venue">{pub.venue}</p>
-                  <div class="pub-links">
-                    {pub.links.map((link) => (
-                      <a class="pub-link" href={link.url} target="_blank" rel="noreferrer">{link.label}</a>
-                    ))}
+          {pubs.length > 0 ? (
+            <div class="pub-list">
+              {pubs.map((pub) => (
+                <article class="pub-item">
+                  <a class="pub-thumb" href={getPublicationPrimaryHref(pub)}>
+                    <img src={pub.data.image} alt="" loading="lazy" decoding="async" />
+                  </a>
+                  <div class="pub-info">
+                    <a class="pub-title" href={getPublicationPrimaryHref(pub)}>{pub.data.title}</a>
+                    <p class="pub-authors">{pub.data.authors.join(', ')}</p>
+                    <p class="pub-venue">{pub.data.venue}</p>
+                    <div class="pub-links">
+                      {publicationLinks(pub).map((link) => (
+                        <a
+                          class="pub-link"
+                          href={link.url}
+                          target={link.url.startsWith('http') ? '_blank' : undefined}
+                          rel={link.url.startsWith('http') ? 'noreferrer' : undefined}
+                          data-en={link.label}
+                          data-zh={link.labelZh}
+                        >{link.label}</a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p
+              class="pub-empty"
+              data-en="No publications linked to this profile yet."
+              data-zh="暂时没有与该成员署名关联的论文。"
+            >No publications linked to this profile yet.</p>
+          )}
         </div>
 
         <!-- Honors & Awards -->
@@ -139,7 +211,7 @@ const honors = member.honors;
 
   .member-back {
     display: inline-block;
-    color: rgba(255, 255, 255, 0.5);
+    color: #6d7379;
     font-size: 14px;
     text-decoration: none;
     margin-bottom: 32px;
@@ -147,7 +219,7 @@ const honors = member.honors;
   }
 
   .member-back:hover {
-    color: #fff;
+    color: #111;
   }
 
   .member-header {
@@ -160,10 +232,11 @@ const honors = member.honors;
   .member-photo {
     flex-shrink: 0;
     width: 320px;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
-    border: 4px solid rgba(255, 255, 255, 0.85);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    border: 8px solid #fff;
+    background: #fff;
+    box-shadow: 0 0 0 1px #d9dcdf, 0 12px 32px rgba(17, 24, 39, 0.15);
   }
 
   .member-photo img {
@@ -181,20 +254,20 @@ const honors = member.honors;
 
   .member-name {
     margin: 0;
-    color: #fff;
+    color: #111;
     font-size: clamp(30px, 3.5vw, 44px);
     font-weight: 600;
   }
 
   .member-role {
     margin: 0;
-    color: rgba(255, 255, 255, 0.6);
+    color: #555b61;
     font-size: 16px;
   }
 
   .member-desc {
     margin: 8px 0 0;
-    color: rgba(255, 255, 255, 0.45);
+    color: #666c72;
     font-size: 15px;
     line-height: 1.7;
     white-space: pre-line;
@@ -213,18 +286,24 @@ const honors = member.honors;
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: #fff;
+    border: 1px solid #d9dcdf;
+    background: #f5f6f7;
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
   .member-social-link:hover {
     transform: scale(1.1);
-    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+    border-color: #b8bdc2;
+    box-shadow: 0 6px 18px rgba(17, 24, 39, 0.12);
   }
 
   .member-social-link img {
     width: 24px;
     height: 24px;
+  }
+
+  .member-homepage-icon {
+    filter: invert(1);
   }
 
   .member-social-svg {
@@ -235,12 +314,12 @@ const honors = member.honors;
   .member-section {
     margin-bottom: 40px;
     padding-top: 28px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid #dfe2e5;
   }
 
   .member-section-title {
     margin: 0 0 24px;
-    color: #fff;
+    color: #111;
     font-size: 22px;
     font-weight: 600;
     display: flex;
@@ -256,8 +335,8 @@ const honors = member.honors;
     height: 24px;
     padding: 0 8px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.7);
+    background: #eceeef;
+    color: #555b61;
     font-size: 13px;
     font-weight: 500;
   }
@@ -272,14 +351,14 @@ const honors = member.honors;
     display: flex;
     gap: 20px;
     padding: 18px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid #dfe2e5;
     transition: background 0.2s;
   }
 
   .pub-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: #f7f8f9;
   }
 
   .pub-thumb {
@@ -288,7 +367,7 @@ const honors = member.honors;
     height: 100px;
     border-radius: 8px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.06);
+    background: #eceeef;
   }
 
   .pub-thumb img {
@@ -306,8 +385,9 @@ const honors = member.honors;
   }
 
   .pub-title {
+    display: inline-block;
     margin: 0;
-    color: #fff;
+    color: #111;
     font-size: 16px;
     font-weight: 600;
     line-height: 1.4;
@@ -315,14 +395,14 @@ const honors = member.honors;
 
   .pub-authors {
     margin: 0;
-    color: rgba(255, 255, 255, 0.5);
+    color: #666c72;
     font-size: 13px;
     line-height: 1.5;
   }
 
   .pub-venue {
     margin: 0;
-    color: rgba(255, 255, 255, 0.4);
+    color: #7a8086;
     font-size: 13px;
   }
 
@@ -333,14 +413,21 @@ const honors = member.honors;
   }
 
   .pub-link {
-    color: rgba(120, 170, 255, 0.8);
+    color: #b9322e;
     font-size: 13px;
     text-decoration: none;
     transition: color 0.2s;
   }
 
   .pub-link:hover {
-    color: #fff;
+    color: #8f201d;
+  }
+
+  .pub-empty {
+    margin: 0;
+    color: #6d7379;
+    font-size: 15px;
+    line-height: 1.6;
   }
 
   .member-list {
@@ -353,13 +440,13 @@ const honors = member.honors;
   }
 
   .member-list li {
-    color: rgba(255, 255, 255, 0.55);
+    color: #555b61;
     font-size: 15px;
     line-height: 1.6;
   }
 
   .member-text {
-    color: rgba(255, 255, 255, 0.55);
+    color: #555b61;
     font-size: 15px;
     line-height: 1.7;
     margin: 0;

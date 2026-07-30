@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Join Us | IntelliSensing Lab"
+  description="PhD, master's, visiting student, and undergraduate research opportunities at IntelliSensing Lab."
+  headerMode="glass"
+  bodyClass="space-theme"
+>
+  <main class="publication-archive join-page">
+    <section class="publication-hero">
+      <div class="container publication-hero-inner">
+        <h1 class="publication-title" data-en="Join Us" data-zh="加入我们">Join Us</h1>
+        <p
+          class="publication-lede"
+          data-en="We are always looking for highly self-motivated PhD/master students, visiting students, and undergraduate interns (RAs)."
+          data-zh="我们长期招募积极主动、热爱科研的博士生、硕士生、访问学生及本科生科研实习生（RA）。"
+        >We are always looking for highly self-motivated PhD/master students, visiting students, and undergraduate interns (RAs).</p>
+      </div>
+    </section>
+
+    <section class="section join-section" aria-label="How to join IntelliSensing Lab">
+      <div class="container join-details">
+        <div class="join-row">
+          <h2 data-en="Research directions" data-zh="研究方向">Research directions</h2>
+          <p
+            data-en="Computer vision, multi-modal LLMs, agents, few-shot learning, and remote-sensing intelligence."
+            data-zh="计算机视觉、多模态大模型、智能体、小样本学习与遥感智能。"
+          >Computer vision, multi-modal LLMs, agents, few-shot learning, and remote-sensing intelligence.</p>
+        </div>
+        <div class="join-row">
+          <h2 data-en="Research environment" data-zh="科研环境">Research environment</h2>
+          <p
+            data-en="Strong computing resources and active collaborations; we encourage top-venue publications and academic exchange."
+            data-zh="实验室提供充足的算力资源和活跃的合作网络，鼓励在顶级会议与期刊发表成果并参与学术交流。"
+          >Strong computing resources and active collaborations; we encourage top-venue publications and academic exchange.</p>
+        </div>
+        <div class="join-row">
+          <h2 data-en="How to apply" data-zh="申请方式">How to apply</h2>
+          <div class="join-application">
+            <p
+              data-en="If you are interested, email Dr. Xu with your CV and transcript."
+              data-zh="如有意加入，请将个人简历和成绩单发送至许老师邮箱。"
+            >If you are interested, email Dr. Xu with your CV and transcript.</p>
+            <a
+              class="join-email-button"
+              href="mailto:xuwenjia@bupt.edu.cn?subject=Prospective%20student%20inquiry"
+            >
+              <span data-en="Email us" data-zh="发送邮件">Email us</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .join-section {
+    padding: 24px 0 120px;
+  }
+
+  .join-details {
+    width: min(calc(100% - 96px), 1080px);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .join-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.5fr);
+    gap: 80px;
+    padding: 38px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .join-row:last-child {
+    border-bottom: 0;
+  }
+
+  .join-row h2,
+  .join-row p {
+    margin: 0;
+  }
+
+  .join-row h2 {
+    color: rgba(255, 255, 255, 0.52);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .join-row p {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 20px;
+    line-height: 1.6;
+  }
+
+  .join-application {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .join-email-button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    gap: 14px;
+    margin-top: 28px;
+    padding: 0 22px;
+    border: 1px solid #ef4a45;
+    border-radius: 4px;
+    color: #fff;
+    background: #e53935;
+    font-size: 15px;
+    font-weight: 700;
+    transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+  }
+
+  .join-email-button:hover {
+    border-color: #c92f2b;
+    background: #c92f2b;
+    transform: translateY(-2px);
+  }
+
+  .join-email-button span:last-child {
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  @media (max-width: 700px) {
+    .join-section {
+      padding: 10px 0 80px;
+    }
+
+    .join-details {
+      width: calc(100% - 40px);
+    }
+
+    .join-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 30px 0;
+    }
+
+    .join-row p {
+      font-size: 17px;
+    }
+  }
+</style>

@@ -1,13 +1,16 @@
 ---
 import '../styles/global.css';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/public-sans';
 import LangSwitch from '../components/LangSwitch.astro';
 import StarsCanvas from '../components/StarsCanvas.astro';
 
 const {
-  title = 'Space Lab',
-  description = 'Space Lab - Exploring the frontiers of science.',
+  title = 'IntelliSensing Lab',
+  description = 'IntelliSensing Lab at Beijing University of Posts and Telecommunications.',
   headerMode = 'auto',
-  bodyClass = ''
+  bodyClass = '',
+  showStars = true
 } = Astro.props;
 
 const isSpaceTheme = bodyClass.includes('space-theme');
@@ -19,47 +22,99 @@ const isSpaceTheme = bodyClass.includes('space-theme');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <script src="/assets/js/i18n.js" defer></script>
+    <script is:inline src="/assets/js/i18n.js" defer></script>
   </head>
   <body class={bodyClass}>
     <header class={`site-header ${headerMode === 'glass' ? 'is-visible' : ''}`} data-scroll-header data-header-mode={headerMode}>
       <nav class="nav" aria-label="Main navigation">
-        <a class="brand" href="/">
-          <img class="brand-logo" src="/assets/logo/spacelab.svg" alt="Space Lab" />
+        <a class="brand" href="/" aria-label="IntelliSense Lab home">
+          <img class="brand-logo" src="/assets/logo/intellisense-title.svg" alt="IntelliSense Lab" />
         </a>
-        <div class="nav-links">
-          <a href="/our-team/" data-en="Our Team" data-zh="团队">Our Team</a>
-          <a href="/news/" data-en="News" data-zh="新闻">News</a>
+        <div class="nav-primary">
+          <a href="/research/" data-en="Research" data-zh="研究">Research</a>
+          <a href="/our-team/" data-en="Team" data-zh="团队">Team</a>
           <a href="/publications/" data-en="Publications" data-zh="论文">Publications</a>
-          <a href="/collections/" data-en="Collections" data-zh="开源">Collections</a>
+          <a href="/news/" data-en="News" data-zh="新闻">News</a>
           <a href="/blogs/" data-en="Blogs" data-zh="博客">Blogs</a>
-          <a href="/faq/" data-en="FAQ" data-zh="常见问题">FAQ</a>
+          <a href="/join-us/" data-en="Join Us" data-zh="加入我们">Join Us</a>
           <a href="/contact/" data-en="Contact" data-zh="联系我们">Contact</a>
         </div>
         <LangSwitch />
       </nav>
     </header>
-    {isSpaceTheme && <StarsCanvas />}
+    {isSpaceTheme && showStars && <StarsCanvas />}
     <slot />
     <footer class="footer">
-      <div class="footer-illustration" aria-hidden="true">
-        <img class="footer-illustration-image" src="/assets/footer/footer.png" alt="" loading="lazy" />
+      <div class="footer-main">
+        <section class="footer-brand" aria-labelledby="footer-brand-title">
+          <a class="footer-brand-name" href="/" id="footer-brand-title">IntelliSense Lab</a>
+          <h2
+            data-en="School of Information and Communication Engineering"
+            data-zh="北京邮电大学信息与通信工程学院"
+          >School of Information and Communication Engineering</h2>
+          <p
+            class="footer-university"
+            data-en="Beijing University of Posts and Telecommunications"
+            data-zh="北京邮电大学"
+          >Beijing University of Posts and Telecommunications</p>
+          <p
+            class="footer-description"
+            data-en="Advancing intelligent perception and reasoning across vision, language, and remote sensing."
+            data-zh="面向视觉、语言与遥感交叉领域，探索智能感知、理解与推理。"
+          >Advancing intelligent perception and reasoning across vision, language, and remote sensing.</p>
+          <address
+            data-en="No. 10 Xitucheng Road, Haidian District, Beijing 100876, China"
+            data-zh="中国北京市海淀区西土城路 10 号，邮编 100876"
+          >No. 10 Xitucheng Road, Haidian District, Beijing 100876, China</address>
+          <div class="footer-socials" aria-label="Lab contact links">
+            <a href="mailto:xuwenjia@bupt.edu.cn" aria-label="Email" title="xuwenjia@bupt.edu.cn">
+              <img src="/assets/icons/gmail.svg" alt="" />
+            </a>
+            <a href="https://github.com/IntelliSensing/IntelliSensing.github.io" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+              <img src="/assets/icons/github.svg" alt="" />
+            </a>
+          </div>
+        </section>
+
+        <nav class="footer-column" aria-labelledby="footer-navigation-title">
+          <h3 id="footer-navigation-title" data-en="Navigate" data-zh="站内导航">Navigate</h3>
+          <a href="/research/" data-en="Research" data-zh="研究">Research</a>
+          <a href="/our-team/" data-en="Team" data-zh="团队">Team</a>
+          <a href="/publications/" data-en="Publications" data-zh="论文">Publications</a>
+          <a href="/news/" data-en="News" data-zh="新闻">News</a>
+          <a href="/blogs/" data-en="Blogs" data-zh="博客">Blogs</a>
+        </nav>
+
+        <nav class="footer-column" aria-labelledby="footer-connect-title">
+          <h3 id="footer-connect-title" data-en="Connect" data-zh="联系合作">Connect</h3>
+          <a href="/join-us/" data-en="Join Us" data-zh="加入我们">Join Us</a>
+          <a href="/contact/" data-en="Contact" data-zh="联系我们">Contact</a>
+          <a href="mailto:xuwenjia@bupt.edu.cn">Email</a>
+          <a href="https://github.com/IntelliSensing/IntelliSensing.github.io" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://scholar.google.com/citations?user=mW2Jtu0AAAAJ&hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
+        </nav>
+
+        <nav class="footer-column" aria-labelledby="footer-institution-title">
+          <h3 id="footer-institution-title" data-en="Institution" data-zh="相关机构">Institution</h3>
+          <a href="https://www.bupt.edu.cn/" target="_blank" rel="noreferrer" data-en="BUPT" data-zh="北京邮电大学">BUPT</a>
+          <a href="https://sice.bupt.edu.cn/" target="_blank" rel="noreferrer" data-en="School Website" data-zh="学院官网">School Website</a>
+          <a href="https://teacher.bupt.edu.cn/xuwenjia/zh_CN/index.htm" target="_blank" rel="noreferrer" data-en="PI Homepage" data-zh="导师主页">PI Homepage</a>
+        </nav>
       </div>
-      <div class="container footer-inner">
-        <span>@2026 Space Lab</span>
-        <span class="footer-note" data-en="Exploring the frontiers of science." data-zh="探索科学前沿。">
-          Exploring the frontiers of science.
-        </span>
-        <span class="footer-credit">
-          Template by <a href="https://github.com/choucisan/SpaceLab" target="_blank" rel="noreferrer">choucisan</a>
-        </span>
+
+      <div class="footer-bottom">
+        <span>© 2026 IntelliSense Lab</span>
+        <span
+          data-en="School of Information and Communication Engineering, BUPT"
+          data-zh="北京邮电大学信息与通信工程学院"
+        >School of Information and Communication Engineering, BUPT</span>
       </div>
     </footer>
     <script>
-      const header = document.querySelector('[data-scroll-header]');
-      const hero = document.querySelector('.hero');
+      const header = document.querySelector<HTMLElement>('[data-scroll-header]');
+      const hero = document.querySelector<HTMLElement>('.hero');
 
-      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+      const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
       const updateScene = () => {
         const fixedGlass = header?.dataset.headerMode === 'glass';
@@ -91,6 +146,7 @@ const isSpaceTheme = bodyClass.includes('space-theme');
       }, { threshold: 0.28 });
 
       revealScenes.forEach((scene) => revealObserver.observe(scene));
+
     </script>
   </body>
 </html>

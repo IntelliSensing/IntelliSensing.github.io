@@ -5,9 +5,11 @@ pubDate: 2026-04-18
 venue: "International Journal"
 authors: ["OneThree"]
 tags: ["Journal"]
+researchAreas: ["few-zero-shot"]
 image: /assets/cards/publication-blue.png
 paperUrl: "https://example.com"
 paperSite: humanoid-vstar
+draft: true
 ---
 
 Use this page for journal papers.

@@ -4,6 +4,7 @@ description: "A sample blog post for testing the blog archive, categories, and l
 pubDate: 2026-04-26
 category: "Computer Vision"
 tags: ["Natural Language Processing", "Multimodal Learning", "Research Notes"]
+researchAreas: ["vision-language"]
 image: /assets/cards/publication-blue.png
 ---
 

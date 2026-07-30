@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 183 41" width="183" height="41">
+  <defs/>
+  <g id="Canvas_1" fill="none" stroke-dasharray="none" stroke="none" stroke-opacity="1" fill-opacity="1">
+    <title>Canvas 1</title>
+    <g id="Canvas_1_Layer_1">
+      <title>Layer 1</title>
+      <g id="Graphic_2">
+        <text transform="translate(5.000002 5)" fill="white">
+          <tspan font-family="PT Serif" font-style="italic" font-weight="bold" font-size="24" fill="white" x="0" y="24" xml:space="preserve">IntelliSense Lab</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>

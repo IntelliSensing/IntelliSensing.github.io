@@ -27,7 +27,9 @@
     if (!sw) return;
     sw.setAttribute('data-active', currentLang);
     sw.querySelectorAll('.lang-option').forEach(opt => {
-      opt.classList.toggle('active', opt.dataset.lang === currentLang);
+      const isActive = opt.dataset.lang === currentLang;
+      opt.classList.toggle('active', isActive);
+      opt.setAttribute('aria-checked', String(isActive));
     });
   }
 

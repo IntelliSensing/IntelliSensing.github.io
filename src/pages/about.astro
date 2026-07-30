@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="About | OneThree" description="A short note about the belief behind this personal website." bodyClass="about-body">
+<BaseLayout title="About | IntelliSensing Lab" description="About IntelliSensing Lab at Beijing University of Posts and Telecommunications." bodyClass="about-body">
   <main class="about-page" data-about-page>
     <section class="about-story">
       <div class="container about-story-grid">
-        <p class="about-label">My story</p>
+        <p class="about-label">Our Lab</p>
         <div class="about-copy">
           <h1>
-            <em>A simple belief:</em>
-            <span>They will not labor in vain, nor will they bear children doomed to misfortune; for they will be a people blessed by the Lord, they and their descendants with them.</span>
+            <em>IntelliSensing Lab</em>
+            <span>We study intelligent perception and reasoning at the intersection of computer vision, natural language processing, and remote sensing.</span>
           </h1>
         </div>
       </div>
@@ -20,16 +20,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
     <section class="about-contact">
       <div class="container about-contact-grid">
-        <p class="about-label">Contact Me</p>
+        <p class="about-label">Connect</p>
         <div class="contact-links" aria-label="Contact links">
-          <a class="contact-card" href="mailto:choucisan@gmail.com" aria-label="Email choucisan@gmail.com" title="choucisan@gmail.com">
+          <a class="contact-card" href="mailto:xuwenjia@bupt.edu.cn" aria-label="Email xuwenjia@bupt.edu.cn" title="xuwenjia@bupt.edu.cn">
             <img class="contact-icon contact-icon-gmail" src="/assets/icons/gmail.svg" alt="" loading="lazy" />
           </a>
-          <a class="contact-card" href="https://github.com/choucisan" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+          <a class="contact-card" href="https://github.com/IntelliSensing/IntelliSensing.github.io" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
             <img class="contact-icon contact-icon-github" src="/assets/icons/github.svg" alt="" loading="lazy" />
           </a>
-          <a class="contact-card" href="https://huggingface.co/choucisan" target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
-            <img class="contact-icon contact-icon-hf" src="https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg" alt="" loading="lazy" />
+          <a class="contact-card" href="https://teacher.bupt.edu.cn/xuwenjia/zh_CN/index.htm" target="_blank" rel="noreferrer" aria-label="Principal investigator homepage" title="PI Homepage">
+            <img class="contact-icon contact-icon-hf" src="/assets/icons/homepage.svg" alt="" loading="lazy" />
           </a>
         </div>
       </div>
@@ -52,8 +52,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
   </main>
   <script>
-    const aboutPage = document.querySelector('[data-about-page]');
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const aboutPage = document.querySelector<HTMLElement>('[data-about-page]');
+    const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
     const updateAboutClouds = () => {
       if (!aboutPage) return;

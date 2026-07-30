@@ -1,0 +1,882 @@
+---
+import { team } from '../data/team';
+
+const students = team.filter((member) => member.slug !== 'wenjia-xu');
+
+const piStats = [
+  {
+    value: '1,370+',
+    label: 'Total citations',
+    labelZh: '论文总被引',
+  },
+  {
+    value: 'h-index 18',
+    label: 'Google Scholar',
+    labelZh: 'Google Scholar',
+  },
+  {
+    value: '40+',
+    label: 'Publications',
+    labelZh: '已发表论文',
+  },
+];
+
+const teamStats = [
+  {
+    value: students.length,
+    label: 'Members',
+    labelZh: '团队成员',
+  },
+  {
+    value: students.filter((member) => member.role === 'PhD Student').length,
+    label: 'PhD Students',
+    labelZh: '博士生',
+  },
+  {
+    value: students.filter((member) => member.role === 'Master Student').length,
+    label: 'Master Students',
+    labelZh: '硕士生',
+  },
+  {
+    value: students.filter((member) => member.role === 'Research Assistant').length,
+    label: 'Research Assistants',
+    labelZh: '科研助理',
+  },
+];
+---
+
+<section class="people-header-section" aria-labelledby="people-title">
+  <div class="people-header-inner">
+    <header class="people-header">
+      <h2
+        id="people-title"
+        data-en="People behind these scientific questions"
+        data-zh="这些科学问题背后的研究者"
+      >People behind these scientific questions</h2>
+      <a class="people-link" href="/our-team/">
+        <span class="people-link-label" data-en="View Team" data-zh="认识团队">View Team</span>
+        <svg class="people-link-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle class="button-primary-circle" cx="16" cy="16" r="16"></circle>
+          <path d="M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z" class="color-spacesuit-white"></path>
+        </svg>
+      </a>
+    </header>
+    <p
+      class="people-subtitle"
+      data-en="We are driven by creativity and curiosity to push back the frontiers of knowledge"
+      data-zh="我们以创造力和好奇心为动力，不断拓展知识的边界"
+    >We are driven by creativity and curiosity to push back the frontiers of knowledge</p>
+  </div>
+</section>
+
+<section class="people-hero" id="people" aria-label="IntelliSensing Lab team">
+  <img
+    class="people-hero-background"
+    src="/assets/people-bg.jpg"
+    alt="Earth-observation satellite above the planet"
+    fetchpriority="low"
+    decoding="async"
+  />
+
+  <div class="people-hero-inner">
+    <div class="people-panels">
+      <article class="people-panel people-pi-panel">
+        <div class="people-pi-heading">
+          <img
+            class="people-pi-photo"
+            src="/assets/team/wenjia-xu.jpeg"
+            alt="Wenjia Xu"
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3>Wenjia Xu <span lang="zh-CN">许文嘉</span></h3>
+            <p class="people-pi-role" data-en="Associate Professor · PhD Supervisor" data-zh="副教授 · 博士生导师">Associate Professor · PhD Supervisor</p>
+            <p
+              class="people-pi-affiliation"
+              data-en="School of Information and Communication Engineering, BUPT"
+              data-zh="北京邮电大学信息与通信工程学院"
+            >School of Information and Communication Engineering, BUPT</p>
+          </div>
+        </div>
+
+        <p
+          class="people-pi-bio"
+          data-en="Research across computer vision, natural language processing and remote sensing, focusing on agents, multimodal large language models and few-shot learning."
+          data-zh="研究方向横跨计算机视觉、自然语言处理与遥感，聚焦智能体、多模态大模型与小样本学习。"
+        >Research across computer vision, natural language processing and remote sensing, focusing on agents, multimodal large language models and few-shot learning.</p>
+
+        <div class="people-focus" aria-label="Research focus">
+          <span data-en="Computer Vision" data-zh="计算机视觉">Computer Vision</span>
+          <span data-en="Natural Language Processing" data-zh="自然语言处理">Natural Language Processing</span>
+          <span data-en="Remote Sensing" data-zh="遥感智能">Remote Sensing</span>
+        </div>
+
+        <div class="people-pi-stats" aria-label="Academic profile">
+          {piStats.map((stat) => (
+            <div class="people-pi-stat">
+              <strong>{stat.value}</strong>
+              <span data-en={stat.label} data-zh={stat.labelZh}>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div class="people-pi-footer">
+          <div class="people-pi-links" aria-label="Wenjia Xu links">
+            <a href="mailto:xuwenjia@bupt.edu.cn">
+              <img src="/assets/icons/gmail.svg" alt="" aria-hidden="true" />
+              <span>Email</span>
+            </a>
+            <a href="https://scholar.google.com/citations?user=mW2Jtu0AAAAJ&amp;hl=en" target="_blank" rel="noreferrer">
+              <img src="/assets/icons/scholar.svg" alt="" aria-hidden="true" />
+              <span>Scholar</span>
+            </a>
+            <a href="https://github.com/wenjiaXu" target="_blank" rel="noreferrer">
+              <img src="/assets/icons/github.svg" alt="" aria-hidden="true" />
+              <span>GitHub</span>
+            </a>
+            <a href="https://teacher.bupt.edu.cn/xuwenjia/zh_CN/index.htm" target="_blank" rel="noreferrer">
+              <img src="/assets/icons/homepage.svg" alt="" aria-hidden="true" />
+              <span data-en="Homepage" data-zh="个人主页">Homepage</span>
+            </a>
+          </div>
+          <a class="people-panel-link" href="/our-team/wenjia-xu/">
+            <span data-en="Full profile" data-zh="查看详细介绍">Full profile</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="people-panel people-team-panel">
+        <header class="people-team-heading">
+          <div>
+            <h3 data-en="Students & research assistants" data-zh="学生与科研助理">Students & research assistants</h3>
+          </div>
+          <a class="people-panel-link" href="/our-team/">
+            <span data-en="View all members" data-zh="查看全部成员">View all members</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </header>
+
+        <div class="people-stats" aria-label="Team composition">
+          {teamStats.map((stat) => (
+            <div class="people-stat">
+              <strong>{stat.value}</strong>
+              <span data-en={stat.label} data-zh={stat.labelZh}>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div class="people-carousel-shell" data-people-carousel>
+          <button class="people-carousel-button" type="button" data-carousel-previous aria-label="Previous members" title="Previous members">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+          </button>
+          <div class="people-member-carousel" data-carousel-track tabindex="0">
+            {students.map((member) => (
+              <a class="people-member" href={`/our-team/${member.slug}/`}>
+                <img src={member.img} alt="" loading="lazy" decoding="async" />
+                <span class="people-member-name">{member.name}</span>
+                <span class="people-member-role" data-en={member.role} data-zh={member.roleZh}>{member.role}</span>
+              </a>
+            ))}
+          </div>
+          <button class="people-carousel-button" type="button" data-carousel-next aria-label="Next members" title="Next members">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
+        </div>
+
+        <p
+          class="people-team-copy"
+          data-en="Explore critical questions in Earth observation with outstanding collaborators, turning remote sensing data into knowledge for a more sustainable future."
+          data-zh="与优秀的合作伙伴一起探索对地观测中的关键问题，让遥感数据转化为理解地球、服务可持续未来的知识。"
+        >Explore critical questions in Earth observation with outstanding collaborators, turning remote sensing data into knowledge for a more sustainable future.</p>
+
+        <div class="people-strengths">
+          <span data-en="Adequate computational power support" data-zh="充足的算力支持">Adequate computational power support</span>
+          <span data-en="Global collaboration network" data-zh="全球合作网络">Global collaboration network</span>
+          <span data-en="Cutting-edge scientific questions" data-zh="前沿科学问题">Cutting-edge scientific questions</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+  const initializePeopleCarousels = () => {
+    document.querySelectorAll<HTMLElement>('[data-people-carousel]').forEach((carousel) => {
+      if (carousel.dataset.ready === 'true') return;
+
+      const track = carousel.querySelector<HTMLElement>('[data-carousel-track]');
+      const previous = carousel.querySelector<HTMLButtonElement>('[data-carousel-previous]');
+      const next = carousel.querySelector<HTMLButtonElement>('[data-carousel-next]');
+      if (!track || !previous || !next) return;
+
+      carousel.dataset.ready = 'true';
+
+      const updateButtons = () => {
+        const maximum = track.scrollWidth - track.clientWidth;
+        previous.disabled = track.scrollLeft <= 2;
+        next.disabled = track.scrollLeft >= maximum - 2;
+      };
+
+      const scroll = (direction: number) => {
+        track.scrollBy({
+          left: direction * Math.max(track.clientWidth * 0.72, 180),
+          behavior: 'smooth',
+        });
+      };
+
+      previous.addEventListener('click', () => scroll(-1));
+      next.addEventListener('click', () => scroll(1));
+      track.addEventListener('scroll', updateButtons, { passive: true });
+      new ResizeObserver(updateButtons).observe(track);
+      updateButtons();
+    });
+  };
+
+  initializePeopleCarousels();
+  document.addEventListener('astro:page-load', initializePeopleCarousels);
+</script>
+
+<style>
+  .people-header-section {
+    position: relative;
+    z-index: 2;
+    padding: var(--home-section-gap) 0 48px;
+    color: #111;
+    background: #fff;
+  }
+
+  .people-header-inner {
+    width: min(calc(100% - 96px), 1260px);
+    margin-inline: auto;
+  }
+
+  .people-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 64px;
+  }
+
+  .people-header h2 {
+    margin: 0;
+    color: #111;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .people-link {
+    position: relative;
+    z-index: 1;
+    display: inline-grid;
+    grid-template-columns: max-content 28px;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    color: #111;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 760;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .people-link-icon {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 28px;
+    height: 28px;
+    overflow: visible;
+    transition: transform 180ms ease;
+  }
+
+  .people-link-icon .button-primary-circle {
+    fill: #e53935;
+  }
+
+  .people-link-icon .color-spacesuit-white {
+    fill: #fff;
+  }
+
+  .people-link:hover .people-link-icon {
+    transform: translateX(3px);
+  }
+
+  .people-subtitle {
+    max-width: 620px;
+    margin: 24px 0 0;
+    color: #555;
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .people-hero {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    height: 88vh;
+    height: 88svh;
+    min-height: 760px;
+    max-height: 940px;
+    overflow: hidden;
+    color: #fff;
+    background: #02050a;
+  }
+
+  .people-hero::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: "";
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 32%, rgba(0, 6, 15, 0.46) 100%);
+  }
+
+  .people-hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .people-hero-inner {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    padding: 48px 0;
+  }
+
+  .people-panels {
+    display: grid;
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+    align-items: stretch;
+    gap: 24px;
+    width: min(calc(100% - 96px), 1320px);
+    margin-inline: auto;
+  }
+
+  .people-panel {
+    min-width: 0;
+    min-height: 580px;
+    padding: 34px 32px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 8px;
+    background: rgba(5, 14, 26, 0.34);
+    backdrop-filter: blur(18px) saturate(0.82);
+    -webkit-backdrop-filter: blur(18px) saturate(0.82);
+  }
+
+  .people-pi-panel {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+    align-content: space-between;
+    row-gap: 18px;
+  }
+
+  .people-pi-heading {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr);
+    align-items: center;
+    gap: 22px;
+  }
+
+  .people-pi-photo {
+    width: 108px;
+    height: 108px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .people-pi-heading h3,
+  .people-team-heading h3 {
+    margin: 0;
+    color: #fff;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-weight: 760;
+    letter-spacing: 0;
+  }
+
+  .people-pi-heading h3 {
+    font-size: 28px;
+    line-height: 1.12;
+  }
+
+  .people-pi-heading h3 span {
+    display: block;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 16px;
+    font-weight: 560;
+  }
+
+  .people-pi-role {
+    margin: 10px 0 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .people-pi-affiliation {
+    max-width: 330px;
+    margin: 5px 0 0;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .people-pi-bio {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 16px;
+    line-height: 1.62;
+  }
+
+  .people-focus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 0;
+    margin-top: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  .people-focus span {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .people-focus span:not(:last-child)::after {
+    width: 1px;
+    height: 13px;
+    margin: 0 12px;
+    content: "";
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .people-pi-footer {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .people-pi-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  .people-pi-stat {
+    min-width: 0;
+    min-height: 96px;
+    padding: 18px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.045);
+  }
+
+  .people-pi-stat strong,
+  .people-pi-stat span {
+    display: block;
+  }
+
+  .people-pi-stat strong {
+    color: #fff;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 21px;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .people-pi-stat span {
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .people-pi-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 15px;
+  }
+
+  .people-pi-links a,
+  .people-panel-link {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14px;
+    font-weight: 650;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .people-pi-links a:hover,
+  .people-panel-link:hover {
+    color: #fff;
+  }
+
+  .people-pi-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .people-pi-links img,
+  .people-pi-links svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+  }
+
+  .people-pi-links img {
+    filter: grayscale(1) brightness(2.2);
+    opacity: 0.82;
+  }
+
+  .people-pi-links svg {
+    fill: currentColor;
+  }
+
+  .people-panel-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .people-team-panel {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+    align-content: space-between;
+    row-gap: 18px;
+  }
+
+  .people-team-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .people-team-heading h3 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .people-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  .people-stat {
+    min-width: 0;
+    min-height: 88px;
+    padding: 16px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.045);
+  }
+
+  .people-stat strong,
+  .people-stat span {
+    display: block;
+  }
+
+  .people-stat strong {
+    color: #fff;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 27px;
+    line-height: 1;
+  }
+
+  .people-stat span {
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .people-carousel-shell {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+    padding-top: 10px;
+  }
+
+  .people-carousel-button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    transition: color 180ms ease, background 180ms ease, opacity 180ms ease;
+  }
+
+  .people-carousel-button:hover:not(:disabled) {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .people-carousel-button:disabled {
+    cursor: default;
+    opacity: 0.28;
+  }
+
+  .people-carousel-button svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .people-member-carousel {
+    display: grid;
+    grid-auto-columns: calc((100% - 56px) / 5);
+    grid-auto-flow: column;
+    gap: 14px;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+
+  .people-member-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .people-member {
+    display: grid;
+    min-width: 0;
+    justify-items: center;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    scroll-snap-align: start;
+  }
+
+  .people-member img {
+    width: 58px;
+    height: 58px;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    border-radius: 50%;
+    object-fit: cover;
+    transition: border-color 180ms ease, transform 180ms ease;
+  }
+
+  .people-member:hover img {
+    border-color: rgba(255, 255, 255, 0.82);
+    transform: translateY(-2px);
+  }
+
+  .people-member-name,
+  .people-member-role {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .people-member-name {
+    margin-top: 9px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .people-member-role {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+  }
+
+  .people-team-copy {
+    margin: 0;
+    padding: 19px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.68);
+    background: rgba(255, 255, 255, 0.035);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .people-strengths {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  .people-strengths span {
+    display: flex;
+    min-height: 72px;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.76);
+    background: rgba(255, 255, 255, 0.035);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  @media (max-width: 1120px) {
+    .people-header-inner,
+    .people-panels {
+      width: min(calc(100% - 48px), 940px);
+    }
+
+    .people-header h2 {
+      font-size: 40px;
+      white-space: normal;
+    }
+
+    .people-hero {
+      height: auto;
+      min-height: 1120px;
+      max-height: none;
+    }
+
+    .people-hero-inner {
+      position: relative;
+      padding: 80px 0;
+    }
+
+    .people-panels {
+      grid-template-columns: 1fr;
+    }
+
+    .people-panel,
+    .people-pi-panel,
+    .people-team-panel {
+      min-height: 0;
+    }
+
+  }
+
+  @media (max-width: 700px) {
+    .people-header-section {
+      padding: var(--home-section-gap) 0 36px;
+    }
+
+    .people-header-inner,
+    .people-panels {
+      width: calc(100% - 40px);
+    }
+
+    .people-header {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .people-header h2 {
+      font-size: 34px;
+    }
+
+    .people-link {
+      margin-top: 0;
+      font-size: 16px;
+    }
+
+    .people-subtitle {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .people-hero {
+      min-height: 0;
+    }
+
+    .people-hero-inner {
+      padding: 60px 0 36px;
+    }
+
+    .people-panel {
+      padding: 24px 22px;
+    }
+
+    .people-pi-heading {
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .people-pi-photo {
+      width: 82px;
+      height: 82px;
+    }
+
+    .people-pi-heading h3 {
+      font-size: 23px;
+    }
+
+    .people-pi-bio {
+      margin-top: 22px;
+      font-size: 15px;
+    }
+
+    .people-pi-footer,
+    .people-team-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .people-team-heading {
+      display: flex;
+      gap: 12px;
+    }
+
+    .people-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .people-member-carousel {
+      grid-auto-columns: calc((100% - 24px) / 3);
+      gap: 12px;
+    }
+
+    .people-strengths {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .people-pi-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .people-pi-stat {
+      min-height: 0;
+    }
+  }
+</style>

@@ -2,12 +2,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { team } from '../../data/team';
 ---
-<BaseLayout title="Our Team | Space Lab" description="Meet the Space Lab team." headerMode="glass" bodyClass="space-theme">
+<BaseLayout title="Our Team | IntelliSense Lab" description="Meet the IntelliSense Lab research team." headerMode="glass" bodyClass="archive-light-theme">
   <main class="publication-archive">
     <section class="publication-hero">
       <div class="container publication-hero-inner">
         <h1 class="publication-title" data-en="Our Team" data-zh="团队成员">Our Team</h1>
-        <p class="publication-lede" data-en="Meet the brilliant minds behind Space Lab" data-zh="认识 Space Lab 的优秀团队成员">Meet the brilliant minds behind Space Lab</p>
+        <p class="publication-lede" data-en="Meet the researchers behind IntelliSense Lab" data-zh="认识 IntelliSense Lab 的研究团队">Meet the researchers behind IntelliSense Lab</p>
       </div>
     </section>
 
@@ -17,7 +17,7 @@ import { team } from '../../data/team';
           <a class="team-card" href={`/our-team/${member.slug}/`}>
             <img class="team-img" src={member.img} alt={member.name} loading="lazy" />
             <div class="team-overlay">
-              <p class="team-name">{member.name}</p>
+              <p class="team-name" data-en={member.name} data-zh={member.nameZh ?? member.name}>{member.name}</p>
               <p class="team-role" data-en={member.role} data-zh={member.roleZh}>{member.role}</p>
               <p class="team-desc" data-en={member.desc} data-zh={member.descZh}>{member.desc}</p>
             </div>
@@ -44,18 +44,20 @@ import { team } from '../../data/team';
   .team-card {
     position: relative;
     aspect-ratio: 1;
-    border-radius: 14px;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
-    border: 4px solid rgba(255, 255, 255, 0.85);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    border: 8px solid #fff;
+    background: #fff;
+    box-shadow: 0 0 0 1px #d9dcdf, 0 10px 28px rgba(17, 24, 39, 0.13);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .team-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border-color: #fff;
+    box-shadow: 0 0 0 1px #c9cdd1, 0 16px 38px rgba(17, 24, 39, 0.18);
   }
 
   .team-img {

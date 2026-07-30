@@ -6,6 +6,7 @@ platform: "GitHub"
 tags: ["Project", "Template", "Demo"]
 image: /assets/cards/collection-photo.jpeg
 githubUrl: "https://github.com/choucisan"
+draft: true
 ---
 
 # Field Notes for an Open Project

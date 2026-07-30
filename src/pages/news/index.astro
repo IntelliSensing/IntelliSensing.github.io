@@ -11,12 +11,12 @@ const filterLabels = Array.from(
   new Set(newsItems.flatMap((item) => item.data.tags))
 ).filter(Boolean);
 ---
-<BaseLayout title="News | Space Lab" description="Latest news and updates from Space Lab." headerMode="glass" bodyClass="space-theme">
+<BaseLayout title="News | IntelliSensing Lab" description="Awards, publications, field activities, and updates from IntelliSensing Lab." headerMode="glass" bodyClass="archive-light-theme">
   <main class="news-archive publication-archive">
     <section class="publication-hero">
       <div class="container publication-hero-inner">
-        <h1 class="publication-title" data-en="News &amp; Updates" data-zh="新闻与动态">News &amp; Updates</h1>
-        <p class="publication-lede" data-en="Stay updated with the latest happenings at Space Lab." data-zh="了解 Space Lab 的最新动态。">Stay updated with the latest happenings at Space Lab.</p>
+        <h1 class="publication-title" data-en="News" data-zh="新闻动态">News</h1>
+        <p class="publication-lede" data-en="Follow our latest publications, awards, field activities, student achievements, and research updates from IntelliSensing Lab." data-zh="关注 IntelliSensing Lab 的最新论文、获奖成果、学术活动、学生成长与研究进展。">Follow our latest publications, awards, field activities, student achievements, and research updates from IntelliSensing Lab.</p>
       </div>
     </section>
 
@@ -45,10 +45,10 @@ const filterLabels = Array.from(
     </section>
   </main>
   <script>
-    const newsSearchInput = document.querySelector('[data-news-search]');
-    const newsFilterButtons = Array.from(document.querySelectorAll('[data-filter]'));
-    const newsCards = Array.from(document.querySelectorAll('[data-news-card]'));
-    const newsEmpty = document.querySelector('[data-news-empty-results]');
+    const newsSearchInput = document.querySelector<HTMLInputElement>('[data-news-search]');
+    const newsFilterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const newsCards = Array.from(document.querySelectorAll<HTMLElement>('[data-news-card]'));
+    const newsEmpty = document.querySelector<HTMLElement>('[data-news-empty-results]');
     let activeNewsFilter = 'all';
 
     const applyNewsFilters = () => {

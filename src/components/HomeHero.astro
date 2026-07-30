@@ -1,0 +1,285 @@
+---
+import GlobeMap from './GlobeMap.astro';
+import StarsCanvas from './StarsCanvas.astro';
+---
+
+<section class="home-hero" aria-labelledby="home-hero-title">
+  <img
+    class="home-hero-background"
+    src="/assets/logo/bg.png"
+    alt="Earth seen from orbit with an astronaut floating above the horizon"
+    fetchpriority="high"
+    decoding="async"
+  />
+  <StarsCanvas mode="overlay" />
+
+  <div class="home-hero-content">
+    <h1
+      id="home-hero-title"
+      data-en="Building machines that perceive and reason — at the crossroads of vision, language and remote sensing"
+      data-zh="在视觉、语言与遥感的交叉处，构建会感知、能认知的智能"
+    >Building machines that perceive and reason — at the crossroads of vision, language and remote sensing</h1>
+    <p
+      class="home-hero-description"
+      data-en="Led by Dr. Wenjia Xu, our group works at the intersection of computer vision, natural language processing and remote sensing, with a focus on multi-modal large language models, agents, and few-shot learning."
+      data-zh="我们由许文嘉老师带领，研究方向横跨计算机视觉、自然语言处理与遥感，聚焦多模态大模型、智能体、小样本学习等前沿问题，致力于让机器像人一样感知世界、理解世界。"
+    >Led by Dr. Wenjia Xu, our group works at the intersection of computer vision, natural language processing and remote sensing, with a focus on multi-modal large language models, agents, and few-shot learning.</p>
+    <div class="home-hero-actions">
+      <a class="home-hero-button is-primary" href="/research/" data-en="Explore research" data-zh="探索研究">Explore research</a>
+      <button class="home-hero-button" id="explore-earth-button" type="button" data-en="Explore earth" data-zh="探索地球">Explore earth</button>
+      <a class="home-hero-button" href="/join-us/" data-en="Join us" data-zh="加入我们">Join us</a>
+    </div>
+  </div>
+
+</section>
+
+<div class="earth-explorer" id="earth-explorer" role="dialog" aria-modal="true" aria-label="Explore Earth" aria-hidden="true" hidden>
+  <button class="earth-explorer-close" id="earth-explorer-close" type="button" aria-label="Close Earth explorer" title="Close">
+    &times;
+  </button>
+  <GlobeMap deferred />
+</div>
+
+<script>
+  const explorer = document.getElementById('earth-explorer');
+  const openButton = document.getElementById('explore-earth-button');
+  const closeButton = document.getElementById('earth-explorer-close');
+  let previousFocus: HTMLElement | null = null;
+
+  const openExplorer = () => {
+    if (!explorer) return;
+    previousFocus = document.activeElement as HTMLElement;
+    explorer.hidden = false;
+    explorer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('earth-explorer-open');
+    window.dispatchEvent(new CustomEvent('earth-explorer:open'));
+    closeButton?.focus();
+  };
+
+  const closeExplorer = () => {
+    if (!explorer) return;
+    explorer.hidden = true;
+    explorer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('earth-explorer-open');
+    previousFocus?.focus();
+  };
+
+  openButton?.addEventListener('click', openExplorer);
+  window.addEventListener('earth-explorer:open-marker', ((event: CustomEvent<{ id?: string }>) => {
+    if (!event.detail?.id) return;
+    openExplorer();
+    window.requestAnimationFrame(() => {
+      window.dispatchEvent(new CustomEvent('earth-explorer:focus-marker', {
+        detail: { id: event.detail.id },
+      }));
+    });
+  }) as EventListener);
+  window.addEventListener('earth-explorer:view-moments', () => {
+    openExplorer();
+    window.requestAnimationFrame(() => {
+      window.dispatchEvent(new CustomEvent('earth-explorer:open-moments'));
+    });
+  });
+  closeButton?.addEventListener('click', closeExplorer);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && explorer && !explorer.hidden) closeExplorer();
+  });
+</script>
+
+<style>
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    height: 88vh;
+    height: 88svh;
+    min-height: 720px;
+    max-height: 940px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .home-hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 50%;
+    filter: brightness(0.88);
+  }
+
+  .home-hero-content {
+    position: absolute;
+    z-index: 3;
+    top: 20%;
+    left: clamp(28px, 7.5%, 128px);
+    display: flex;
+    width: min(900px, calc(100% - 56px));
+    flex-direction: column;
+    align-items: flex-start;
+    color: #fff;
+    text-shadow: 0 3px 24px rgba(0, 0, 0, 0.65);
+  }
+
+  .home-hero-content h1 {
+    margin: 0;
+    font-family: "Public Sans Variable", "Public Sans", Arial, sans-serif;
+    font-size: 60px;
+    font-weight: 780;
+    line-height: 1.06;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  .home-hero-description {
+    max-width: 780px;
+    margin: 24px 0 30px;
+    color: rgba(255, 255, 255, 0.88);
+    font-family: "Public Sans Variable", "Public Sans", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.55;
+    letter-spacing: 0;
+  }
+
+  .home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .home-hero-button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    border: 1px solid rgba(255, 255, 255, 0.64);
+    border-radius: 8px;
+    color: #fff;
+    background: rgba(5, 5, 5, 0.42);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .home-hero-button.is-primary {
+    border-color: #e53935;
+    background: #e53935;
+  }
+
+  .home-hero-button:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .home-hero-button.is-primary:hover {
+    background: #c92f2b;
+  }
+
+  .home-hero-button:focus-visible,
+  .earth-explorer-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+
+  .earth-explorer {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #050510;
+  }
+
+  .earth-explorer[hidden] {
+    display: none;
+  }
+
+  .earth-explorer-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 301;
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(4, 5, 12, 0.64);
+    backdrop-filter: blur(16px);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  :global(body.earth-explorer-open) {
+    overflow: hidden;
+  }
+
+  :global(.earth-explorer .globe-scroll-hint) {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .home-hero-content h1 {
+      font-size: 48px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-hero {
+      height: 760px;
+      min-height: 760px;
+    }
+
+    .home-hero-background {
+      object-position: 55% 50%;
+    }
+
+    .home-hero-content {
+      top: 138px;
+      right: 20px;
+      left: 20px;
+      width: auto;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .home-hero-content h1 {
+      font-size: 36px;
+      line-height: 1.08;
+    }
+
+    .home-hero-description {
+      margin: 18px 0 22px;
+      font-size: 15px;
+      line-height: 1.48;
+    }
+
+    .home-hero-button {
+      min-height: 44px;
+      padding-inline: 18px;
+      font-size: 14px;
+    }
+
+    .earth-explorer-close {
+      top: 14px;
+      right: 14px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero-button {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>

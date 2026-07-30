@@ -1,81 +1,522 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import CollectionCard from '../../components/CollectionCard.astro';
+import ResearchFeedCard from '../../components/ResearchFeedCard.astro';
+import { researchDirections } from '../../data/research';
 
-const collectionItems = (await getCollection('collections'))
+const publications = (await getCollection('publications'))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const newsItems = (await getCollection('news'))
+  .filter((item) => !item.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const blogItems = (await getCollection('blogs'))
   .filter((item) => !item.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const filterLabels = Array.from(
-  new Set(collectionItems.flatMap((item) => [item.data.platform, ...item.data.tags]))
-).filter(Boolean);
+const panels = researchDirections.map((direction) => ({
+  direction,
+  publications: publications.filter((item) => item.data.researchAreas?.includes(direction.id)).slice(0, 3),
+  news: newsItems.filter((item) => item.data.researchAreas?.includes(direction.id)).slice(0, 3),
+  blogs: blogItems.filter((item) => item.data.researchAreas?.includes(direction.id)).slice(0, 3),
+}));
 ---
-<BaseLayout title="Collections | Space Lab" description="Open-source projects, datasets, and research artifacts." headerMode="glass" bodyClass="space-theme">
-  <main class="collection-archive">
-    <section class="collection-hero">
-      <div class="container collection-hero-inner">
-        <h1 class="collection-title" data-en="Collections, projects, and open resources" data-zh="开源项目、数据集与公共资源">Collections, projects, and open resources</h1>
-        <p class="collection-lede" data-en="Search open-source projects, datasets, and research artifacts released on GitHub and Hugging Face." data-zh="检索在 GitHub 和 Hugging Face 上发布的开源项目、数据集和研究资源。">Search open-source projects, datasets, and research artifacts released on GitHub and Hugging Face.</p>
+
+<BaseLayout
+  title="Research | IntelliSense Lab"
+  description="Research directions, publications, news, and technical writing from IntelliSense Lab."
+  headerMode="glass"
+  bodyClass="space-theme research-page"
+  showStars={false}
+>
+  <script is:inline>
+    if (/\/collections\/?$/.test(window.location.pathname)) {
+      const researchPath = window.location.pathname.replace(/\/collections\/?$/, '/research/');
+      window.location.replace(`${researchPath}${window.location.search}${window.location.hash}`);
+    }
+  </script>
+  <main class="research-hub" data-research-hub>
+    <section class="research-hub-hero" aria-labelledby="research-hub-title">
+      <div class="research-hub-inner">
+        <h1 id="research-hub-title" data-en="Research" data-zh="研究方向">Research</h1>
+        <p
+          class="research-hub-description"
+          data-en="Four connected research directions spanning perception, understanding, learning, and decision-making across vision, language, and remote sensing."
+          data-zh="围绕感知、理解、学习与决策，我们在视觉、语言和遥感的交叉处形成四个相互关联的研究方向。"
+        >Four connected research directions spanning perception, understanding, learning, and decision-making across vision, language, and remote sensing.</p>
       </div>
     </section>
 
-    <section class="section collection-results">
-      <div class="container">
-        <div class="collection-search-panel">
-          <label class="collection-search" for="collection-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" />
-            </svg>
-            <input id="collection-search" type="search" placeholder={`Search ${collectionItems.length} items...`} autocomplete="off" data-collection-search data-count={collectionItems.length} data-i18n-placeholder-en={`Search {n} items...`} data-i18n-placeholder-zh={`搜索 {n} 个项目...`} />
-          </label>
-          <div class="filter-pills" aria-label="Collection filters">
-            <button class="filter-pill is-active" type="button" data-filter="all" data-en="All" data-zh="全部">All</button>
-            {filterLabels.map((label) => (
-              <button class="filter-pill" type="button" data-filter={label.toLowerCase()}>{label}</button>
-            ))}
-          </div>
+    <section class="research-workspace" aria-label="Research directions">
+      <div class="research-hub-inner">
+        <div class="research-tabs" role="tablist" aria-label="Choose a research direction">
+          {researchDirections.map((direction, index) => (
+            <button
+              class:list={['research-tab', { 'is-active': index === 0 }]}
+              type="button"
+              role="tab"
+              id={`research-tab-${direction.id}`}
+              aria-controls={`research-panel-${direction.id}`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}
+              data-research-tab={direction.id}
+            >
+              <span>{direction.number}</span>
+              <strong data-en={direction.title} data-zh={direction.titleZh}>{direction.title}</strong>
+            </button>
+          ))}
         </div>
 
-        <div class="card-grid collection-grid" data-collection-grid>
-          {collectionItems.map((item) => <CollectionCard item={item} />)}
-        </div>
-        <p class="empty-results" data-empty-results hidden data-en="No collections match your search yet." data-zh="暂无匹配的项目。">No collections match your search yet.</p>
+        {panels.map(({ direction, publications, news, blogs }, index) => (
+          <section
+            class="research-panel"
+            id={`research-panel-${direction.id}`}
+            role="tabpanel"
+            aria-labelledby={`research-tab-${direction.id}`}
+            data-research-panel={direction.id}
+            hidden={index !== 0}
+          >
+            <header class="research-panel-header">
+              <img src={direction.image} alt={direction.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+              <div class="research-panel-header-shade"></div>
+              <div class="research-panel-header-copy">
+                <span>{direction.number}</span>
+                <h2 data-en={direction.title} data-zh={direction.titleZh}>{direction.title}</h2>
+                <p data-en={direction.description} data-zh={direction.descriptionZh}>{direction.description}</p>
+              </div>
+            </header>
+
+            <section class="research-feed" aria-labelledby={`research-publications-${direction.id}`}>
+              <header class="research-feed-header">
+                <h3 id={`research-publications-${direction.id}`} data-en="Latest Publications" data-zh="最新论文">Latest Publications</h3>
+                <a href="/publications/" data-en="View all publications" data-zh="查看全部论文">View all publications <span aria-hidden="true">→</span></a>
+              </header>
+              {publications.length > 0 ? (
+                <div class="research-feed-grid">
+                  {publications.map((item) => <ResearchFeedCard item={item} kind="publication" />)}
+                </div>
+              ) : (
+                <p class="research-feed-empty" data-en="Publications for this direction will appear here." data-zh="该方向的论文将在这里展示。">Publications for this direction will appear here.</p>
+              )}
+            </section>
+
+            <section class="research-feed" aria-labelledby={`research-news-${direction.id}`}>
+              <header class="research-feed-header">
+                <h3 id={`research-news-${direction.id}`} data-en="Latest News" data-zh="最新新闻">Latest News</h3>
+                <a href="/news/" data-en="View all news" data-zh="查看全部新闻">View all news <span aria-hidden="true">→</span></a>
+              </header>
+              {news.length > 0 ? (
+                <div class="research-feed-grid">
+                  {news.map((item) => <ResearchFeedCard item={item} kind="news" />)}
+                </div>
+              ) : (
+                <p class="research-feed-empty" data-en="News for this direction will appear here." data-zh="该方向的新闻将在这里展示。">News for this direction will appear here.</p>
+              )}
+            </section>
+
+            <section class="research-feed" aria-labelledby={`research-blogs-${direction.id}`}>
+              <header class="research-feed-header">
+                <h3 id={`research-blogs-${direction.id}`} data-en="Latest Blogs" data-zh="最新博客">Latest Blogs</h3>
+                <a href="/blogs/" data-en="View all blogs" data-zh="查看全部博客">View all blogs <span aria-hidden="true">→</span></a>
+              </header>
+              {blogs.length > 0 ? (
+                <div class="research-feed-grid">
+                  {blogs.map((item) => <ResearchFeedCard item={item} kind="blog" />)}
+                </div>
+              ) : (
+                <p class="research-feed-empty" data-en="Blogs for this direction will appear here." data-zh="该方向的博客将在这里展示。">Blogs for this direction will appear here.</p>
+              )}
+            </section>
+          </section>
+        ))}
       </div>
     </section>
   </main>
+
   <script>
-    const searchInput = document.querySelector('[data-collection-search]');
-    const filterButtons = Array.from(document.querySelectorAll('[data-filter]'));
-    const cards = Array.from(document.querySelectorAll('[data-collection-card]'));
-    const empty = document.querySelector('[data-empty-results]');
-    let activeFilter = 'all';
+    const initializeResearchHub = () => {
+      document.querySelectorAll<HTMLElement>('[data-research-hub]').forEach((hub) => {
+        if (hub.dataset.ready === 'true') return;
+        hub.dataset.ready = 'true';
 
-    const applyFilters = () => {
-      const query = searchInput?.value.trim().toLowerCase() ?? '';
-      let visibleCount = 0;
+        const tabs = Array.from(hub.querySelectorAll<HTMLButtonElement>('[data-research-tab]'));
+        const panels = Array.from(hub.querySelectorAll<HTMLElement>('[data-research-panel]'));
+        const ids = tabs.map((tab) => tab.dataset.researchTab).filter(Boolean) as string[];
 
-      cards.forEach((card) => {
-        const text = card.dataset.search ?? '';
-        const filters = card.dataset.filters ?? '';
-        const matchesQuery = !query || text.includes(query);
-        const matchesFilter = activeFilter === 'all' || filters.includes(activeFilter);
-        const isVisible = matchesQuery && matchesFilter;
+        const activate = (requestedId: string | null, updateUrl = false) => {
+          const id = requestedId && ids.includes(requestedId) ? requestedId : ids[0];
+          if (!id) return;
 
-        card.toggleAttribute('hidden', !isVisible);
-        if (isVisible) visibleCount += 1;
+          tabs.forEach((tab) => {
+            const active = tab.dataset.researchTab === id;
+            tab.classList.toggle('is-active', active);
+            tab.setAttribute('aria-selected', String(active));
+            tab.tabIndex = active ? 0 : -1;
+          });
+          panels.forEach((panel) => {
+            panel.hidden = panel.dataset.researchPanel !== id;
+          });
+
+          if (updateUrl) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('direction', id);
+            window.history.pushState({ direction: id }, '', url);
+          }
+        };
+
+        tabs.forEach((tab, index) => {
+          tab.addEventListener('click', () => activate(tab.dataset.researchTab ?? null, true));
+          tab.addEventListener('keydown', (event) => {
+            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+            event.preventDefault();
+            const offset = event.key === 'ArrowRight' ? 1 : -1;
+            const nextTab = tabs[(index + offset + tabs.length) % tabs.length];
+            nextTab.focus();
+            activate(nextTab.dataset.researchTab ?? null, true);
+          });
+        });
+
+        window.addEventListener('popstate', () => {
+          activate(new URLSearchParams(window.location.search).get('direction'));
+        });
+        activate(new URLSearchParams(window.location.search).get('direction'));
       });
-
-      if (empty) empty.hidden = visibleCount !== 0;
     };
 
-    searchInput?.addEventListener('input', applyFilters);
-    filterButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        activeFilter = button.dataset.filter ?? 'all';
-        filterButtons.forEach((item) => item.classList.toggle('is-active', item === button));
-        applyFilters();
-      });
-    });
+    initializeResearchHub();
+    document.addEventListener('astro:page-load', initializeResearchHub);
   </script>
 </BaseLayout>
+
+<style>
+  .research-hub {
+    color: #111;
+    background: #fff;
+  }
+
+  .research-hub-inner {
+    width: min(calc(100% - 96px), 1260px);
+    margin-inline: auto;
+  }
+
+  .research-hub-hero {
+    min-height: 500px;
+    padding: 142px 0 76px;
+    color: #fff;
+    background-color: #07090d;
+    background-image: url('/assets/logo/bg.png');
+    background-position: center 44%;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .research-hub-hero .research-hub-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .research-hub-hero h1 {
+    margin: 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 64px;
+    font-weight: 820;
+    line-height: 1;
+    letter-spacing: 0;
+    text-shadow: 0 3px 24px rgba(0, 0, 0, 0.65);
+  }
+
+  .research-hub-description {
+    max-width: 780px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 17px;
+    line-height: 1.6;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.72);
+    transform: translateY(50px);
+  }
+
+  .research-workspace {
+    padding: 48px 0 120px;
+    background: #fff;
+  }
+
+  .research-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid #d9dcdf;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f3f4f5;
+  }
+
+  .research-tab {
+    display: grid;
+    min-width: 0;
+    min-height: 96px;
+    padding: 18px 20px;
+    border: 0;
+    border-right: 1px solid #d9dcdf;
+    align-content: center;
+    gap: 8px;
+    color: #555b61;
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .research-tab:last-child {
+    border-right: 0;
+  }
+
+  .research-tab > span {
+    color: #9a9ea3;
+    font-size: 11px;
+    font-weight: 760;
+  }
+
+  .research-tab strong {
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 720;
+    line-height: 1.3;
+  }
+
+  .research-tab.is-active {
+    color: #fff;
+    background: #111;
+  }
+
+  .research-tab.is-active > span {
+    color: #ef4a45;
+  }
+
+  .research-tab:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid #ef4a45;
+    outline-offset: -3px;
+  }
+
+  .research-panel[hidden] {
+    display: none;
+  }
+
+  .research-panel-header {
+    position: relative;
+    min-height: 380px;
+    margin-top: 40px;
+    overflow: hidden;
+    border-radius: 6px;
+    color: #fff;
+    background: #111;
+  }
+
+  .research-panel-header > img,
+  .research-panel-header-shade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .research-panel-header > img {
+    object-fit: cover;
+  }
+
+  .research-panel-header-shade {
+    background: linear-gradient(90deg, rgba(3, 7, 12, 0.88) 0%, rgba(3, 7, 12, 0.58) 52%, rgba(3, 7, 12, 0.12) 100%);
+  }
+
+  .research-panel-header-copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: min(100%, 760px);
+    min-height: 380px;
+    padding: 54px;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .research-panel-header-copy > span {
+    color: #ef4a45;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .research-panel-header h2 {
+    margin: 14px 0 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: 0;
+  }
+
+  .research-panel-header p {
+    max-width: 680px;
+    margin: 18px 0 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 17px;
+    line-height: 1.58;
+  }
+
+  .research-feed {
+    padding-top: 80px;
+  }
+
+  .research-feed + .research-feed {
+    margin-top: 80px;
+    border-top: 1px solid #dedfe1;
+  }
+
+  .research-feed-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 30px;
+  }
+
+  .research-feed-header h3 {
+    margin: 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  .research-feed-header a {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #252525;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .research-feed-header a:hover {
+    color: #c93430;
+  }
+
+  .research-feed-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+
+  .research-feed-empty {
+    margin: 0;
+    padding: 30px 0;
+    border-top: 1px solid #e1e3e5;
+    border-bottom: 1px solid #e1e3e5;
+    color: #73777c;
+    font-size: 15px;
+  }
+
+  @media (max-width: 900px) {
+    .research-hub-inner {
+      width: min(calc(100% - 48px), 840px);
+    }
+
+    .research-tabs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .research-tab:nth-child(2) {
+      border-right: 0;
+    }
+
+    .research-tab:nth-child(-n + 2) {
+      border-bottom: 1px solid #d9dcdf;
+    }
+
+    .research-feed-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .research-hub-inner {
+      width: calc(100% - 40px);
+    }
+
+    .research-hub-hero {
+      min-height: 420px;
+      padding: 122px 0 58px;
+      background-position: 56% 46%;
+    }
+
+    .research-hub-hero h1 {
+      font-size: 46px;
+    }
+
+    .research-workspace {
+      padding: 30px 0 80px;
+    }
+
+    .research-tabs {
+      grid-template-columns: 1fr;
+    }
+
+    .research-tab,
+    .research-tab:nth-child(2) {
+      min-height: 76px;
+      border-right: 0;
+      border-bottom: 1px solid #d9dcdf;
+    }
+
+    .research-tab:last-child {
+      border-bottom: 0;
+    }
+
+    .research-panel-header {
+      min-height: 440px;
+      margin-top: 28px;
+    }
+
+    .research-panel-header-shade {
+      background: linear-gradient(180deg, rgba(3, 7, 12, 0.14) 12%, rgba(3, 7, 12, 0.9) 100%);
+    }
+
+    .research-panel-header-copy {
+      min-height: 440px;
+      padding: 28px 24px;
+    }
+
+    .research-panel-header h2 {
+      font-size: 31px;
+    }
+
+    .research-panel-header p {
+      font-size: 15px;
+    }
+
+    .research-feed,
+    .research-feed + .research-feed {
+      padding-top: 60px;
+      margin-top: 60px;
+    }
+
+    .research-feed:first-of-type {
+      margin-top: 0;
+    }
+
+    .research-feed-header {
+      display: grid;
+      gap: 14px;
+    }
+
+    .research-feed-header h3 {
+      font-size: 28px;
+    }
+
+    .research-feed-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+</style>

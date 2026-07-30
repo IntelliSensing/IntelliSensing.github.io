@@ -1,4 +1,51 @@
-export const team = [
+export interface TeamMember {
+  slug: string;
+  name: string;
+  nameZh?: string;
+  publicationNames?: string[];
+  role: string;
+  roleZh: string;
+  img: string;
+  desc: string;
+  descZh: string;
+  email?: string;
+  github?: string;
+  x?: string;
+  scholar?: string;
+  homepage?: string;
+  huggingface?: string;
+  linkedin?: string;
+  facebook?: string;
+  instagram?: string;
+  wechat?: string;
+  weibo?: string;
+  bilibili?: string;
+  honors: string[];
+  honorsZh: string[];
+  personal: string;
+  personalZh: string;
+}
+
+export const team: TeamMember[] = [
+  {
+    slug: 'wenjia-xu',
+    name: 'Wenjia Xu',
+    nameZh: '许文嘉',
+    publicationNames: ['Wenjia Xu', '许文嘉'],
+    role: 'Associate Professor · PhD Supervisor',
+    roleZh: '副教授 · 博士生导师',
+    img: '/assets/team/wenjia-xu.jpeg',
+    desc: 'Associate Professor at the School of Information and Communication Engineering, BUPT. Research interests span computer vision, natural language processing, remote sensing, multimodal large language models, agents, and few-shot learning.',
+    descZh: '北京邮电大学信息与通信工程学院副教授、博士生导师。研究方向横跨计算机视觉、自然语言处理与遥感，聚焦多模态大模型、智能体与小样本学习。',
+    email: 'xuwenjia@bupt.edu.cn',
+    github: 'https://github.com/wenjiaXu',
+    scholar: 'https://scholar.google.com/citations?user=mW2Jtu0AAAAJ&hl=en',
+    homepage: 'https://teacher.bupt.edu.cn/xuwenjia/zh_CN/index.htm',
+    honors: ['National Scholarship for Graduate Students, Ministry of Education'],
+    honorsZh: ['教育部研究生国家奖学金'],
+    personal: '',
+    personalZh: '',
+  },
   {
     slug: 'aleksandra',
     name: 'Aleksandra',
@@ -7,39 +54,6 @@ export const team = [
     img: '/assets/team/aleksandra.avif',
     desc: 'Research interests in computer vision and multimodal learning.\nFocused on 3D scene reconstruction.',
     descZh: '研究方向为计算机视觉和多模态学习。',
-    email: 'aleksandra@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    scholar: 'https://scholar.google.com/',
-    huggingface: 'https://huggingface.co/',
-    linkedin: 'https://linkedin.com/',
-    facebook: 'https://facebook.com/',
-    instagram: 'https://instagram.com/',
-    wechat: 'aleksandra_wechat',
-    weibo: 'https://weibo.com/',
-    bilibili: 'https://bilibili.com/',
-    publications: [
-      {
-        title: 'RayZer: A Self-supervised Large View Synthesis Model',
-        authors: 'Hanwen Jiang, Hao Tan, Peng Wang, Haian Jin, Yue Zhao, Sai Bi, Kai Zhang, Fujun Luan, Kalyan Sunkavalli, Qixing Huang, Georgios Pavlakos',
-        venue: 'ICCV, 2025 (Best Student Paper Honorable Mention, Best Paper Candidate, Oral Presentation)',
-        img: '/assets/team/rayzer.jpeg',
-        links: [
-          { label: 'Project page', url: '#' },
-          { label: 'Paper', url: '#' },
-        ],
-      },
-      {
-        title: 'RayZer: A Self-supervised Large View Synthesis Model',
-        authors: 'Hanwen Jiang, Hao Tan, Peng Wang, Haian Jin, Yue Zhao, Sai Bi, Kai Zhang, Fujun Luan, Kalyan Sunkavalli, Qixing Huang, Georgios Pavlakos',
-        venue: 'ICCV, 2025 (Best Student Paper Honorable Mention, Best Paper Candidate, Oral Presentation)',
-        img: '/assets/team/rayzer.jpeg',
-        links: [
-          { label: 'Project page', url: '#' },
-          { label: 'Paper', url: '#' },
-        ],
-      },
-    ],
     honors: [
       'Best Student Paper Honorable Mention — ICCV 2025',
       'Outstanding Research Award — University, 2024',
@@ -59,10 +73,6 @@ export const team = [
     img: '/assets/team/anna.avif',
     desc: 'Working on natural language processing and large language models.',
     descZh: '研究方向为自然语言处理和大语言模型。',
-    email: 'anna@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    publications: [],
     honors: [],
     honorsZh: [],
     personal: '',
@@ -76,11 +86,6 @@ export const team = [
     img: '/assets/team/isla.avif',
     desc: 'Focused on deep learning and neural architecture design.',
     descZh: '专注于深度学习和神经网络架构设计。',
-    email: 'isla@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    scholar: 'https://scholar.google.com/',
-    publications: [],
     honors: [],
     honorsZh: [],
     personal: '',
@@ -94,11 +99,6 @@ export const team = [
     img: '/assets/team/kat.avif',
     desc: 'Exploring generative models and representation learning.',
     descZh: '探索生成模型和表征学习。',
-    email: 'kat@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    scholar: 'https://scholar.google.com/',
-    publications: [],
     honors: [],
     honorsZh: [],
     personal: '',
@@ -112,11 +112,6 @@ export const team = [
     img: '/assets/team/laura.avif',
     desc: 'Interested in 3D vision and scene understanding.',
     descZh: '研究方向为 3D 视觉和场景理解。',
-    email: 'laura@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    scholar: 'https://scholar.google.com/',
-    publications: [],
     honors: [],
     honorsZh: [],
     personal: '',
@@ -130,11 +125,6 @@ export const team = [
     img: '/assets/team/screenshot-2026-03-20-at-3.avif',
     desc: 'Research in multimodal alignment and vision-language models.',
     descZh: '研究方向为多模态对齐和视觉语言模型。',
-    email: 'member6@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    scholar: 'https://scholar.google.com/',
-    publications: [],
     honors: [],
     honorsZh: [],
     personal: '',
@@ -148,11 +138,6 @@ export const team = [
     img: '/assets/team/screenshot-2026-03-23-at-3.avif',
     desc: 'Working on efficient training and model compression.',
     descZh: '研究方向为高效训练和模型压缩。',
-    email: 'member7@spacelab.com',
-    github: 'https://github.com/',
-    x: 'https://x.com/',
-    scholar: 'https://scholar.google.com/',
-    publications: [],
     honors: [],
     honorsZh: [],
     personal: '',

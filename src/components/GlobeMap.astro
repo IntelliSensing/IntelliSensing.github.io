@@ -1,12 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
 
+const { deferred = false } = Astro.props;
+
 const markers = (await getCollection('markers'))
   .filter(m => !m.data.draft)
   .map(m => ({
+    id: m.id,
     title: m.data.title,
+    titleEn: m.data.titleEn,
+    titleZh: m.data.titleZh,
     description: m.data.description,
+    descriptionEn: m.data.descriptionEn,
+    descriptionZh: m.data.descriptionZh,
     category: m.data.category,
+    categoryEn: m.data.categoryEn,
+    categoryZh: m.data.categoryZh,
     lng: m.data.lng,
     lat: m.data.lat,
     images: m.data.images,
@@ -15,13 +24,8 @@ const markers = (await getCollection('markers'))
   }));
 ---
 <section class="globe-section" data-galaxy>
-  <div id="globe-container" data-markers={JSON.stringify(markers)}></div>
+  <div id="globe-container" data-markers={JSON.stringify(markers)} data-deferred={deferred ? 'true' : 'false'}></div>
   <div class="globe-overlay"></div>
-  <div class="globe-welcome-overlay" id="globe-welcome-overlay"></div>
-  <div class="globe-welcome" id="globe-welcome">
-    <div class="globe-welcome-title" data-en="Welcome to Space Lab" data-zh="欢迎来到 Space Lab">Welcome to Space Lab</div>
-    <div class="globe-welcome-sub" data-en="Exploring the frontiers of science" data-zh="探索科学前沿">Exploring the frontiers of science</div>
-  </div>
   <div class="globe-search-bar" id="globe-search-bar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
@@ -98,22 +102,44 @@ const markers = (await getCollection('markers'))
 <script>
   import mapboxgl from 'mapbox-gl';
 
+  interface MarkerData {
+    id: string;
+    title: string;
+    titleEn?: string;
+    titleZh?: string;
+    description: string;
+    descriptionEn?: string;
+    descriptionZh?: string;
+    category: string;
+    categoryEn?: string;
+    categoryZh?: string;
+    lng: number;
+    lat: number;
+    images: string[];
+    author: string;
+    date: string;
+  }
+
   const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_TOKEN;
   mapboxgl.accessToken = MAPBOX_TOKEN;
 
   const container = document.getElementById('globe-container');
-  const markersData = JSON.parse(container?.getAttribute('data-markers') || '[]');
+  const markersData = JSON.parse(container?.getAttribute('data-markers') || '[]') as MarkerData[];
 
   let mapRef: any = null;
 
-  if (container) {
+  const initGlobe = () => {
+    if (!container || mapRef) {
+      mapRef?.resize();
+      return;
+    }
+
     const map = new mapboxgl.Map({
       container,
       style: 'mapbox://styles/onethree/cmhlxuxs1002n01pj28o0hhx6',
       zoom: 2.3,
       center: [104, 35],
       attributionControl: false,
-      devIndicator: false,
     });
     mapRef = map;
 
@@ -267,13 +293,19 @@ const markers = (await getCollection('markers'))
       zoomLegends.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
+  };
+
+  if (container?.dataset.deferred === 'true') {
+    window.addEventListener('earth-explorer:open', initGlobe);
+  } else {
+    initGlobe();
   }
 
   // Popup logic
   let currentIndex = 0;
   let currentImages: string[] = [];
 
-  function showPopup(m) {
+  function showPopup(m: MarkerData) {
     const popup = document.getElementById('marker-popup');
     const img = document.getElementById('marker-popup-image') as HTMLImageElement;
     const title = document.getElementById('marker-popup-title');
@@ -285,14 +317,41 @@ const markers = (await getCollection('markers'))
     const nextBtn = document.getElementById('carousel-next');
     const dots = document.getElementById('carousel-dots');
 
-    currentImages = m.images || [m.image];
+    currentImages = m.images;
     currentIndex = 0;
 
     if (img) img.src = currentImages[0];
-    if (title) title.textContent = m.title;
-    if (desc) desc.textContent = m.description;
-    if (cat) cat.textContent = m.category;
-    if (date) date.textContent = new Date(m.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+    const language = document.documentElement.lang === 'zh-CN' ? 'zh' : 'en';
+    const titleEn = m.titleEn || m.title;
+    const titleZh = m.titleZh || m.title;
+    const descriptionEn = m.descriptionEn || m.description;
+    const descriptionZh = m.descriptionZh || m.description;
+    const categoryEn = m.categoryEn || m.category;
+    const categoryZh = m.categoryZh || m.category;
+    const dateValue = new Date(m.date);
+    const dateEn = dateValue.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const dateZh = dateValue.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    if (title) {
+      title.setAttribute('data-en', titleEn);
+      title.setAttribute('data-zh', titleZh);
+      title.textContent = language === 'zh' ? titleZh : titleEn;
+    }
+    if (desc) {
+      desc.setAttribute('data-en', descriptionEn);
+      desc.setAttribute('data-zh', descriptionZh);
+      desc.textContent = language === 'zh' ? descriptionZh : descriptionEn;
+    }
+    if (cat) {
+      cat.setAttribute('data-en', categoryEn);
+      cat.setAttribute('data-zh', categoryZh);
+      cat.textContent = language === 'zh' ? categoryZh : categoryEn;
+    }
+    if (date) {
+      date.setAttribute('data-en', dateEn);
+      date.setAttribute('data-zh', dateZh);
+      date.textContent = language === 'zh' ? dateZh : dateEn;
+    }
     if (author) author.textContent = m.author;
 
     // Carousel controls
@@ -307,6 +366,33 @@ const markers = (await getCollection('markers'))
 
     if (popup) popup.hidden = false;
   }
+
+  function focusMarker(markerId: string) {
+    const marker = markersData.find((item) => item.id === markerId);
+    if (!marker) return;
+
+    initGlobe();
+
+    const flyToMarker = () => {
+      if (!mapRef) return;
+      const popup = document.getElementById('marker-popup');
+      if (popup) popup.hidden = true;
+      mapRef.flyTo({
+        center: [marker.lng, marker.lat],
+        zoom: 5,
+        duration: 1600,
+        essential: true,
+      });
+      mapRef.once('moveend', () => showPopup(marker));
+    };
+
+    if (mapRef?.loaded()) flyToMarker();
+    else mapRef?.once('load', flyToMarker);
+  }
+
+  window.addEventListener('earth-explorer:focus-marker', ((event: CustomEvent<{ id?: string }>) => {
+    if (event.detail?.id) focusMarker(event.detail.id);
+  }) as EventListener);
 
   function goToImage(index: number) {
     const img = document.getElementById('marker-popup-image') as HTMLImageElement;
@@ -382,21 +468,37 @@ const markers = (await getCollection('markers'))
   function renderSearchResults(query: string) {
     if (!searchResults) return;
     const q = query.toLowerCase().trim();
-    const matched = markersData.filter((m: any) => {
+    const matched = markersData.filter((m) => {
       if (!q) return true;
-      const text = [m.title, m.description, m.category, m.author].join(' ').toLowerCase();
+      const text = [
+        m.title,
+        m.titleEn,
+        m.titleZh,
+        m.description,
+        m.descriptionEn,
+        m.descriptionZh,
+        m.category,
+        m.categoryEn,
+        m.categoryZh,
+        m.author,
+      ].filter(Boolean).join(' ').toLowerCase();
       return text.includes(q);
     });
 
-    searchResults.innerHTML = matched.map((m: any) => `
-      <div class="marker-search-item" data-marker-index="${markersData.indexOf(m)}">
-        <img src="${m.images[0]}" alt="${m.title}" />
-        <div>
-          <div class="marker-search-item-title">${m.title}</div>
-          <div class="marker-search-item-meta">${m.category} &middot; ${m.author}</div>
+    const language = document.documentElement.lang === 'zh-CN' ? 'zh' : 'en';
+    searchResults.innerHTML = matched.map((m) => {
+      const markerTitle = language === 'zh' ? (m.titleZh || m.title) : (m.titleEn || m.title);
+      const markerCategory = language === 'zh' ? (m.categoryZh || m.category) : (m.categoryEn || m.category);
+      return `
+        <div class="marker-search-item" data-marker-index="${markersData.indexOf(m)}">
+          <img src="${m.images[0]}" alt="${markerTitle}" />
+          <div>
+            <div class="marker-search-item-title">${markerTitle}</div>
+            <div class="marker-search-item-meta">${markerCategory} &middot; ${m.author}</div>
+          </div>
         </div>
-      </div>
-    `).join('') || '<div class="marker-search-empty">No results found</div>';
+      `;
+    }).join('') || '<div class="marker-search-empty">No results found</div>';
 
     searchResults.querySelectorAll('.marker-search-item').forEach((el) => {
       el.addEventListener('click', () => {
@@ -411,22 +513,18 @@ const markers = (await getCollection('markers'))
     });
   }
 
-  // Welcome title — click to dismiss, auto-dismiss after 3s
-  const welcome = document.getElementById('globe-welcome');
-  const welcomeOverlay = document.getElementById('globe-welcome-overlay');
-  function dismissWelcome() {
-    if (!welcome || welcome.classList.contains('fade-out')) return;
-    welcome.classList.add('fade-out');
-    if (welcomeOverlay) welcomeOverlay.hidden = true;
-    welcome.addEventListener('animationend', () => {
-      if (welcome) welcome.hidden = true;
-    }, { once: true });
-  }
-  welcomeOverlay?.addEventListener('click', dismissWelcome);
-  setTimeout(dismissWelcome, 3000);
+  window.addEventListener('earth-explorer:open-moments', () => {
+    initGlobe();
+    const popup = document.getElementById('marker-popup');
+    if (popup) popup.hidden = true;
+    if (searchOverlay) searchOverlay.hidden = false;
+    if (searchInput) searchInput.value = '';
+    renderSearchResults('');
+    window.requestAnimationFrame(() => searchInput?.focus());
+  });
 
   // Fade out scroll hint on scroll
-  const hint = document.querySelector('[data-galaxy-hint]');
+  const hint = document.querySelector<HTMLElement>('[data-galaxy-hint]');
   window.addEventListener('scroll', () => {
     if (hint) hint.style.opacity = String(Math.max(0, 1 - window.scrollY / 200));
   }, { passive: true });
@@ -840,63 +938,6 @@ const markers = (await getCollection('markers'))
     to { opacity: 1; transform: scale(1); }
   }
 
-  /* Welcome overlay — transparent click area */
-  .globe-welcome-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    cursor: pointer;
-  }
-
-  .globe-welcome-overlay[hidden] {
-    display: none;
-  }
-
-  /* Welcome — centered, simple fade */
-  .globe-welcome {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    z-index: 11;
-    pointer-events: none;
-    animation: welcomeFadeIn 1.5s ease-out both;
-  }
-
-  .globe-welcome.fade-out {
-    animation: welcomeFadeOut 1.5s ease-in forwards;
-  }
-
-  .globe-welcome-title {
-    font-family: "Faire Octave", Georgia, "Times New Roman", serif;
-    font-size: clamp(48px, 8vw, 100px);
-    font-weight: 400;
-    color: #fff;
-    letter-spacing: -0.02em;
-    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
-  }
-
-  .globe-welcome-sub {
-    font-family: inherit;
-    font-size: clamp(20px, 2vw, 32px);
-    font-weight: 400;
-    color: #fff;
-    letter-spacing: -0.03em;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-  }
-
-  @keyframes welcomeFadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes welcomeFadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
 
   /* Globe search trigger bar */
   .globe-search-bar {

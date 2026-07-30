@@ -1,64 +1,119 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="Contact | Space Lab" description="Get in touch with Space Lab." headerMode="glass" bodyClass="space-theme">
+<BaseLayout title="Contact | IntelliSensing Lab" description="Contact IntelliSensing Lab at the School of Information and Communication Engineering, BUPT." headerMode="glass" bodyClass="space-theme">
   <main class="publication-archive">
     <section class="publication-hero">
       <div class="container publication-hero-inner">
-        <h1 class="publication-title" data-en="Contact Us" data-zh="联系我们">Contact Us</h1>
-        <p class="publication-lede" data-en="Want to collaborate or have questions? Reach out to us." data-zh="想合作或有疑问？请联系我们。">Want to collaborate or have questions? Reach out to us.</p>
+        <h1 class="publication-title" data-en="Contact" data-zh="联系我们">Contact</h1>
+        <p class="publication-lede" data-en="Email is the best way to reach us. We look forward to hearing from you." data-zh="电子邮件是联系我们最便捷的方式。期待收到您的来信。">Email is the best way to reach us. We look forward to hearing from you.</p>
       </div>
     </section>
 
     <section class="section contact-section">
-      <div class="container contact-grid">
-        <a class="contact-card" href="mailto:choucisan@gmail.com" aria-label="Gmail" title="choucisan@gmail.com">
-          <img class="contact-icon" src="/assets/icons/gmail.svg" alt="Gmail" />
-        </a>
-        <a class="contact-card" href="https://x.com/spacelab" target="_blank" rel="noreferrer" aria-label="X" title="X">
-          <img class="contact-icon" src="/assets/icons/x.svg" alt="X" />
-        </a>
-        <a class="contact-card" href="https://github.com/choucisan" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
-          <img class="contact-icon" src="/assets/icons/github.svg" alt="GitHub" />
-        </a>
-        <a class="contact-card" href="https://huggingface.co/choucisan" target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
-          <img class="contact-icon" src="/assets/icons/huggingface.svg" alt="Hugging Face" />
-        </a>
+      <div class="container contact-details">
+        <dl class="contact-list">
+          <div class="contact-item">
+            <dt data-en="Email" data-zh="邮箱">Email</dt>
+            <dd><a href="mailto:xuwenjia@bupt.edu.cn">xuwenjia@bupt.edu.cn</a></dd>
+          </div>
+          <div class="contact-item">
+            <dt data-en="Address" data-zh="地址">Address</dt>
+            <dd
+              data-en="No. 10 Xitucheng Road, Haidian District · School of Information and Communication Engineering, BUPT, Beijing 100876, China"
+              data-zh="中国北京市海淀区西土城路 10 号 · 北京邮电大学信息与通信工程学院，邮编 100876"
+            >No. 10 Xitucheng Road, Haidian District · School of Information and Communication Engineering, BUPT, Beijing 100876, China</dd>
+          </div>
+          <div class="contact-item">
+            <dt data-en="Scholar" data-zh="学术主页">Scholar</dt>
+            <dd>
+              <a href="https://scholar.google.com/citations?user=mW2Jtu0AAAAJ&amp;hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
+            </dd>
+          </div>
+        </dl>
       </div>
     </section>
+
   </main>
 </BaseLayout>
 
 <style>
   .contact-section {
-    padding-top: 0;
+    padding: 24px 0 120px;
   }
 
-  .contact-grid {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    flex-wrap: wrap;
+  .contact-details {
+    width: min(calc(100% - 96px), 1080px);
   }
 
-  .contact-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 22px;
-    border-radius: 50%;
-    background: #fff;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+  .contact-list {
+    margin: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   }
 
-  .contact-card:hover {
-    transform: scale(1.08);
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+  .contact-item {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 36px;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
 
-  .contact-icon {
-    width: 32px;
-    height: 32px;
+  .contact-item:last-child {
+    border-bottom: 0;
+  }
+
+  .contact-item dt,
+  .contact-item dd {
+    margin: 0;
+  }
+
+  .contact-item dt {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
+  .contact-item dd {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    line-height: 1.55;
+  }
+
+  .contact-item a {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: rgba(239, 74, 69, 0.7);
+    text-underline-offset: 6px;
+    transition: color 180ms ease, text-decoration-color 180ms ease;
+  }
+
+  .contact-item a:hover {
+    color: #ef4a45;
+    text-decoration-color: #ef4a45;
+  }
+
+  @media (max-width: 700px) {
+    .contact-section {
+      padding: 10px 0 80px;
+    }
+
+    .contact-details {
+      width: calc(100% - 40px);
+    }
+
+    .contact-item {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 26px 0;
+    }
+
+    .contact-item dd {
+      font-size: 17px;
+    }
+
   }
 </style>

@@ -6,6 +6,7 @@ platform: "Hugging Face"
 tags: ["Dataset"]
 image: /assets/cards/publication-sky.png
 huggingfaceUrl: "https://huggingface.co"
+draft: true
 ---
 
 Use this template for datasets, models, spaces, and research artifacts.

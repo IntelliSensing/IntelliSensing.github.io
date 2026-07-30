@@ -11,12 +11,12 @@ const filterLabels = Array.from(
   new Set(publications.flatMap((item) => [item.data.venue, ...item.data.tags]))
 ).filter(Boolean);
 ---
-<BaseLayout title="Publications | Space Lab" description="Accepted papers, conference publications, and journal articles." headerMode="glass" bodyClass="space-theme">
+<BaseLayout title="Publications | IntelliSensing Lab" description="Peer-reviewed publications from IntelliSensing Lab across vision, language, and remote sensing." headerMode="glass" bodyClass="archive-light-theme">
   <main class="publication-archive">
     <section class="publication-hero">
       <div class="container publication-hero-inner">
-        <h1 class="publication-title" data-en="Publications, papers, and research notes" data-zh="论文、学术文章与研究笔记">Publications, papers, and research notes</h1>
-        <p class="publication-lede" data-en="Search accepted papers, conference work, and journal articles." data-zh="检索已发表的会议论文和期刊文章。">Search accepted papers, conference work, and journal articles.</p>
+        <h1 class="publication-title" data-en="Publications" data-zh="论文成果">Publications</h1>
+        <p class="publication-lede" data-en="Peer-reviewed work from IntelliSensing Lab across computer vision, natural language processing, multimodal learning, and remote sensing." data-zh="汇集 IntelliSensing Lab 在计算机视觉、自然语言处理、多模态学习与遥感领域的同行评审研究成果。">Peer-reviewed work from IntelliSensing Lab across computer vision, natural language processing, multimodal learning, and remote sensing.</p>
       </div>
     </section>
 
@@ -45,10 +45,10 @@ const filterLabels = Array.from(
     </section>
   </main>
   <script>
-    const publicationSearchInput = document.querySelector('[data-publication-search]');
-    const publicationFilterButtons = Array.from(document.querySelectorAll('[data-filter]'));
-    const publicationCards = Array.from(document.querySelectorAll('[data-publication-card]'));
-    const publicationEmpty = document.querySelector('[data-publication-empty-results]');
+    const publicationSearchInput = document.querySelector<HTMLInputElement>('[data-publication-search]');
+    const publicationFilterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const publicationCards = Array.from(document.querySelectorAll<HTMLElement>('[data-publication-card]'));
+    const publicationEmpty = document.querySelector<HTMLElement>('[data-publication-empty-results]');
     let activePublicationFilter = 'all';
 
     const applyPublicationFilters = () => {

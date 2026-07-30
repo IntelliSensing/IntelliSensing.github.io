@@ -1,7 +1,9 @@
 ---
+import { getPublicationPrimaryHref } from '../utils/publications';
+
 const { item } = Astro.props;
 const tag = item.data.tags?.[0] ?? item.data.venue;
-const href = `/publications/${item.id}/`;
+const href = getPublicationPrimaryHref(item);
 const searchText = [
   item.data.title,
   item.data.description,

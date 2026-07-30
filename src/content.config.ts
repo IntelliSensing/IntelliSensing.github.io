@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { researchAreaIds } from './data/research';
 
 const publications = defineCollection({
   loader: glob({
@@ -14,10 +15,16 @@ const publications = defineCollection({
     venue: z.string(),
     authors: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
+    researchAreas: z.array(z.enum(researchAreaIds)).min(1),
     image: z.string(),
+    projectUrl: z.string().url().optional(),
     paperUrl: z.string().url().optional(),
     codeUrl: z.string().url().optional(),
     paperSite: z.string().optional(),
+    links: z.array(z.object({
+      label: z.string(),
+      url: z.string()
+    })).default([]),
     draft: z.boolean().default(false)
   })
 });
@@ -53,6 +60,7 @@ const blogs = defineCollection({
     pubDate: z.coerce.date(),
     category: z.string(),
     tags: z.array(z.string()).default([]),
+    researchAreas: z.array(z.enum(researchAreaIds)).min(1),
     image: z.string(),
     draft: z.boolean().default(false)
   })
@@ -66,9 +74,14 @@ const news = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    titleEn: z.string().optional(),
+    titleZh: z.string().optional(),
     description: z.string(),
+    descriptionEn: z.string().optional(),
+    descriptionZh: z.string().optional(),
     pubDate: z.coerce.date(),
     tags: z.array(z.string()).default([]),
+    researchAreas: z.array(z.enum(researchAreaIds)).min(1),
     image: z.string(),
     draft: z.boolean().default(false)
   })
@@ -82,8 +95,14 @@ const markers = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    titleEn: z.string().optional(),
+    titleZh: z.string().optional(),
     description: z.string(),
+    descriptionEn: z.string().optional(),
+    descriptionZh: z.string().optional(),
     category: z.string(),
+    categoryEn: z.string().optional(),
+    categoryZh: z.string().optional(),
     lng: z.number(),
     lat: z.number(),
     images: z.array(z.string()),

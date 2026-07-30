@@ -1,0 +1,334 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getPublicationPrimaryHref } from '../utils/publications';
+
+interface Props {
+  items?: CollectionEntry<'publications'>[];
+}
+
+const { items = [] } = Astro.props;
+const columns = Math.max(1, Math.min(items.length, 3));
+const publicationItems = items.map((item) => ({
+  item,
+  href: getPublicationPrimaryHref(item),
+}));
+---
+
+<section class="latest-publications" id="publications" aria-labelledby="latest-publications-title">
+  <div class="latest-publications-inner">
+    <header class="latest-publications-header">
+      <div class="latest-publications-header-top">
+        <h2
+          id="latest-publications-title"
+          data-en="Latest Publications"
+          data-zh="最新论文"
+        >Latest Publications</h2>
+        <a class="latest-publications-all" href="/publications/">
+          <span data-en="View publications" data-zh="查看全部论文">View publications</span>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="16" cy="16" r="16"></circle>
+            <path d="M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z"></path>
+          </svg>
+        </a>
+      </div>
+      <p
+        data-en="Our latest work in computer vision, language intelligence, multi-modal learning, and remote sensing."
+        data-zh="我们在计算机视觉、语言智能、多模态学习与遥感领域的最新研究成果。"
+      >Our latest work in computer vision, language intelligence, multi-modal learning, and remote sensing.</p>
+    </header>
+
+    <div
+      class:list={['latest-publications-grid', `has-${columns}-columns`]}
+      style={`--publication-columns: ${columns}`}
+    >
+      {publicationItems.map(({ item, href }) => (
+        <article class="latest-publication-card">
+          <a class="latest-publication-media" href={href} aria-label={`View ${item.data.title}`}>
+            <img src={item.data.image} alt="" loading="lazy" decoding="async" />
+          </a>
+          <div class="latest-publication-content">
+            <h3><a href={href}>{item.data.title}</a></h3>
+            <p class="latest-publication-authors">{item.data.authors.join(', ')}</p>
+            <p class="latest-publication-venue">{item.data.venue}</p>
+            <a class="latest-publication-details" href={href}>
+              <span data-en="View Details" data-zh="查看详情">View Details</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .latest-publications {
+    padding: var(--home-section-gap) 0 0;
+    color: #111;
+    background: #fff;
+  }
+
+  .latest-publications-inner {
+    width: min(calc(100% - 96px), 1260px);
+    margin-inline: auto;
+  }
+
+  .latest-publications-header {
+    margin-bottom: 40px;
+  }
+
+  .latest-publications-header-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 48px;
+  }
+
+  .latest-publications-header h2 {
+    margin: 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+
+  .latest-publications-header p {
+    max-width: 670px;
+    margin: 20px 0 0;
+    color: #5b5b5b;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .latest-publications-all {
+    display: inline-grid;
+    grid-template-columns: max-content 28px;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    color: #111;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 760;
+  }
+
+  .latest-publications-all svg {
+    display: block;
+    width: 28px;
+    height: 28px;
+    transition: transform 180ms ease;
+  }
+
+  .latest-publications-all circle {
+    fill: #e53935;
+  }
+
+  .latest-publications-all path {
+    fill: #fff;
+  }
+
+  .latest-publications-all:hover svg {
+    transform: translateX(3px);
+  }
+
+  .latest-publications-all:focus-visible {
+    outline: 2px solid #e53935;
+    outline-offset: 5px;
+  }
+
+  .latest-publications-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--publication-columns), minmax(0, 1fr));
+    gap: 28px;
+    margin-inline: auto;
+  }
+
+  .latest-publications-grid.has-1-columns {
+    max-width: 404px;
+  }
+
+  .latest-publications-grid.has-2-columns {
+    max-width: 836px;
+  }
+
+  .latest-publications-grid.has-3-columns {
+    max-width: 1260px;
+  }
+
+  .latest-publication-card {
+    display: flex;
+    min-width: 0;
+    min-height: 520px;
+    flex-direction: column;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid rgba(17, 24, 39, 0.1);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 10px 28px rgba(17, 24, 39, 0.07);
+    transition: box-shadow 220ms ease, transform 220ms ease;
+  }
+
+  .latest-publication-card:hover {
+    box-shadow: 0 16px 36px rgba(17, 24, 39, 0.1);
+    transform: translateY(-3px);
+  }
+
+  .latest-publication-media {
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid #e8e9ea;
+    background: #fff;
+  }
+
+  .latest-publication-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 300ms ease;
+  }
+
+  .latest-publication-media:hover img {
+    transform: scale(1.025);
+  }
+
+  .latest-publication-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 26px 22px;
+    text-align: center;
+  }
+
+  .latest-publication-content h3 {
+    margin: 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 760;
+    line-height: 1.32;
+    letter-spacing: 0;
+  }
+
+  .latest-publication-content h3 a {
+    color: #151515;
+  }
+
+  .latest-publication-content h3 a:hover {
+    color: #c92f2b;
+  }
+
+  .latest-publication-authors {
+    margin: 16px 0 0;
+    color: #444b54;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.42;
+  }
+
+  .latest-publication-venue {
+    margin: 11px 0 0;
+    color: #737982;
+    font-size: 13px;
+    line-height: 1.42;
+  }
+
+  .latest-publication-details {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: auto;
+    padding-top: 20px;
+    color: #c92f2b;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 760;
+  }
+
+  .latest-publication-details > span:last-child {
+    transition: transform 180ms ease;
+  }
+
+  .latest-publication-details:hover > span:last-child {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 980px) {
+    .latest-publications-grid.has-3-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 836px;
+    }
+
+    .latest-publications-grid.has-3-columns .latest-publication-card:last-child {
+      grid-column: 1 / -1;
+      width: calc((100% - 28px) / 2);
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .latest-publications {
+      padding: var(--home-section-gap) 0 0;
+    }
+
+    .latest-publications-inner {
+      width: calc(100% - 40px);
+    }
+
+    .latest-publications-header-top {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .latest-publications-header {
+      margin-bottom: 30px;
+    }
+
+    .latest-publications-header h2 {
+      font-size: 36px;
+    }
+
+    .latest-publications-header p {
+      font-size: 16px;
+    }
+
+    .latest-publications-all {
+      justify-self: start;
+      margin-top: 0;
+    }
+
+    .latest-publications-grid {
+      grid-template-columns: 1fr;
+      max-width: 440px;
+      gap: 20px;
+    }
+
+    .latest-publications-grid.has-3-columns .latest-publication-card:last-child {
+      grid-column: auto;
+      width: auto;
+    }
+
+    .latest-publication-card {
+      min-height: 500px;
+    }
+
+    .latest-publication-content {
+      padding: 22px 22px 20px;
+    }
+
+    .latest-publication-content h3 {
+      font-size: 21px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .latest-publication-card,
+    .latest-publication-media img,
+    .latest-publications-all svg,
+    .latest-publication-details > span:last-child {
+      transition: none;
+    }
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
+const { mode = 'fixed' } = Astro.props;
 ---
-<canvas class="stars-canvas" id="stars-canvas"></canvas>
+<canvas class:list={['stars-canvas', { 'is-overlay': mode === 'overlay' }]} id="stars-canvas" aria-hidden="true"></canvas>
 
 <style>
   .stars-canvas {
@@ -11,6 +12,11 @@
     height: 100%;
     z-index: 0;
     pointer-events: none;
+  }
+
+  .stars-canvas.is-overlay {
+    position: absolute;
+    z-index: 2;
   }
 </style>
 
@@ -68,8 +74,9 @@
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
-      W = window.innerWidth;
-      H = window.innerHeight;
+      const bounds = canvas.getBoundingClientRect();
+      W = bounds.width;
+      H = bounds.height;
       canvas.width = W * dpr;
       canvas.height = H * dpr;
       canvas.style.width = `${W}px`;
@@ -78,6 +85,7 @@
     };
 
     let lastTime = performance.now();
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const animate = () => {
       const now = performance.now();
@@ -110,7 +118,7 @@
       }
       ctx.globalAlpha = 1;
 
-      if (Math.random() < 0.002) spawnShootingStar();
+      if (!reduceMotion && Math.random() < 0.003) spawnShootingStar();
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         const s = shootingStars[i];
         s.life += dt;
@@ -132,7 +140,7 @@
         ctx.stroke();
       }
 
-      requestAnimationFrame(animate);
+      if (!reduceMotion) requestAnimationFrame(animate);
     };
 
     window.addEventListener('resize', resize);
