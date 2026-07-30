@@ -23,6 +23,14 @@ import { team } from '../../data/team';
             </div>
           </a>
         ))}
+        <a class="team-card alumni-card" href="/our-team/alumni/">
+          <img class="team-img" src="/assets/team/alumni.jpg" alt="" loading="lazy" decoding="async" />
+          <div class="team-overlay">
+            <p class="team-name" data-en="Alumni" data-zh="校友">Alumni</p>
+            <p class="team-role" data-en="Former members" data-zh="往届成员">Former members</p>
+            <p class="team-desc" data-en="View the IntelliSensing Lab alumni directory." data-zh="查看 IntelliSensing Lab 校友名录。">View the IntelliSensing Lab alumni directory.</p>
+          </div>
+        </a>
       </div>
     </section>
   </main>
@@ -85,6 +93,20 @@ import { team } from '../../data/team';
 
   .team-card:hover .team-overlay {
     opacity: 1;
+  }
+
+  .alumni-card .team-img {
+    filter: grayscale(0.2) brightness(0.82);
+  }
+
+  .alumni-card .team-overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(5, 8, 12, 0.9) 0%, rgba(5, 8, 12, 0.22) 72%, transparent 100%);
+  }
+
+  .alumni-card .team-name {
+    font-size: 22px;
+    font-weight: 760;
   }
 
   @media (max-width: 1400px) {

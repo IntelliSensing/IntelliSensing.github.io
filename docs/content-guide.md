@@ -114,6 +114,31 @@ publicationNames
 
 匹配时会忽略大小写、重音符号和常见标点，但不会猜测姓名缩写。因此，论文使用 `Wenjia Xu`，人员数据中至少要有完全对应的 `Wenjia Xu`；如果论文还可能写成 `W. Xu`，就将它加入 `publicationNames`。
 
+### 添加校友
+
+Team 页面末尾的 Alumni 画框会链接到 `/our-team/alumni/`。校友名单单独维护在：
+
+```text
+src/data/alumni.ts
+```
+
+在 `alumni` 数组中增加一个对象：
+
+```ts
+{
+  name: 'San Zhang',
+  nameZh: '张三',
+  formerRole: 'Former Master Student',
+  formerRoleZh: '原硕士生',
+  year: '2026',
+  destination: 'PhD Student at Example University',
+  destinationZh: 'Example University 博士生',
+  homepage: 'https://example.com',
+},
+```
+
+`name`、`formerRole` 和 `formerRoleZh` 为必填字段。`nameZh`、`year`、`destination`、`destinationZh` 和 `homepage` 均可省略；没有真实个人主页时应删除 `homepage`，不要保留示例链接。
+
 ## 4. 添加发表物
 
 每篇论文对应一个 Markdown 文件，放在：
