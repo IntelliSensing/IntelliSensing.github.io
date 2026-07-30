@@ -438,10 +438,10 @@ public/assets/research/
 当前 Research 页面布局实际实现在：
 
 ```text
-src/pages/collections/index.astro
+src/components/ResearchHub.astro
 ```
 
-`src/pages/research/index.astro` 只是将该布局挂载到正式的 `/research/` 地址。修改 Research 页面的标题、背景、方向切换或三个内容区域时，应编辑 `src/pages/collections/index.astro`。旧的 `/collections/` 地址目前仍可访问，但不再出现在导航中。
+`src/pages/research/index.astro` 将该组件挂载到正式的 `/research/` 地址。修改 Research 页面的标题、背景、方向切换或三个内容区域时，应编辑 `src/components/ResearchHub.astro`。旧的 `/collections/` 地址目前仍可访问，但不再出现在导航中。
 
 ## 10. 修改首页与团队展示
 
@@ -505,7 +505,7 @@ public/assets/people-bg.jpg
 | Publications 页面标题和简介 | `src/pages/publications/index.astro` |
 | News 页面标题和简介 | `src/pages/news/index.astro` |
 | Blogs 页面标题和简介 | `src/pages/blogs/index.astro` |
-| Research 页面整体布局 | `src/pages/collections/index.astro` |
+| Research 页面整体布局 | `src/components/ResearchHub.astro` |
 | About 页面 | `src/pages/about.astro` |
 | FAQ 页面 | `src/pages/faq/index.astro` |
 
