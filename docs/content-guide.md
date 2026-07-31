@@ -88,19 +88,35 @@ public/assets/team/
 
 | 字段 | 是否必填 | 说明 |
 | --- | --- | --- |
-| `slug` | 是 | 详情页地址，例如 `zhang-san` 对应 `/our-team/zhang-san/`；必须唯一 |
-| `name` | 是 | 英文姓名，也是论文作者匹配名称之一 |
-| `nameZh` | 否 | 中文姓名 |
-| `publicationNames` | 否 | 论文中可能出现的其他署名形式 |
-| `role` / `roleZh` | 是 | 英文和中文身份 |
-| `img` | 是 | 头像路径 |
-| `desc` / `descZh` | 是 | 英文和中文简介 |
-| `email` | 否 | 邮箱 |
-| `github`、`scholar`、`homepage` 等 | 否 | 个人链接；没有真实链接时应删除字段，不要保留示例链接 |
-| `honors` / `honorsZh` | 是 | 荣誉数组；没有内容时写 `[]` |
-| `personal` / `personalZh` | 是 | 个人介绍；没有内容时写空字符串 `''` |
+| `slug` | 是 | 个人详情页的网址标识，必须唯一。建议只使用小写英文字母、数字和连字符，例如 `zhang-san` 对应 `/our-team/zhang-san/` |
+| `name` | 是 | 英文姓名，也是网站的默认显示名和论文作者匹配名称之一 |
+| `nameZh` | 否 | 中文姓名；切换到中文时显示。没有中文姓名时可以省略，页面会继续显示 `name` |
+| `publicationNames` | 否 | 该成员在论文中可能出现的其他署名形式，例如 `Zhang San`、`S. Zhang`；用于自动关联论文 |
+| `role` | 是 | 英文身份或职位，例如 `PhD Student`、`Master Student`、`Research Assistant` |
+| `roleZh` | 是 | 中文身份或职位，例如 `博士生`、`硕士生`、`科研助理` |
+| `img` | 是 | 头像路径，例如 `/assets/team/zhang-san.jpg`。对应文件应放在 `public/assets/team/` |
+| `desc` | 是 | 英文个人简介或研究方向 |
+| `descZh` | 是 | 中文个人简介或研究方向 |
+| `email` | 否 | 邮箱地址；填写后个人详情页会显示邮件图标，例如 `name@bupt.edu.cn` |
+| `github` | 否 | GitHub 个人主页的完整 URL |
+| `x` | 否 | X（Twitter）个人主页的完整 URL |
+| `scholar` | 否 | Google Scholar 个人主页的完整 URL |
+| `homepage` | 否 | 个人主页、教师主页或实验室主页的完整 URL |
+| `huggingface` | 否 | Hugging Face 个人主页的完整 URL |
+| `linkedin` | 否 | LinkedIn 个人主页的完整 URL |
+| `facebook` | 否 | Facebook 个人主页的完整 URL |
+| `instagram` | 否 | Instagram 个人主页的完整 URL |
+| `wechat` | 否 | 微信号，只填写微信号本身，不填写网页地址 |
+| `weibo` | 否 | 微博个人主页的完整 URL |
+| `bilibili` | 否 | 哔哩哔哩个人空间的完整 URL |
+| `honors` | 是 | 英文荣誉列表，例如 `['Best Paper Award — CVPR 2026']`；没有内容时写 `[]` |
+| `honorsZh` | 是 | 中文荣誉列表，顺序必须与 `honors` 一一对应；没有内容时写 `[]` |
+| `personal` | 是 | 英文个人兴趣或其他补充信息；没有内容时写空字符串 `''` |
+| `personalZh` | 是 | 中文个人兴趣或其他补充信息；没有内容时写空字符串 `''` |
 
-可选社交字段还包括 `x`、`huggingface`、`linkedin`、`facebook`、`instagram`、`wechat`、`weibo` 和 `bilibili`。
+`TeamMember` 接口中带 `?` 的字段是可选字段，可以完全不写。没有 `?` 的字段必须保留；暂时没有荣誉时使用空数组 `[]`，暂时没有个人介绍时使用空字符串 `''`。社交账号没有真实链接时应删除对应字段，不要保留示例链接。
+
+成员在 `team` 数组中的先后顺序就是 Team 页面上的显示顺序。需要让导师显示在第一位时，应将导师对象放在数组最前面。
 
 ### 人员与论文自动关联
 
@@ -113,6 +129,16 @@ publicationNames
 ```
 
 匹配时会忽略大小写、重音符号和常见标点，但不会猜测姓名缩写。因此，论文使用 `Wenjia Xu`，人员数据中至少要有完全对应的 `Wenjia Xu`；如果论文还可能写成 `W. Xu`，就将它加入 `publicationNames`。
+
+例如，同一位成员可能有三种论文署名：
+
+```ts
+name: 'San Zhang',
+nameZh: '张三',
+publicationNames: ['Zhang San', 'S. Zhang'],
+```
+
+系统会使用 `name`、`nameZh` 和 `publicationNames` 中的全部名称，与每篇论文 frontmatter 中的 `authors` 数组进行比较。只要其中一个名称匹配，该论文就会自动显示在这位成员的个人详情页中，不需要在 `team.ts` 里另行登记论文。
 
 ### 添加校友
 
