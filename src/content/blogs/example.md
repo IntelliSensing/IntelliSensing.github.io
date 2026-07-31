@@ -8,7 +8,7 @@ researchAreas: ["vision-language"]
 image: /assets/cards/publication-blue.png
 ---
 
-# Reading Vision Systems as Living Notes
+# Reading Vision Systems as Living Note
 
 A blog post can be less formal than a publication and more reflective than a project page. It can hold questions, sketches, failures, and partial ideas that are still useful.
 
