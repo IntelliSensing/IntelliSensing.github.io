@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getContentPrimaryHref } from '../utils/contentLinks';
 
 interface Props {
   items?: CollectionEntry<'blogs'>[];
@@ -30,7 +31,7 @@ const { items = [] } = Astro.props;
     <div class="latest-blogs-grid">
       {items.map((item) => (
         <article class="latest-blog-card">
-          <a href={`/blogs/${item.id}/`} aria-label={`Read ${item.data.title}`}>
+          <a href={getContentPrimaryHref(item, 'blogs')} aria-label={`Read ${item.data.title}`}>
             <span class="latest-blog-media">
               <img src={item.data.image} alt="" loading="lazy" decoding="async" />
             </span>

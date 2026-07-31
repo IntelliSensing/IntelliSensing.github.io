@@ -277,6 +277,15 @@ draft: false
 
 `title` 和 `description` 是必填的默认文本。为了正确支持语言切换，建议同时填写 `titleEn`、`titleZh`、`descriptionEn` 和 `descriptionZh`。首页 Featured News 会自动选取日期最新的 5 条非草稿新闻。
 
+新闻支持两种打开方式：
+
+- 不填写 `externalUrl`：卡片进入 `/news/<文件名>/`，显示 Markdown 正文。
+- 填写 `externalUrl`：首页、News 和 Research 中的卡片都直接跳转到外部网页，适合微信公众号文章或已有报道，Markdown 正文可以留空。
+
+```yaml
+externalUrl: "https://mp.weixin.qq.com/s/公众号文章地址"
+```
+
 ## 6. 添加博客
 
 博客文件放在：
@@ -309,6 +318,15 @@ draft: false
 ```
 
 `category` 是卡片上显示的主要分类。首页 Latest Blogs 会自动选取日期最新的 3 篇非草稿博客。
+
+博客同样支持可选的外部链接：
+
+- 不填写 `externalUrl`：卡片进入 `/blogs/<文件名>/`，显示 Markdown 正文。
+- 填写 `externalUrl`：首页、Blogs 和 Research 中的卡片都直接跳转到该地址，Markdown 正文可以留空。
+
+```yaml
+externalUrl: "https://mp.weixin.qq.com/s/公众号文章地址"
+```
 
 ## 7. 添加照片墙与地球足迹
 

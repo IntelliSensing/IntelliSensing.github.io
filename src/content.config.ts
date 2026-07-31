@@ -62,6 +62,7 @@ const blogs = defineCollection({
     tags: z.array(z.string()).default([]),
     researchAreas: z.array(z.enum(researchAreaIds)).min(1),
     image: z.string(),
+    externalUrl: z.string().url().optional(),
     draft: z.boolean().default(false)
   })
 });
@@ -83,6 +84,7 @@ const news = defineCollection({
     tags: z.array(z.string()).default([]),
     researchAreas: z.array(z.enum(researchAreaIds)).min(1),
     image: z.string(),
+    externalUrl: z.string().url().optional(),
     draft: z.boolean().default(false)
   })
 });

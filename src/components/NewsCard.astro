@@ -1,7 +1,9 @@
 ---
+import { getContentPrimaryHref } from '../utils/contentLinks';
+
 const { item } = Astro.props;
 const tag = item.data.tags?.[0] ?? 'News';
-const href = `/news/${item.id}/`;
+const href = getContentPrimaryHref(item, 'news');
 const searchText = [
   item.data.title,
   item.data.description,

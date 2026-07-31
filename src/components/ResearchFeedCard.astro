@@ -1,11 +1,12 @@
 ---
 import { getPublicationPrimaryHref } from '../utils/publications';
+import { getContentPrimaryHref } from '../utils/contentLinks';
 
 const { item, kind } = Astro.props;
 
 const href = kind === 'publication'
   ? getPublicationPrimaryHref(item)
-  : `/${kind === 'news' ? 'news' : 'blogs'}/${item.id}/`;
+  : getContentPrimaryHref(item, kind === 'news' ? 'news' : 'blogs');
 const titleEn = kind === 'news' ? item.data.titleEn ?? item.data.title : item.data.title;
 const titleZh = kind === 'news' ? item.data.titleZh ?? item.data.title : item.data.title;
 const descriptionEn = kind === 'news' ? item.data.descriptionEn ?? item.data.description : item.data.description;

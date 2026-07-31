@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getContentPrimaryHref } from '../utils/contentLinks';
 
 interface Props {
   items?: CollectionEntry<'news'>[];
@@ -9,6 +10,7 @@ const { items = [] } = Astro.props;
 
 const sourceSlides = items.map((item) => ({
   id: item.id,
+  href: getContentPrimaryHref(item, 'news'),
   titleEn: item.data.titleEn ?? item.data.title,
   titleZh: item.data.titleZh ?? item.data.title,
   descriptionEn: item.data.descriptionEn ?? item.data.description,
@@ -55,7 +57,7 @@ const slides = sourceSlides.length > 0 && sourceSlides.length < 5
           {slides.map((slide, index) => (
             <a
               class:list={['featured-news-slide', { 'is-active': index === 0 }]}
-              href={`/news/${slide.id}/`}
+              href={slide.href}
               data-news-slide
               aria-hidden={index === 0 ? 'false' : 'true'}
             >
