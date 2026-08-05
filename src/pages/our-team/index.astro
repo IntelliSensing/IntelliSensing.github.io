@@ -69,9 +69,11 @@ import { team } from '../../data/team';
   }
 
   .team-img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 25%;
     transition: transform 0.3s ease;
   }
 
@@ -97,6 +99,7 @@ import { team } from '../../data/team';
 
   .alumni-card .team-img {
     filter: grayscale(0.2) brightness(0.82);
+    object-position: center;
   }
 
   .alumni-card .team-overlay {
