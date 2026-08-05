@@ -11,21 +11,38 @@ export interface AlumniMember {
 
 export const alumni: AlumniMember[] = [
   {
-    name: 'Alex Chen',
-    nameZh: '陈安',
-    formerRole: 'Former PhD Student',
-    formerRoleZh: '原博士生',
-    year: '2025',
-    destination: 'Research Scientist at the Institute for Intelligent Systems',
-    destinationZh: '智能系统研究院研究科学家',
-  },
-  {
-    name: 'Maya Liu',
-    nameZh: '刘玥',
+    name: 'Chuchu Huang',
+    nameZh: '黄楚楚',
     formerRole: 'Former Master Student',
     formerRoleZh: '原硕士生',
-    year: '2024',
-    destination: 'PhD Student at Example University',
-    destinationZh: 'Example University 博士生',
+    year: '2025',
+  },
+  {
+    name: 'Zijian Yu',
+    nameZh: '余子建',
+    formerRole: 'Former Master Student',
+    formerRoleZh: '原硕士生',
+    year: '2026',
+  },
+  {
+    name: 'Yixu Wang',
+    nameZh: '王一旭',
+    formerRole: 'Former Master Student',
+    formerRoleZh: '原硕士生',
+    year: '2026',
+  },
+  {
+    name: 'Jiaqi Cao',
+    nameZh: '曹佳琦',
+    formerRole: 'Former Master Student',
+    formerRoleZh: '原硕士生',
+    year: '2026',
+  },
+  {
+    name: 'Yaxuan Yao',
+    nameZh: '姚雅轩',
+    formerRole: 'Former Master Student',
+    formerRoleZh: '原硕士生',
+    year: '2026',
   },
 ];
