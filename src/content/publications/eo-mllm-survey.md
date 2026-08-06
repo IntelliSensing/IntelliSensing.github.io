@@ -1,5 +1,5 @@
 ---
-title: "多模态对地观测大模型：架构、关键技术和未来展望"
+title: "A Survey on Earth Observation Multimodal Large Language Models: Framework, Core Technologies, and Future Perspectives"
 description: "A comprehensive survey of Earth observation multimodal large language models, covering architectures, training strategies, benchmark tasks, and future research directions."
 pubDate: 2026-02-01
 venue: "Journal of Radars"
@@ -30,7 +30,7 @@ links:
 draft: false
 ---
 
-# A Survey on Earth Observation Multimodal Large Language Models
+# 多模态对地观测大模型：架构、关键技术和未来展望
 
 *Journal of Radars*, 2026, 15(1): 361–386. DOI: 10.12000/JR25088
 
