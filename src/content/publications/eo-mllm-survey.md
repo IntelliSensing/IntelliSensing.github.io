@@ -21,8 +21,9 @@ researchAreas:
   - "vision-language"
   - "remote-sensing"
 image: /assets/pub/eo-mllm-survey.jpg
-paperUrl: "https://radars.ac.cn/en/article/doi/10.12000/JR25088"
 links:
+  - label: "Paper"
+    url: "https://radars.ac.cn/en/article/doi/10.12000/JR25088"
   - label: "中文版"
     url: "https://radars.ac.cn/cn/article/doi/10.12000/JR25088"
   - label: "DOI"
