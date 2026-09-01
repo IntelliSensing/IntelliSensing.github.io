@@ -9,6 +9,10 @@ export async function getStaticPaths() {
 
 const { item } = Astro.props;
 const { Content } = await render(item);
+const titleEn = item.data.titleEn ?? item.data.title;
+const titleZh = item.data.titleZh ?? item.data.title;
+const descriptionEn = item.data.descriptionEn ?? item.data.description;
+const descriptionZh = item.data.descriptionZh ?? item.data.description;
 const date = item.data.pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
@@ -21,8 +25,8 @@ const date = item.data.pubDate.toLocaleDateString('en-US', {
       <div class="container detail-hero-stack">
         <a class="detail-back" href="/news/" data-en="← News" data-zh="← 新闻">← News</a>
         <p class="detail-kicker-pill">{item.data.tags?.[0] ?? 'News'}</p>
-        <h1>{item.data.title}</h1>
-        <p class="detail-description">{item.data.description}</p>
+        <h1 data-en={titleEn} data-zh={titleZh}>{titleEn}</h1>
+        <p class="detail-description" data-en={descriptionEn} data-zh={descriptionZh}>{descriptionEn}</p>
         <div class="detail-meta">
           <span>{date}</span>
           {item.data.tags.map((tag) => <span>{tag}</span>)}
