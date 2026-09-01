@@ -20,6 +20,8 @@ researchAreas:
   - "remote-sensing"
 image: /assets/pub/hirs-agent.jpg
 links:
+  - label: "arXiv"
+    url: "https://arxiv.org/abs/2608.30672"
   - label: "Paper"
     url: "https://doi.org/10.1145/3767308.3835311"
   - label: "Code"
