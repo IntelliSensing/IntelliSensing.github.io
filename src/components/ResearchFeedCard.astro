@@ -1,23 +1,21 @@
 ---
-import { getPublicationPrimaryHref } from '../utils/publications';
+import { getPublicationPrimaryHref, getPublicationImage } from '../utils/publications';
 import { getContentPrimaryHref } from '../utils/contentLinks';
 
 const { item, kind } = Astro.props;
 
 const href = kind === 'publication'
   ? getPublicationPrimaryHref(item)
-  : getContentPrimaryHref(item, kind === 'news' ? 'news' : 'blogs');
+  : getContentPrimaryHref(item, 'news');
 const titleEn = kind === 'news' ? item.data.titleEn ?? item.data.title : item.data.title;
 const titleZh = kind === 'news' ? item.data.titleZh ?? item.data.title : item.data.title;
 const descriptionEn = kind === 'news' ? item.data.descriptionEn ?? item.data.description : item.data.description;
 const descriptionZh = kind === 'news' ? item.data.descriptionZh ?? item.data.description : item.data.description;
-const eyebrowEn = kind === 'publication' ? 'Publication' : kind === 'news' ? 'News' : 'Blog';
-const eyebrowZh = kind === 'publication' ? '论文' : kind === 'news' ? '新闻' : '博客';
+const eyebrowEn = kind === 'publication' ? 'Publication' : 'News';
+const eyebrowZh = kind === 'publication' ? '论文' : '新闻';
 const meta = kind === 'publication'
   ? item.data.venue
-  : kind === 'blog'
-    ? item.data.category
-    : item.data.tags[0] ?? 'Lab update';
+  : item.data.tags[0] ?? 'Lab update';
 const dateEn = item.data.pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'short',
@@ -33,7 +31,7 @@ const dateZh = item.data.pubDate.toLocaleDateString('zh-CN', {
 <article class="research-feed-card">
   <a href={href}>
     <span class="research-feed-media">
-      <img src={item.data.image} alt="" loading="lazy" decoding="async" />
+      <img src={getPublicationImage(item)} alt="" loading="lazy" decoding="async" />
     </span>
     <span class="research-feed-content">
       <span class="research-feed-eyebrow" data-en={eyebrowEn} data-zh={eyebrowZh}>{eyebrowEn}</span>

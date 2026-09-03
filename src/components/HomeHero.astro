@@ -13,12 +13,12 @@ import StarsCanvas from './StarsCanvas.astro';
     <h1
       id="home-hero-title"
       data-en="Building machines that perceive and reason — at the crossroads of vision, language and remote sensing"
-      data-zh="在视觉、语言与遥感的交叉处，构建会感知、能认知的智能"
+      data-zh="在视觉、语言与遥感的交叉地带，构建能感知、会思考的智能"
     >Building machines that perceive and reason — at the crossroads of vision, language and remote sensing</h1>
     <p
       class="home-hero-description"
       data-en="Led by Dr. Wenjia Xu, our group works at the intersection of computer vision, natural language processing and remote sensing, with a focus on multi-modal large language models, agents, and few-shot learning."
-      data-zh="我们由许文嘉老师带领，研究方向横跨计算机视觉、自然语言处理与遥感，聚焦多模态大模型、智能体、小样本学习等前沿问题，致力于让机器像人一样感知世界、理解世界。"
+      data-zh="实验室由许文嘉老师带领，研究横跨计算机视觉、自然语言处理与遥感，聚焦多模态大模型、智能体与小样本学习。"
     >Led by Dr. Wenjia Xu, our group works at the intersection of computer vision, natural language processing and remote sensing, with a focus on multi-modal large language models, agents, and few-shot learning.</p>
     <div class="home-hero-actions">
       <a class="home-hero-button is-primary" href="/research/" data-en="Explore research" data-zh="探索研究">Explore research</a>
@@ -45,26 +45,6 @@ import StarsCanvas from './StarsCanvas.astro';
     setHeroContentHidden(!homeHero.classList.contains('is-content-hidden'));
   }, { capture: true });
 
-  const focusEarth = () => {
-    setHeroContentHidden(true);
-    homeHero?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  window.addEventListener('earth-explorer:open-marker', ((event: CustomEvent<{ id?: string }>) => {
-    if (!event.detail?.id) return;
-    focusEarth();
-    window.requestAnimationFrame(() => {
-      window.dispatchEvent(new CustomEvent('earth-explorer:focus-marker', {
-        detail: { id: event.detail.id },
-      }));
-    });
-  }) as EventListener);
-  window.addEventListener('earth-explorer:view-moments', () => {
-    focusEarth();
-    window.requestAnimationFrame(() => {
-      window.dispatchEvent(new CustomEvent('earth-explorer:open-moments'));
-    });
-  });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && homeHero?.classList.contains('is-content-hidden')) {
       setHeroContentHidden(false);

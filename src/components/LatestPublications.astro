@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getPublicationPrimaryHref } from '../utils/publications';
+import { getPublicationPrimaryHref, getPublicationImage } from '../utils/publications';
 
 interface Props {
   items?: CollectionEntry<'publications'>[];
@@ -33,7 +33,7 @@ const publicationItems = items.map((item) => ({
       </div>
       <p
         data-en="Our latest work in computer vision, language intelligence, multi-modal learning, and remote sensing."
-        data-zh="我们在计算机视觉、语言智能、多模态学习与遥感领域的最新研究成果。"
+        data-zh="实验室在计算机视觉、语言智能、多模态学习与遥感方向的最新成果。"
       >Our latest work in computer vision, language intelligence, multi-modal learning, and remote sensing.</p>
     </header>
 
@@ -44,7 +44,7 @@ const publicationItems = items.map((item) => ({
       {publicationItems.map(({ item, href }) => (
         <article class="latest-publication-card">
           <a class="latest-publication-media" href={href} aria-label={`View ${item.data.title}`}>
-            <img src={item.data.image} alt="" loading="lazy" decoding="async" />
+            <img src={getPublicationImage(item)} alt="" loading="lazy" decoding="async" />
           </a>
           <div class="latest-publication-content">
             <h3><a href={href}>{item.data.title}</a></h3>

@@ -2,21 +2,22 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PublicationCard from '../../components/PublicationCard.astro';
+import { researchDirections } from '../../data/research';
 
 const publications = (await getCollection('publications'))
   .filter((item) => !item.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const filterLabels = Array.from(
-  new Set(publications.flatMap((item) => [item.data.venue, ...item.data.tags]))
-).filter(Boolean);
+const categoryFilters = researchDirections
+  .filter((direction) => publications.some((item) => item.data.researchAreas?.includes(direction.id)))
+  .map((direction) => ({ id: direction.id, label: direction.title, labelZh: direction.titleZh }));
 ---
-<BaseLayout title="Publications | IntelliSensing Lab" description="Peer-reviewed publications from IntelliSensing Lab across vision, language, and remote sensing." headerMode="glass" bodyClass="archive-light-theme">
+<BaseLayout title="Publications | IntelliSense Lab" description="Peer-reviewed publications from IntelliSense Lab across vision, language, and remote sensing." headerMode="glass" bodyClass="archive-light-theme">
   <main class="publication-archive">
     <section class="publication-hero">
       <div class="container publication-hero-inner">
         <h1 class="publication-title" data-en="Publications" data-zh="论文成果">Publications</h1>
-        <p class="publication-lede" data-en="Peer-reviewed work from IntelliSensing Lab across computer vision, natural language processing, multimodal learning, and remote sensing." data-zh="汇集 IntelliSensing Lab 在计算机视觉、自然语言处理、多模态学习与遥感领域的同行评审研究成果。">Peer-reviewed work from IntelliSensing Lab across computer vision, natural language processing, multimodal learning, and remote sensing.</p>
+        <p class="publication-lede" data-en="Peer-reviewed work from IntelliSense Lab across computer vision, natural language processing, multimodal learning, and remote sensing." data-zh="IntelliSense Lab 在计算机视觉、自然语言处理、多模态学习与遥感方向的同行评审论文。">Peer-reviewed work from IntelliSense Lab across computer vision, natural language processing, multimodal learning, and remote sensing.</p>
       </div>
     </section>
 
@@ -31,8 +32,8 @@ const filterLabels = Array.from(
           </label>
           <div class="filter-pills" aria-label="Publication filters">
             <button class="filter-pill is-active" type="button" data-filter="all" data-en="All" data-zh="全部">All</button>
-            {filterLabels.map((label) => (
-              <button class="filter-pill" type="button" data-filter={label.toLowerCase()}>{label}</button>
+            {categoryFilters.map((category) => (
+              <button class="filter-pill" type="button" data-filter={category.id} data-en={category.label} data-zh={category.labelZh}>{category.label}</button>
             ))}
           </div>
         </div>
@@ -57,7 +58,7 @@ const filterLabels = Array.from(
 
       publicationCards.forEach((card) => {
         const text = card.dataset.search ?? '';
-        const filters = card.dataset.filters ?? '';
+        const filters = (card.dataset.filters ?? '').split('|').filter(Boolean);
         const matchesQuery = !query || text.includes(query);
         const matchesFilter = activePublicationFilter === 'all' || filters.includes(activePublicationFilter);
         const isVisible = matchesQuery && matchesFilter;

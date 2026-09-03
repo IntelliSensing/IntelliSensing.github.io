@@ -16,7 +16,7 @@ const publications = defineCollection({
     authors: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     researchAreas: z.array(z.enum(researchAreaIds)).min(1),
-    image: z.string(),
+    image: z.string().optional(),
     projectUrl: z.string().url().optional(),
     paperUrl: z.string().url().optional(),
     codeUrl: z.string().url().optional(),
@@ -48,25 +48,6 @@ const collectionItems = defineCollection({
   })
 });
 
-const blogs = defineCollection({
-  loader: glob({
-    pattern: '**/*.{md,mdx}',
-    base: './src/content/blogs',
-    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, '')
-  }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    category: z.string(),
-    tags: z.array(z.string()).default([]),
-    researchAreas: z.array(z.enum(researchAreaIds)).min(1),
-    image: z.string(),
-    externalUrl: z.string().url().optional(),
-    draft: z.boolean().default(false)
-  })
-});
-
 const news = defineCollection({
   loader: glob({
     pattern: '**/*.{md,mdx}',
@@ -89,10 +70,10 @@ const news = defineCollection({
   })
 });
 
-const markers = defineCollection({
+const life = defineCollection({
   loader: glob({
     pattern: '**/*.{md,mdx}',
-    base: './src/content/markers',
+    base: './src/content/life',
     generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, '')
   }),
   schema: z.object({
@@ -105,13 +86,12 @@ const markers = defineCollection({
     category: z.string(),
     categoryEn: z.string().optional(),
     categoryZh: z.string().optional(),
-    lng: z.number(),
-    lat: z.number(),
-    images: z.array(z.string()),
-    author: z.string(),
     date: z.coerce.date(),
+    location: z.string().optional(),
+    locationZh: z.string().optional(),
+    images: z.array(z.string()).min(1),
     draft: z.boolean().default(false)
   })
 });
 
-export const collections = { publications, collections: collectionItems, blogs, news, markers };
+export const collections = { publications, collections: collectionItems, news, life };

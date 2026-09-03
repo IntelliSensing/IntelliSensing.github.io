@@ -1,5 +1,5 @@
 ---
-import { getPublicationPrimaryHref } from '../utils/publications';
+import { getPublicationPrimaryHref, getPublicationImage } from '../utils/publications';
 
 const { item } = Astro.props;
 const tag = item.data.tags?.[0] ?? item.data.venue;
@@ -11,11 +11,11 @@ const searchText = [
   ...item.data.tags,
   ...(item.data.authors ?? [])
 ].join(' ').toLowerCase();
-const filterText = [item.data.venue, ...item.data.tags].join('|').toLowerCase();
+const filterText = (item.data.researchAreas ?? []).join('|').toLowerCase();
 ---
 <a class="card" href={href} data-publication-card data-search={searchText} data-filters={filterText}>
   <span class="card-media">
-    <img class="card-image" src={item.data.image} alt="" loading="lazy" />
+    <img class="card-image" src={getPublicationImage(item)} alt="" loading="lazy" />
   </span>
   <span class="tag-pill">{tag}</span>
   <h3>{item.data.title}</h3>

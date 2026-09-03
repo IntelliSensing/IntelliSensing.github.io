@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { team } from '../../data/team';
-import { getPublicationPrimaryHref } from '../../utils/publications';
+import { getPublicationPrimaryHref, getPublicationImage } from '../../utils/publications';
 
 export async function getStaticPaths() {
   const normalizeAuthorName = (name: string) => name
@@ -63,7 +63,7 @@ const publicationLinks = (publication: CollectionEntry<'publications'>) => {
 const { member, pubs } = Astro.props;
 const honors = member.honors;
 ---
-<BaseLayout title={`${member.name} | IntelliSensing Lab`} description={`Profile page of ${member.name}.`} headerMode="glass" bodyClass="archive-light-theme">
+<BaseLayout title={`${member.name} | IntelliSense Lab`} description={`Profile page of ${member.name}.`} headerMode="glass" bodyClass="archive-light-theme">
   <main class="publication-archive">
     <section class="section member-page">
       <div class="container">
@@ -150,7 +150,7 @@ const honors = member.honors;
               {pubs.map((pub) => (
                 <article class="pub-item">
                   <a class="pub-thumb" href={getPublicationPrimaryHref(pub)}>
-                    <img src={pub.data.image} alt="" loading="lazy" decoding="async" />
+                    <img src={getPublicationImage(pub)} alt="" loading="lazy" decoding="async" />
                   </a>
                   <div class="pub-info">
                     <a class="pub-title" href={getPublicationPrimaryHref(pub)}>{pub.data.title}</a>
@@ -176,7 +176,7 @@ const honors = member.honors;
             <p
               class="pub-empty"
               data-en="No publications linked to this profile yet."
-              data-zh="暂时没有与该成员署名关联的论文。"
+              data-zh="暂无该成员署名的论文。"
             >No publications linked to this profile yet.</p>
           )}
         </div>

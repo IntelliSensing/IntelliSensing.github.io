@@ -7,7 +7,7 @@ descriptionEn: "RS-Agent turns a large language model from a passive image-under
 descriptionZh: "RS-Agent 将大语言模型从被动的图像理解工具拓展为主动的遥感任务规划与执行智能体，在 9 个数据集、18 类遥感任务上任务规划准确率超过 95%。论文已被 Science China Information Sciences 正式录用。"
 pubDate: 2026-07-17
 tags: ["SCIS", "WeChat"]
-researchAreas: ["multimodal-agents", "remote-sensing"]
+researchAreas: ["agent", "eo-applications"]
 image: /assets/news/rs-agent-scis.jpg
 externalUrl: "https://mp.weixin.qq.com/s/Qpgq20-FNDx0o17em4NCIQ"
 draft: false

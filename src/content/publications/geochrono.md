@@ -18,8 +18,8 @@ tags:
   - "Benchmark"
   - "Temporal Trajectory Modeling"
 researchAreas:
-  - "remote-sensing"
-  - "vision-language"
+  - "multimodal-llms"
+  - "eo-applications"
 image: /assets/pub/geochrono.jpg
 links:
   - label: "arXiv"

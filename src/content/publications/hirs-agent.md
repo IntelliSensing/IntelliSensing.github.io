@@ -16,8 +16,8 @@ tags:
   - "Hierarchical Reinforcement Learning"
   - "Tool-Augmented Agents"
 researchAreas:
-  - "multimodal-agents"
-  - "remote-sensing"
+  - "agent"
+  - "eo-applications"
 image: /assets/pub/hirs-agent.jpg
 links:
   - label: "arXiv"

@@ -1,5 +1,6 @@
 ---
 import { team } from '../data/team';
+import { alumni } from '../data/alumni';
 
 const students = team.filter((member) => member.slug !== 'wenjia-xu');
 
@@ -38,9 +39,9 @@ const teamStats = [
     labelZh: '硕士生',
   },
   {
-    value: students.filter((member) => member.role === 'Research Assistant').length,
-    label: 'Research Assistants',
-    labelZh: '科研助理',
+    value: alumni.length,
+    label: 'Alumni',
+    labelZh: '校友',
   },
 ];
 ---
@@ -50,9 +51,9 @@ const teamStats = [
     <header class="people-header">
       <h2
         id="people-title"
-        data-en="People behind these scientific questions"
-        data-zh="这些科学问题背后的研究者"
-      >People behind these scientific questions</h2>
+        data-en="The people doing the work"
+        data-zh="这些研究背后的人"
+      >The people doing the work</h2>
       <a class="people-link" href="/our-team/">
         <span class="people-link-label" data-en="View Team" data-zh="认识团队">View Team</span>
         <svg class="people-link-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -63,13 +64,13 @@ const teamStats = [
     </header>
     <p
       class="people-subtitle"
-      data-en="We are driven by creativity and curiosity to push back the frontiers of knowledge"
-      data-zh="我们以创造力和好奇心为动力，不断拓展知识的边界"
-    >We are driven by creativity and curiosity to push back the frontiers of knowledge</p>
+      data-en="A small group in Beijing, working on models that read the Earth from orbit"
+      data-zh="我们在北京，研究如何让机器从轨道上读懂地球"
+    >A small group in Beijing, working on models that read the Earth from orbit</p>
   </div>
 </section>
 
-<section class="people-hero" id="people" aria-label="IntelliSensing Lab team">
+<section class="people-hero" id="people" aria-label="IntelliSense Lab team">
   <img
     class="people-hero-background"
     src="/assets/people-bg.jpg"
@@ -150,7 +151,7 @@ const teamStats = [
       <article class="people-panel people-team-panel">
         <header class="people-team-heading">
           <div>
-            <h3 data-en="Students & research assistants" data-zh="学生与科研助理">Students & research assistants</h3>
+            <h3 data-en="Students & alumni" data-zh="学生与校友">Students & alumni</h3>
           </div>
           <a class="people-panel-link" href="/our-team/">
             <span data-en="View all members" data-zh="查看全部成员">View all members</span>
@@ -187,9 +188,9 @@ const teamStats = [
 
         <p
           class="people-team-copy"
-          data-en="Explore critical questions in Earth observation with outstanding collaborators, turning remote sensing data into knowledge for a more sustainable future."
-          data-zh="与优秀的合作伙伴一起探索对地观测中的关键问题，让遥感数据转化为理解地球、服务可持续未来的知识。"
-        >Explore critical questions in Earth observation with outstanding collaborators, turning remote sensing data into knowledge for a more sustainable future.</p>
+          data-en="We train researchers who can take a problem from a raw satellite signal all the way to a working system — and who leave the lab with the judgement to pick the next problem themselves."
+          data-zh="我们希望同学既能把一个问题从原始卫星信号一路做成可用的系统，也能在离开实验室时，有底气自己判断下一个问题该做什么。"
+        >We train researchers who can take a problem from a raw satellite signal all the way to a working system — and who leave the lab with the judgement to pick the next problem themselves.</p>
 
         <div class="people-strengths">
           <span data-en="Adequate computational power support" data-zh="充足的算力支持">Adequate computational power support</span>

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublicationImage } from '../../utils/publications';
 
 export async function getStaticPaths() {
   const publications = (await getCollection('publications')).filter((item) => !item.data.draft);
@@ -134,7 +135,7 @@ const publicationLinks = [
     <main class="collection-detail">
       <section class="detail-hero">
         <div class="container detail-hero-stack">
-          <a class="detail-back" href="/publications/" data-en="← Publications" data-zh="← 论文">← Publications</a>
+          <a class="detail-back" href="/publications/" data-en="← Publications" data-zh="← 返回论文">← Publications</a>
           <p class="detail-kicker-pill">{item.data.venue}</p>
           <h1>{item.data.title}</h1>
           <p class="detail-description">{item.data.description}</p>
@@ -147,7 +148,7 @@ const publicationLinks = [
             ))}
           </div>
           <div class="detail-cover detail-cover-wide">
-            <img src={item.data.image} alt="" />
+            <img src={getPublicationImage(item)} alt="" />
           </div>
         </div>
       </section>

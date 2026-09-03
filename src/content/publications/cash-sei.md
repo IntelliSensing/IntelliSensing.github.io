@@ -18,7 +18,7 @@ tags:
   - "Collision Alleviated"
   - "Seen Emitters Indicator"
 researchAreas:
-  - "few-zero-shot"
+  - "leo-communication"
 image: /assets/pub/cash-sei.jpg
 draft: false
 ---

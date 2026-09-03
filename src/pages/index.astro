@@ -4,10 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeHero from '../components/HomeHero.astro';
 import ResearchDirections from '../components/ResearchDirections.astro';
 import PeopleSection from '../components/PeopleSection.astro';
-import MomentsWall from '../components/MomentsWall.astro';
 import FeaturedNews from '../components/FeaturedNews.astro';
 import LatestPublications from '../components/LatestPublications.astro';
-import LatestBlogs from '../components/LatestBlogs.astro';
+import LifeGallery from '../components/LifeGallery.astro';
 
 const newsItems = (await getCollection('news'))
   .filter((item) => !item.data.draft)
@@ -19,19 +18,14 @@ const publications = (await getCollection('publications'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 
-const blogItems = (await getCollection('blogs'))
-  .filter((item) => !item.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
 ---
-<BaseLayout title="IntelliSensing Lab" description="IntelliSensing Lab at the intersection of computer vision, natural language processing, and remote sensing." headerMode="glass" bodyClass="space-theme home-page" showStars={false}>
+<BaseLayout title="IntelliSense Lab" description="IntelliSense Lab at the intersection of computer vision, natural language processing, and remote sensing." headerMode="glass" bodyClass="space-theme home-page" showStars={false}>
   <main>
     <HomeHero />
     <ResearchDirections />
     <PeopleSection />
-    <MomentsWall />
     <FeaturedNews items={newsItems} />
     <LatestPublications items={publications} />
-    <LatestBlogs items={blogItems} />
+    <LifeGallery limit={6} />
   </main>
 </BaseLayout>

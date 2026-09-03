@@ -18,7 +18,8 @@ tags:
   - "Embodied AI"
   - "Spatial Cognition"
 researchAreas:
-  - "vision-language"
+  - "multimodal-llms"
+  - "agent"
 
 image: /assets/pub/sis-motion.jpeg
 projectUrl: "https://choucisan.github.io/publications/self-in-space"

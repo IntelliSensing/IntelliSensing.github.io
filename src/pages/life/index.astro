@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LifeGallery from '../../components/LifeGallery.astro';
+---
+
+<BaseLayout
+  title="Life Beyond Research | IntelliSense Lab"
+  description="Dinners, outings and conference trips from the IntelliSense Lab team."
+  headerMode="glass"
+  bodyClass="archive-light-theme"
+>
+  <main class="life-page">
+    <section class="life-page-hero">
+      <div class="container">
+        <h1 data-en="Life beyond research" data-zh="科研之外的生活与娱乐">Life beyond research</h1>
+        <p
+          data-en="Dinners, outings and the conferences we travelled to together — the part of lab life that does not show up in a paper."
+          data-zh="聚餐、出游，还有一起参加的学术会议——论文之外的实验室日常。"
+        >Dinners, outings and the conferences we travelled to together — the part of lab life that does not show up in a paper.</p>
+      </div>
+    </section>
+
+    <LifeGallery showHeader={false} />
+  </main>
+</BaseLayout>
+
+<style>
+  .life-page {
+    padding: 126px 0 128px;
+    color: #111;
+    background: #fff;
+  }
+
+  .life-page-hero .container {
+    width: min(calc(100% - 96px), 1260px);
+    padding-bottom: 44px;
+    border-bottom: 1px solid #e4e7ea;
+  }
+
+  .life-page-hero h1 {
+    margin: 0;
+    font-family: "Inter Variable", Inter, Arial, sans-serif;
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .life-page-hero p {
+    max-width: 680px;
+    margin: 22px 0 0;
+    color: #5f656b;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  .life-page :global(.life-gallery) {
+    padding-top: 56px;
+  }
+
+  @media (max-width: 800px) {
+    .life-page {
+      padding: 126px 0 88px;
+    }
+
+    .life-page-hero .container {
+      width: calc(100% - 40px);
+    }
+
+    .life-page-hero h1 {
+      font-size: 42px;
+    }
+  }
+</style>

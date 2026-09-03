@@ -5,7 +5,7 @@ interface ExternalContentLinkSource {
   };
 }
 
-type ExternalContentSection = 'news' | 'blogs';
+type ExternalContentSection = 'news';
 
 export const getContentPrimaryHref = (
   item: ExternalContentLinkSource,

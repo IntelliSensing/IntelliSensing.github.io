@@ -18,8 +18,8 @@ tags:
   - "Earth Observation"
   - "Survey"
 researchAreas:
-  - "vision-language"
-  - "remote-sensing"
+  - "multimodal-llms"
+  - "eo-applications"
 image: /assets/pub/eo-mllm-survey.jpg
 links:
   - label: "Paper"

@@ -7,19 +7,19 @@ const alumniEntries = alumni.map((member) => ({
   summaryEn: [
     member.formerRole,
     member.year ? `Class of ${member.year}` : '',
-    member.destination ? `Now ${member.destination}` : '',
+    member.destination ? `Now at ${member.destination}` : '',
   ].filter(Boolean).join(' · '),
   summaryZh: [
     member.formerRoleZh,
     member.year ? `${member.year} 届` : '',
-    member.destinationZh ? `现任 ${member.destinationZh}` : member.destination ? `现任 ${member.destination}` : '',
+    member.destinationZh ? `去向：${member.destinationZh}` : member.destination ? `去向：${member.destination}` : '',
   ].filter(Boolean).join(' · '),
 }));
 ---
 
 <BaseLayout
-  title="Alumni | IntelliSensing Lab"
-  description="Former students and researchers of IntelliSensing Lab."
+  title="Alumni | IntelliSense Lab"
+  description="Former students and researchers of IntelliSense Lab."
   headerMode="glass"
   bodyClass="archive-light-theme"
 >
@@ -30,9 +30,9 @@ const alumniEntries = alumni.map((member) => ({
       <header class="alumni-header">
         <h1 data-en="Alumni" data-zh="校友">Alumni</h1>
         <p
-          data-en="Former students and researchers who have contributed to IntelliSensing Lab."
-          data-zh="曾在 IntelliSensing Lab 学习、研究并作出贡献的团队成员。"
-        >Former students and researchers who have contributed to IntelliSensing Lab.</p>
+          data-en="Former students and researchers who have contributed to IntelliSense Lab."
+          data-zh="曾在 IntelliSense Lab 学习和工作过的成员。"
+        >Former students and researchers who have contributed to IntelliSense Lab.</p>
       </header>
 
       <div class="alumni-layout">
@@ -71,7 +71,7 @@ const alumniEntries = alumni.map((member) => ({
             <p
               class="alumni-empty"
               data-en="Alumni records will be listed here as the directory is completed."
-              data-zh="校友资料整理完成后将在此处展示。"
+              data-zh="校友资料整理好后会在这里展示。"
             >Alumni records will be listed here as the directory is completed.</p>
           )}
         </section>

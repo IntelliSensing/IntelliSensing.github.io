@@ -10,21 +10,17 @@ const publications = (await getCollection('publications'))
 const newsItems = (await getCollection('news'))
   .filter((item) => !item.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const blogItems = (await getCollection('blogs'))
-  .filter((item) => !item.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const panels = researchDirections.map((direction) => ({
   direction,
   publications: publications.filter((item) => item.data.researchAreas?.includes(direction.id)).slice(0, 3),
   news: newsItems.filter((item) => item.data.researchAreas?.includes(direction.id)).slice(0, 3),
-  blogs: blogItems.filter((item) => item.data.researchAreas?.includes(direction.id)).slice(0, 3),
 }));
 ---
 
 <BaseLayout
   title="Research | IntelliSense Lab"
-  description="Research directions, publications, news, and technical writing from IntelliSense Lab."
+  description="Research directions, publications and news from IntelliSense Lab."
   headerMode="glass"
   bodyClass="space-theme research-page"
   showStars={false}
@@ -41,9 +37,9 @@ const panels = researchDirections.map((direction) => ({
         <h1 id="research-hub-title" data-en="Research" data-zh="研究方向">Research</h1>
         <p
           class="research-hub-description"
-          data-en="Four connected research directions spanning perception, understanding, learning, and decision-making across vision, language, and remote sensing."
-          data-zh="围绕感知、理解、学习与决策，我们在视觉、语言和遥感的交叉处形成四个相互关联的研究方向。"
-        >Four connected research directions spanning perception, understanding, learning, and decision-making across vision, language, and remote sensing.</p>
+          data-en="Four research directions: multi-modal LLMs, agents, intelligence for LEO communication and network, and Earth observation applications."
+          data-zh="四个研究方向：多模态大模型、智能体、低轨通信与网络智能，以及对地观测应用。"
+        >Four research directions: multi-modal LLMs, agents, intelligence for LEO communication and network, and Earth observation applications.</p>
       </div>
     </section>
 
@@ -67,7 +63,7 @@ const panels = researchDirections.map((direction) => ({
           ))}
         </div>
 
-        {panels.map(({ direction, publications, news, blogs }, index) => (
+        {panels.map(({ direction, publications, news }, index) => (
           <section
             class="research-panel"
             id={`research-panel-${direction.id}`}
@@ -111,20 +107,6 @@ const panels = researchDirections.map((direction) => ({
                 </div>
               ) : (
                 <p class="research-feed-empty" data-en="News for this direction will appear here." data-zh="该方向的新闻将在这里展示。">News for this direction will appear here.</p>
-              )}
-            </section>
-
-            <section class="research-feed" aria-labelledby={`research-blogs-${direction.id}`}>
-              <header class="research-feed-header">
-                <h3 id={`research-blogs-${direction.id}`} data-en="Latest Blogs" data-zh="最新博客">Latest Blogs</h3>
-                <a href="/blogs/" data-en="View all blogs" data-zh="查看全部博客">View all blogs <span aria-hidden="true">→</span></a>
-              </header>
-              {blogs.length > 0 ? (
-                <div class="research-feed-grid">
-                  {blogs.map((item) => <ResearchFeedCard item={item} kind="blog" />)}
-                </div>
-              ) : (
-                <p class="research-feed-empty" data-en="Blogs for this direction will appear here." data-zh="该方向的博客将在这里展示。">Blogs for this direction will appear here.</p>
               )}
             </section>
           </section>

@@ -23,7 +23,7 @@ const date = item.data.pubDate.toLocaleDateString('en-US', {
   <main class="collection-detail">
     <section class="detail-hero">
       <div class="container detail-hero-stack">
-        <a class="detail-back" href="/news/" data-en="← News" data-zh="← 新闻">← News</a>
+        <a class="detail-back" href="/news/" data-en="← News" data-zh="← 返回新闻">← News</a>
         <p class="detail-kicker-pill">{item.data.tags?.[0] ?? 'News'}</p>
         <h1 data-en={titleEn} data-zh={titleZh}>{titleEn}</h1>
         <p class="detail-description" data-en={descriptionEn} data-zh={descriptionZh}>{descriptionEn}</p>
