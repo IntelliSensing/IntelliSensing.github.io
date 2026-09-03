@@ -1,240 +1,118 @@
 ---
 import { getCollection } from 'astro:content';
 
-interface Props {
-  /** Homepage shows a trimmed grid; the /life/ archive passes 0 for "all". */
-  limit?: number;
-  showHeader?: boolean;
-}
-
-const { limit = 0, showHeader = true } = Astro.props;
-
-const albums = (await getCollection('life'))
+/**
+ * A single auto-scrolling strip of photos on the homepage. Entries in the
+ * `life` collection are albums, but the strip shows one slide per photo so a
+ * dinner with eight shots reads as eight moments rather than one card.
+ *
+ * Slides keep their natural aspect ratio inside a fixed-height track, so a wide
+ * group shot and a portrait snapshot can sit side by side without cropping.
+ */
+const photos = (await getCollection('life'))
   .filter((entry) => !entry.data.draft && entry.data.images.length > 0)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .map((entry) => ({
-    id: entry.id,
+  .flatMap((entry) => entry.data.images.map((image) => ({
+    image,
     titleEn: entry.data.titleEn ?? entry.data.title,
     titleZh: entry.data.titleZh ?? entry.data.title,
-    descriptionEn: entry.data.descriptionEn ?? entry.data.description,
-    descriptionZh: entry.data.descriptionZh ?? entry.data.description,
     categoryEn: entry.data.categoryEn ?? entry.data.category,
     categoryZh: entry.data.categoryZh ?? entry.data.category,
-    locationEn: entry.data.location ?? '',
-    locationZh: entry.data.locationZh ?? entry.data.location ?? '',
-    images: entry.data.images,
-    dateEn: entry.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    dateZh: entry.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }),
-  }));
+    dateEn: entry.data.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    dateZh: entry.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' }),
+  })));
 
-const visibleAlbums = limit > 0 ? albums.slice(0, limit) : albums;
-const hasMore = limit > 0 && albums.length > limit;
+// The strip loops by scrolling through one half of a doubled list and resetting
+// at the midpoint. Each half has to out-width the viewport or the loop shows a
+// gap, so a short collection is repeated until there is enough to fill it.
+const repeats = photos.length > 0 ? Math.max(1, Math.ceil(8 / photos.length)) : 0;
+const half = Array.from({ length: repeats }, () => photos).flat();
+const track = [...half, ...half];
 ---
 
-<section class="life-gallery" id="life" aria-labelledby="life-gallery-title">
-  <div class="life-gallery-inner">
-    {showHeader && (
-      <header class="life-gallery-header">
-        <div class="life-gallery-header-top">
-          <h2
-            id="life-gallery-title"
-            data-en="Life beyond research"
-            data-zh="科研之外的生活与娱乐"
-          >Life beyond research</h2>
-          <a class="life-gallery-all" href="/life/">
-            <span data-en="View all photos" data-zh="查看全部照片">View all photos</span>
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="16" cy="16" r="16"></circle>
-              <path d="M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z"></path>
-            </svg>
-          </a>
-        </div>
-        <p
-          data-en="Dinners, outings and the conferences we travelled to together — the part of lab life that does not show up in a paper."
-          data-zh="聚餐、出游，还有一起参加的学术会议——论文之外的实验室日常。"
-        >Dinners, outings and the conferences we travelled to together — the part of lab life that does not show up in a paper.</p>
-      </header>
-    )}
+<section class="life-strip" id="life" aria-labelledby="life-strip-title">
+  <div class="life-strip-header">
+    <h2 id="life-strip-title" data-en="Life beyond research" data-zh="科研之外的生活与娱乐">Life beyond research</h2>
+    <p
+      data-en="Dinners, outings and the conferences we travelled to together — the part of lab life that does not show up in a paper."
+      data-zh="聚餐、出游，还有一起参加的学术会议——论文之外的实验室日常。"
+    >Dinners, outings and the conferences we travelled to together — the part of lab life that does not show up in a paper.</p>
+  </div>
 
-    {visibleAlbums.length > 0 ? (
-      <div class="life-grid">
-        {visibleAlbums.map((album) => (
-          <button
-            class="life-card"
-            type="button"
-            data-life-album={JSON.stringify({
-              images: album.images,
-              titleEn: album.titleEn,
-              titleZh: album.titleZh,
-              descriptionEn: album.descriptionEn,
-              descriptionZh: album.descriptionZh,
-            })}
-            aria-label={`Open photos from ${album.titleEn}`}
-          >
-            <span class="life-card-media">
-              <img src={album.images[0]} alt="" loading="lazy" decoding="async" />
-              {album.images.length > 1 && (
-                <span class="life-card-count">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <rect x="3" y="3" width="14" height="14" rx="2" /><path d="M7 21h12a2 2 0 0 0 2-2V7" />
-                  </svg>
-                  {album.images.length}
-                </span>
-              )}
-            </span>
-            <span class="life-card-body">
-              <span class="life-card-meta">
-                <span class="life-card-category" data-en={album.categoryEn} data-zh={album.categoryZh}>{album.categoryEn}</span>
-                <time data-en={album.dateEn} data-zh={album.dateZh}>{album.dateEn}</time>
-              </span>
-              <strong data-en={album.titleEn} data-zh={album.titleZh}>{album.titleEn}</strong>
-              <span class="life-card-description" data-en={album.descriptionEn} data-zh={album.descriptionZh}>{album.descriptionEn}</span>
-              {album.locationEn && (
-                <span class="life-card-location" data-en={album.locationEn} data-zh={album.locationZh}>{album.locationEn}</span>
-              )}
-            </span>
-          </button>
+  {photos.length > 0 ? (
+    <div class="life-strip-viewport" data-life-strip>
+      <div class="life-strip-track" data-life-track>
+        {track.map((photo, index) => (
+          <figure class="life-slide" aria-hidden={index >= half.length ? 'true' : undefined}>
+            <img src={photo.image} alt={photo.titleEn} loading="lazy" decoding="async" draggable="false" />
+            <figcaption class="life-slide-caption">
+              <span class="life-slide-category" data-en={photo.categoryEn} data-zh={photo.categoryZh}>{photo.categoryEn}</span>
+              <span data-en={photo.titleEn} data-zh={photo.titleZh}>{photo.titleEn}</span>
+            </figcaption>
+          </figure>
         ))}
       </div>
-    ) : (
-      <p
-        class="life-empty"
-        data-en="Photos are being collected — this wall will fill up soon."
-        data-zh="照片还在收集中，这里很快就会热闹起来。"
-      >Photos are being collected — this wall will fill up soon.</p>
-    )}
-
-    {hasMore && (
-      <a class="life-gallery-more" href="/life/">
-        <span data-en="See more moments" data-zh="查看更多">See more moments</span>
-        <span aria-hidden="true">→</span>
-      </a>
-    )}
-  </div>
+    </div>
+  ) : (
+    <p
+      class="life-strip-empty"
+      data-en="Photos are being collected — this strip will fill up soon."
+      data-zh="照片还在收集中，这里很快就会热闹起来。"
+    >Photos are being collected — this strip will fill up soon.</p>
+  )}
 </section>
 
-<div class="life-lightbox" id="life-lightbox" hidden>
-  <button class="life-lightbox-close" type="button" data-life-close aria-label="Close">&times;</button>
-  <button class="life-lightbox-arrow is-previous" type="button" data-life-previous aria-label="Previous photo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg>
-  </button>
-  <figure class="life-lightbox-figure">
-    <img id="life-lightbox-image" src="" alt="" />
-    <figcaption>
-      <strong id="life-lightbox-title"></strong>
-      <span id="life-lightbox-description"></span>
-      <span class="life-lightbox-counter" id="life-lightbox-counter"></span>
-    </figcaption>
-  </figure>
-  <button class="life-lightbox-arrow is-next" type="button" data-life-next aria-label="Next photo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" /></svg>
-  </button>
-</div>
-
 <script>
-  interface LifeAlbum {
-    images: string[];
-    titleEn: string;
-    titleZh: string;
-    descriptionEn: string;
-    descriptionZh: string;
-  }
+  const initializeLifeStrip = () => {
+    document.querySelectorAll<HTMLElement>('[data-life-strip]').forEach((viewport) => {
+      const track = viewport.querySelector<HTMLElement>('[data-life-track]');
+      if (!track || viewport.dataset.ready === 'true') return;
+      viewport.dataset.ready = 'true';
 
-  const initializeLifeGallery = () => {
-    const lightbox = document.getElementById('life-lightbox');
-    const image = document.getElementById('life-lightbox-image') as HTMLImageElement | null;
-    const title = document.getElementById('life-lightbox-title');
-    const description = document.getElementById('life-lightbox-description');
-    const counter = document.getElementById('life-lightbox-counter');
-    if (!lightbox || !image || lightbox.dataset.ready === 'true') return;
-    lightbox.dataset.ready = 'true';
+      // The track holds two copies of the photo list, so resetting the offset
+      // at the halfway mark makes the scroll loop without a visible seam.
+      let offset = 0;
+      let previous = 0;
+      const speed = 48; // px per second
 
-    let album: LifeAlbum | null = null;
-    let index = 0;
+      const step = (time: number) => {
+        const elapsed = previous ? Math.min(time - previous, 48) : 0;
+        previous = time;
 
-    const isChinese = () => document.documentElement.lang === 'zh-CN';
-
-    const render = () => {
-      if (!album) return;
-      index = (index + album.images.length) % album.images.length;
-      image.src = album.images[index];
-      if (title) {
-        title.setAttribute('data-en', album.titleEn);
-        title.setAttribute('data-zh', album.titleZh);
-        title.textContent = isChinese() ? album.titleZh : album.titleEn;
-      }
-      if (description) {
-        description.setAttribute('data-en', album.descriptionEn);
-        description.setAttribute('data-zh', album.descriptionZh);
-        description.textContent = isChinese() ? album.descriptionZh : album.descriptionEn;
-      }
-      if (counter) counter.textContent = `${index + 1} / ${album.images.length}`;
-      lightbox.classList.toggle('has-single-image', album.images.length < 2);
-    };
-
-    const close = () => {
-      lightbox.hidden = true;
-      album = null;
-      document.body.style.overflow = '';
-    };
-
-    document.querySelectorAll<HTMLElement>('[data-life-album]').forEach((card) => {
-      card.addEventListener('click', () => {
-        try {
-          album = JSON.parse(card.dataset.lifeAlbum ?? '') as LifeAlbum;
-        } catch {
-          return;
+        if (!document.hidden) {
+          const half = track.scrollWidth / 2;
+          if (half > 0) {
+            offset = (offset + elapsed * (speed / 1000)) % half;
+            track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+          }
         }
-        index = 0;
-        render();
-        lightbox.hidden = false;
-        document.body.style.overflow = 'hidden';
-      });
-    });
+        window.requestAnimationFrame(step);
+      };
 
-    lightbox.querySelector('[data-life-close]')?.addEventListener('click', close);
-    lightbox.addEventListener('click', (event) => {
-      if (event.target === lightbox) close();
-    });
-    lightbox.querySelector('[data-life-previous]')?.addEventListener('click', () => { index -= 1; render(); });
-    lightbox.querySelector('[data-life-next]')?.addEventListener('click', () => { index += 1; render(); });
-
-    document.addEventListener('keydown', (event) => {
-      if (lightbox.hidden) return;
-      if (event.key === 'Escape') close();
-      if (event.key === 'ArrowLeft') { index -= 1; render(); }
-      if (event.key === 'ArrowRight') { index += 1; render(); }
+      window.requestAnimationFrame(step);
     });
   };
 
-  initializeLifeGallery();
-  document.addEventListener('astro:page-load', initializeLifeGallery);
+  initializeLifeStrip();
+  document.addEventListener('astro:page-load', initializeLifeStrip);
 </script>
 
 <style>
-  .life-gallery {
-    padding: var(--home-section-gap) 0 0;
+  .life-strip {
+    /* Last section on the page, so it carries the closing gap before the
+       footer the way .home-page .section:last-child does elsewhere. */
+    padding: var(--home-section-gap) 0 var(--home-section-gap);
+    overflow: hidden;
     color: #111;
     background: #fff;
   }
 
-  .life-gallery-inner {
+  .life-strip-header {
     width: min(calc(100% - 96px), 1260px);
-    margin-inline: auto;
+    margin: 0 auto 38px;
   }
 
-  .life-gallery-header {
-    margin-bottom: 40px;
-  }
-
-  .life-gallery-header-top {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 48px;
-  }
-
-  .life-gallery-header h2 {
+  .life-strip-header h2 {
     margin: 0;
     font-family: "Inter Variable", Inter, Arial, sans-serif;
     font-size: 48px;
@@ -243,7 +121,7 @@ const hasMore = limit > 0 && albums.length > limit;
     letter-spacing: 0;
   }
 
-  .life-gallery-header p {
+  .life-strip-header p {
     max-width: 670px;
     margin: 20px 0 0;
     color: #5b5b5b;
@@ -251,147 +129,85 @@ const hasMore = limit > 0 && albums.length > limit;
     line-height: 1.55;
   }
 
-  .life-gallery-all {
-    display: inline-grid;
-    grid-template-columns: max-content 28px;
-    align-items: center;
-    gap: 12px;
-    margin-top: 10px;
-    color: #111;
-    font-family: "Inter Variable", Inter, Arial, sans-serif;
-    font-size: 17px;
-    font-weight: 760;
-    text-decoration: none;
-    white-space: nowrap;
+  .life-strip-viewport {
+    width: 100%;
+    overflow: hidden;
+    /* Fade the strip into the page margins instead of cutting it off hard. */
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
   }
 
-  .life-gallery-all svg {
-    display: block;
-    width: 28px;
-    height: 28px;
-    transition: transform 180ms ease;
+  .life-strip-track {
+    display: flex;
+    width: max-content;
+    gap: 14px;
+    will-change: transform;
   }
 
-  .life-gallery-all circle {
-    fill: #e53935;
-  }
-
-  .life-gallery-all path {
-    fill: #fff;
-  }
-
-  .life-gallery-all:hover svg {
-    transform: translateX(3px);
-  }
-
-  .life-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 26px;
-  }
-
-  .life-card {
-    display: block;
-    padding: 0;
-    border: 0;
-    color: inherit;
-    background: none;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-  }
-
-  .life-card-media {
+  .life-slide {
     position: relative;
     display: block;
+    height: 220px;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
     overflow: hidden;
-    border-radius: 18px;
+    border-radius: 14px;
     background: #f1f3f4;
   }
 
-  .life-card-media img {
+  .life-slide img {
     display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+    width: auto;
+    height: 100%;
+    /* Display only: the strip is not a gallery you can open. */
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
     transition: transform 520ms cubic-bezier(.16, .84, .24, 1);
   }
 
-  .life-card:hover .life-card-media img {
-    transform: scale(1.06);
+  .life-slide:hover img {
+    transform: scale(1.03);
   }
 
-  .life-card-count {
+  .life-slide-caption {
     position: absolute;
-    right: 12px;
-    bottom: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 11px;
-    border-radius: 999px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    gap: 3px;
+    padding: 26px 13px 11px;
     color: #fff;
-    background: rgba(17, 17, 17, 0.62);
-    backdrop-filter: blur(6px);
-    font-size: 12px;
-    font-weight: 700;
+    text-align: left;
+    background: linear-gradient(180deg, transparent, rgba(8, 12, 18, 0.78));
+    opacity: 0;
+    transition: opacity 260ms ease;
   }
 
-  .life-card-count svg {
-    width: 13px;
-    height: 13px;
+  .life-slide:hover .life-slide-caption {
+    opacity: 1;
   }
 
-  .life-card-body {
-    display: block;
-    padding: 16px 2px 0;
-  }
-
-  .life-card-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #8a9097;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+  .life-slide-category {
+    color: #ffb4b2;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  .life-card-category {
-    color: #c93430;
-  }
-
-  .life-card-body strong {
-    display: block;
-    margin-top: 9px;
+  .life-slide-caption > span:last-child {
     font-family: "Inter Variable", Inter, Arial, sans-serif;
-    font-size: 20px;
-    font-weight: 750;
-    line-height: 1.25;
-  }
-
-  .life-card:hover .life-card-body strong {
-    color: #c93430;
-  }
-
-  .life-card-description {
-    display: block;
-    margin-top: 8px;
-    color: #5f656b;
-    font-size: 15px;
-    line-height: 1.55;
-  }
-
-  .life-card-location {
-    display: block;
-    margin-top: 10px;
-    color: #8a9097;
     font-size: 13px;
+    font-weight: 700;
   }
 
-  .life-empty {
-    margin: 0;
+  .life-strip-empty {
+    width: min(calc(100% - 96px), 1260px);
+    margin: 0 auto;
     padding: 34px 0;
     border-top: 1px solid #e4e7ea;
     border-bottom: 1px solid #e4e7ea;
@@ -399,162 +215,43 @@ const hasMore = limit > 0 && albums.length > limit;
     font-size: 15px;
   }
 
-  .life-gallery-more {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 34px;
-    color: #111;
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-  }
+  @media (prefers-reduced-motion: reduce) {
+    .life-strip-viewport {
+      overflow-x: auto;
+    }
 
-  .life-gallery-more:hover {
-    color: #c93430;
-  }
-
-  .life-lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    padding: 5vh 4vw;
-    background: rgba(6, 10, 16, 0.9);
-    backdrop-filter: blur(6px);
-  }
-
-  .life-lightbox[hidden] {
-    display: none;
-  }
-
-  .life-lightbox-figure {
-    display: flex;
-    max-width: min(1100px, 100%);
-    max-height: 90vh;
-    flex-direction: column;
-    margin: 0;
-    gap: 16px;
-  }
-
-  .life-lightbox-figure img {
-    max-height: 74vh;
-    border-radius: 12px;
-    object-fit: contain;
-  }
-
-  .life-lightbox-figure figcaption {
-    display: grid;
-    gap: 6px;
-    color: rgba(255, 255, 255, 0.82);
-    text-align: center;
-  }
-
-  .life-lightbox-figure figcaption strong {
-    font-family: "Inter Variable", Inter, Arial, sans-serif;
-    font-size: 18px;
-    font-weight: 750;
-    color: #fff;
-  }
-
-  .life-lightbox-figure figcaption span {
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .life-lightbox-counter {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-  }
-
-  .life-lightbox-close {
-    position: absolute;
-    top: 22px;
-    right: 26px;
-    width: 40px;
-    height: 40px;
-    border: 0;
-    border-radius: 50%;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.12);
-    font-size: 26px;
-    line-height: 1;
-    cursor: pointer;
-  }
-
-  .life-lightbox-arrow {
-    display: grid;
-    width: 46px;
-    height: 46px;
-    flex: 0 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    place-items: center;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: background 180ms ease;
-  }
-
-  .life-lightbox-arrow:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .life-lightbox-arrow svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  .life-lightbox.has-single-image .life-lightbox-arrow {
-    visibility: hidden;
+    .life-strip-track {
+      transform: none !important;
+    }
   }
 
   @media (max-width: 1120px) {
-    .life-gallery-inner {
+    .life-strip-header,
+    .life-strip-empty {
       width: min(calc(100% - 48px), 940px);
     }
 
-    .life-gallery-header h2 {
+    .life-strip-header h2 {
       font-size: 40px;
     }
 
-    .life-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
+    .life-slide {
+      height: 190px;
     }
   }
 
   @media (max-width: 700px) {
-    .life-gallery-inner {
+    .life-strip-header,
+    .life-strip-empty {
       width: calc(100% - 40px);
     }
 
-    .life-gallery-header-top {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    .life-gallery-header h2 {
+    .life-strip-header h2 {
       font-size: 32px;
     }
 
-    .life-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .life-lightbox {
-      padding: 4vh 12px;
-      gap: 8px;
-    }
-
-    .life-lightbox-arrow {
-      width: 38px;
-      height: 38px;
+    .life-slide {
+      height: 150px;
     }
   }
 </style>

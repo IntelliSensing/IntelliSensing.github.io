@@ -7,6 +7,7 @@ import PeopleSection from '../components/PeopleSection.astro';
 import FeaturedNews from '../components/FeaturedNews.astro';
 import LatestPublications from '../components/LatestPublications.astro';
 import LifeGallery from '../components/LifeGallery.astro';
+import { comparePublications } from '../utils/publications';
 
 const newsItems = (await getCollection('news'))
   .filter((item) => !item.data.draft)
@@ -15,7 +16,7 @@ const newsItems = (await getCollection('news'))
 
 const publications = (await getCollection('publications'))
   .filter((item) => !item.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .sort(comparePublications)
   .slice(0, 3);
 
 ---
@@ -26,6 +27,6 @@ const publications = (await getCollection('publications'))
     <PeopleSection />
     <FeaturedNews items={newsItems} />
     <LatestPublications items={publications} />
-    <LifeGallery limit={6} />
+    <LifeGallery />
   </main>
 </BaseLayout>

@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PublicationCard from '../../components/PublicationCard.astro';
 import { researchDirections } from '../../data/research';
+import { comparePublications } from '../../utils/publications';
 
 const publications = (await getCollection('publications'))
   .filter((item) => !item.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .sort(comparePublications);
 
 const categoryFilters = researchDirections
   .filter((direction) => publications.some((item) => item.data.researchAreas?.includes(direction.id)))

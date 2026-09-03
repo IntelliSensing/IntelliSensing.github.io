@@ -1,5 +1,6 @@
 ---
-# 复制这个文件，改名为活动的英文短名（例如 2026-spring-outing.md），删掉 draft 一行即可上线。
+# 复制这个文件，改名为活动的英文短名（例如 2026-spring-outing.md），把 draft 改成 false 即可上线。
+# 一条记录可以放多张图，首页滚动带里每张图是一张幻灯片。
 # 图片先放到 public/assets/life/ 下面，这里按 /assets/life/文件名 引用。
 title: "Lab dinner"
 titleEn: "Lab dinner"

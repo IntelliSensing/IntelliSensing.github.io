@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ResearchFeedCard from './ResearchFeedCard.astro';
 import { researchDirections } from '../data/research';
+import { comparePublications } from '../utils/publications';
 
 const publications = (await getCollection('publications'))
   .filter((item) => !item.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .sort(comparePublications);
 const newsItems = (await getCollection('news'))
   .filter((item) => !item.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());

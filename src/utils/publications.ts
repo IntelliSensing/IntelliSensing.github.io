@@ -36,3 +36,19 @@ export const getPublicationImage = (publication: PublicationImageSource) =>
   publication.data.image
     ?? researchAreaFallbackImages[publication.data.researchAreas?.[0] ?? '']
     ?? '/assets/cards/publication-blue.png';
+
+interface PublicationSortSource {
+  data: {
+    image?: string;
+    pubDate: Date;
+  };
+}
+
+/**
+ * Newest first, but papers still missing a cover figure sink to the end so the
+ * grid does not open with a run of placeholder illustrations.
+ */
+export const comparePublications = (a: PublicationSortSource, b: PublicationSortSource) => {
+  const hasImage = (item: PublicationSortSource) => (item.data.image ? 0 : 1);
+  return hasImage(a) - hasImage(b) || b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+};
