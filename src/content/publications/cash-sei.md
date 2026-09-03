@@ -12,6 +12,7 @@ authors:
   - "Jiuniu Wang"
   - "Mugen Peng"
 tags:
+  - "TVT"
   - "Specific Emitter Identification"
   - "Novel Emitters"
   - "Online Signal Hash"

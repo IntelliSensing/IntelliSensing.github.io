@@ -18,6 +18,8 @@ tags:
   - "Building Reconstruction"
 researchAreas:
   - "eo-applications"
+image: /assets/pub/EG-MVSNet.png
+
 links:
   - label: "DOI"
     url: "https://doi.org/10.1016/j.isprsjprs.2023.11.020"

@@ -21,7 +21,7 @@ researchAreas:
   - "multimodal-llms"
   - "agent"
 
-image: /assets/pub/sis-motion.jpeg
+image: /assets/pub/sis-motion.png
 projectUrl: "https://choucisan.github.io/publications/self-in-space"
 paperUrl: "https://arxiv.org/abs/2607.12477"
 codeUrl: "https://github.com/IntelliSensing/Self-in-Space"

@@ -12,6 +12,7 @@ authors:
   - "Wei Dai"
   - "Yirong Wu"
 tags:
+  - "JSTSP"
   - "Explainable AI"
   - "Attribute Learning"
   - "Multi-task Learning"

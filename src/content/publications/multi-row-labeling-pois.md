@@ -13,12 +13,13 @@ authors:
   - "Minmin Li"
   - "Renzhong Guo"
 tags:
-  - "Transactions in GIS"
+  - "GIS"
   - "Map Labeling"
   - "Semantic Analysis"
   - "Cartography"
 researchAreas:
   - "eo-applications"
+image: /assets/pub/multi-rows.png
 links:
   - label: "DOI"
     url: "https://doi.org/10.1111/tgis.70024"

@@ -14,6 +14,7 @@ authors:
   - "Mugen Peng"
   - "Yirong Wu"
 tags:
+  - "Journal of Radars"
   - "Remote Sensing Multimodal Large Language Models"
   - "Earth Observation"
   - "Survey"

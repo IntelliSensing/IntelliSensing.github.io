@@ -16,6 +16,7 @@ tags:
   - "Visual Grounding"
 researchAreas:
   - "eo-applications"
+image: /assets/pub/visual-semantic-explanations.png
 links:
   - label: "DOI"
     url: "https://doi.org/10.1007/978-3-030-66415-2_40"
