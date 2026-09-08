@@ -16,6 +16,8 @@ const photos = (await getCollection('life'))
     image,
     titleEn: entry.data.titleEn ?? entry.data.title,
     titleZh: entry.data.titleZh ?? entry.data.title,
+    descriptionEn: entry.data.descriptionEn ?? entry.data.description,
+    descriptionZh: entry.data.descriptionZh ?? entry.data.description,
     categoryEn: entry.data.categoryEn ?? entry.data.category,
     categoryZh: entry.data.categoryZh ?? entry.data.category,
     dateEn: entry.data.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
@@ -47,7 +49,8 @@ const track = [...half, ...half];
             <img src={photo.image} alt={photo.titleEn} loading="lazy" decoding="async" draggable="false" />
             <figcaption class="life-slide-caption">
               <span class="life-slide-category" data-en={photo.categoryEn} data-zh={photo.categoryZh}>{photo.categoryEn}</span>
-              <span data-en={photo.titleEn} data-zh={photo.titleZh}>{photo.titleEn}</span>
+              <span class="life-slide-title" data-en={photo.titleEn} data-zh={photo.titleZh}>{photo.titleEn}</span>
+              <span class="life-slide-note" data-en={photo.descriptionEn} data-zh={photo.descriptionZh}>{photo.descriptionEn}</span>
             </figcaption>
           </figure>
         ))}
@@ -178,17 +181,11 @@ const track = [...half, ...half];
     bottom: 0;
     left: 0;
     display: grid;
-    gap: 3px;
-    padding: 26px 13px 11px;
+    gap: 2px;
+    padding: 42px 13px 11px;
     color: #fff;
     text-align: left;
-    background: linear-gradient(180deg, transparent, rgba(8, 12, 18, 0.78));
-    opacity: 0;
-    transition: opacity 260ms ease;
-  }
-
-  .life-slide:hover .life-slide-caption {
-    opacity: 1;
+    background: linear-gradient(180deg, transparent, rgba(8, 12, 18, 0.86));
   }
 
   .life-slide-category {
@@ -199,10 +196,22 @@ const track = [...half, ...half];
     text-transform: uppercase;
   }
 
-  .life-slide-caption > span:last-child {
+  .life-slide-title {
     font-family: "Inter Variable", Inter, Arial, sans-serif;
     font-size: 13px;
     font-weight: 700;
+  }
+
+  .life-slide-note {
+    /* One line per photo; long captions wrap to two and then clip. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    max-width: 42ch;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 11.5px;
+    line-height: 1.4;
   }
 
   .life-strip-empty {

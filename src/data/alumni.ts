@@ -43,6 +43,8 @@ export const alumni: AlumniMember[] = [
     formerRole: 'Former Master Student',
     formerRoleZh: '原硕士生',
     year: '2026',
+    destination: 'China Bond Financial Technology Co., Ltd.',
+    destinationZh: '中债金科信息技术有限公司',
   },
   {
     name: 'Chuchu Huang',
@@ -50,5 +52,7 @@ export const alumni: AlumniMember[] = [
     formerRole: 'Former Master Student',
     formerRoleZh: '原硕士生',
     year: '2025',
+    destination: 'Administrative Committee of Ningbo Jiangbei Hi-Tech Industrial Park',
+    destinationZh: '宁波江北高新技术产业园区管委会',
   },
 ];

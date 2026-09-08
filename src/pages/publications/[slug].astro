@@ -160,6 +160,12 @@ const publicationLinks = [
 )}
 
 <style>
+  /* Teaser figures are normalised to a 1.48:1 canvas, so match it here instead
+     of the 1.86:1 banner ratio the news and collection covers use. */
+  .detail-cover-wide img {
+    aspect-ratio: 1.48 / 1;
+  }
+
   .publication-detail-authors {
     max-width: 860px;
     margin: 18px 0 0;

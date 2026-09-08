@@ -8,3 +8,6 @@ dist/
 
 .DS_Store
 **/.DS_Store
+
+# Full-resolution source photos kept out of the build; crops in public/ are derived from these.
+photo-originals/

@@ -174,6 +174,23 @@ export const team: TeamMember[] = [
     personalZh: '喜欢篮球、健身和旅行。',
   },
 
+  {
+    slug: 'zengmao-li',
+    name: 'Zengmao Li',
+    nameZh: '黎增懋',
+    publicationNames: ['Zengmao Li'],
+    role: 'PhD Student',
+    roleZh: '博士研究生',
+    img: '/assets/team/zengmao-li.jpg',
+    desc: 'Zengmao Li is a PhD candidate in Information and Communication Engineering at Beijing University of Posts and Telecommunications. His primary research interests include deep learning algorithms, domain adaptation, computer vision, and remote sensing multimodal large models.',
+    descZh: '北京邮电大学信息与通信工程专业博士研究生，主要研究方向包括深度学习算法、域适应、计算机视觉、遥感多模态大模型相关研究。',
+    email: 'lizengmao19@163.com',
+    honors: ['First student author on papers published in TMM and KBS'],
+    honorsZh: ['以第一学生作者在 TMM、KBS 期刊发表论文'],
+    personal: 'Enjoys basketball and fitness.',
+    personalZh: '热爱篮球、健身。',
+  },
+
   // 硕士生 / Master Students —— 按入学年份排序
   {
     slug: 'shuoyuan-sun',
@@ -182,7 +199,7 @@ export const team: TeamMember[] = [
     publicationNames: ['Shuoyuan Sun'],
     role: 'Master Student',
     roleZh: '硕士研究生',
-    img: '/assets/team/shuoyuan-sun.png',
+    img: '/assets/team/shuoyuan-sun.jpg',
     desc: 'Shuoyuan Sun is currently pursuing an M.S. degree in Communication Engineering at Beijing University of Posts and Telecommunications. Research interests include multimodal remote sensing and task-oriented semantic communications.',
     descZh: '孙硕远，北京邮电大学信息与通信工程学院通信工程专业硕士研究生，研究方向包括多模态遥感、面向任务的语义通信。',
     email: 'shuoyuansun@bupt.edu.cn',
@@ -291,7 +308,7 @@ export const team: TeamMember[] = [
     publicationNames: ['Minghao Xue', '薛铭浩'],
     role: 'Master Student',
     roleZh: '硕士研究生',
-    img: '/assets/team/minghao-xue.png',
+    img: '/assets/team/minghao-xue.jpg',
     desc: 'Minghao Xue is a master’s student at the School of Information and Communication Engineering, Beijing University of Posts and Telecommunications. His research interests include multimodal large language models.',
     descZh: '北京邮电大学信息与通信工程学院硕士研究生，主要研究方向为多模态大语言模型。',
     email: 'azrstx@163.com',

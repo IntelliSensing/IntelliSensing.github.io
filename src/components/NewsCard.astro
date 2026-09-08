@@ -26,3 +26,13 @@ const filterText = item.data.tags.join('|').toLowerCase();
   <p data-en={descriptionEn} data-zh={descriptionZh}>{descriptionEn}</p>
   <span class="card-meta">{item.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
 </a>
+
+<style>
+  /* News covers come straight from the WeChat Official Account, which ships a
+     2.35:1 banner. Cropping one into the 1.48:1 publication card ratio cuts
+     more than a third of its width away, so give the news cards the banner
+     shape instead. */
+  .card-image {
+    aspect-ratio: 2.35 / 1;
+  }
+</style>

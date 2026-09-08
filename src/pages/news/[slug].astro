@@ -41,3 +41,11 @@ const date = item.data.pubDate.toLocaleDateString('en-US', {
     </article>
   </main>
 </BaseLayout>
+
+<style>
+  /* Same reason as the news cards: the WeChat cover is a 2.35:1 banner, so the
+     1.86:1 default would shave a fifth off each side. */
+  .detail-cover-wide img {
+    aspect-ratio: 2.35 / 1;
+  }
+</style>
