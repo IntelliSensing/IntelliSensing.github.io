@@ -77,6 +77,12 @@ const honors = member.honors;
             <h1 class="member-name" data-en={member.name} data-zh={member.nameZh ?? member.name}>{member.name}</h1>
             <p class="member-role" data-en={member.role} data-zh={member.roleZh}>{member.role}</p>
             <p class="member-desc" data-en={member.desc} data-zh={member.descZh}>{member.desc}</p>
+            {member.slug === 'wenjia-xu' && member.homepage && (
+              <p class="member-detail">
+                <strong data-en="University profile: " data-zh="学校主页：">University profile: </strong>
+                <a href={member.homepage} target="_blank" rel="noreferrer">{member.homepage}</a>
+              </p>
+            )}
             <div class="member-social">
               {member.homepage && (
                 <a class="member-social-link" href={member.homepage} target="_blank" rel="noreferrer" aria-label="Homepage" title="Homepage">
@@ -204,6 +210,12 @@ const honors = member.honors;
 </BaseLayout>
 
 <style>
+  .member-detail {
+    margin: 12px 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
   .member-page {
     padding-top: 120px;
     min-height: 80vh;
