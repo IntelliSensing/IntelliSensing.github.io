@@ -434,6 +434,29 @@ export const team: TeamMember[] = [
     personalZh: '健身、电子游戏。',
   },
   {
+    slug: 'yang-hu',
+    name: 'Yang Hu',
+    nameZh: '胡杨',
+    publicationNames: ['Yang Hu', '胡杨'],
+    role: 'Master Student',
+    roleZh: '硕士研究生',
+    img: '/assets/team/yang-hu.png',
+    desc: 'BUPT, School of Information and Communication Engineering | Master Candidate. Research area: undecided.',
+    descZh: '北京邮电大学信息与通信工程学院硕士研究生，研究方向暂未确定。',
+    email: '2026140072@bupt.cn',
+    github: 'https://github.com/huyang8373',
+    honors: [
+      'Second-Class University Scholarship',
+      'Second Prize in the Datang Cup National College Students Information and Communication Technology Competition'
+    ],
+    honorsZh: [
+      '校级二等奖学金',
+      '全国大学生信息通信技术大赛“大唐杯”二等奖'
+    ],
+    personal: 'Traveling, hiking, and video games.',
+    personalZh: '旅游、爬山、电子游戏。',
+  },
+  {
     slug: 'wang-yuan',
     name: 'Wang Yuan',
     nameZh: '苑旺',
