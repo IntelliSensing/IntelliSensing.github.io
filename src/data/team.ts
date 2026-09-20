@@ -8,18 +8,27 @@ export interface TeamMember {
   img: string;
   desc: string;
   descZh: string;
+  /** Display order: homepage → email → academic → social/code */
+  homepage?: string;
+  /** Optional custom homepage icon path; defaults to /assets/icons/homepage.svg */
+  homepageIcon?: string;
   email?: string;
+  scholar?: string;
+  semanticScholar?: string;
+  openalex?: string;
+  orcid?: string;
+  huggingface?: string;
+  modelscope?: string;
+  alphaxiv?: string;
   github?: string;
   x?: string;
-  scholar?: string;
-  homepage?: string;
-  huggingface?: string;
   linkedin?: string;
   facebook?: string;
   instagram?: string;
   wechat?: string;
   weibo?: string;
   bilibili?: string;
+  xiaohongshu?: string;
   honors: string[];
   honorsZh: string[];
   personal: string;
@@ -37,10 +46,10 @@ export const team: TeamMember[] = [
     img: '/assets/team/wenjia-xu.jpeg',
     desc: 'Wenjia Xu is an Associate Professor and PhD Supervisor at the School of Information and Communication Engineering, Beijing University of Posts and Telecommunications. His research has long focused on deep learning and the intelligent processing of airborne and spaceborne remote sensing data, with interests spanning integrated communications and remote sensing, multimodal large language models, and agents. He was selected for the ninth Young Elite Scientists Sponsorship Program of the China Association for Science and Technology and the 2024-2026 Young Talent Sponsorship Program of the Beijing Association for Science and Technology. He received the International Exchange Award from the Max Planck Society, Germany, and the Outstanding Doctoral Dissertation Award from the Chinese Institute of Electronics Education.',
     descZh: '北京邮电大学信息与通信工程学院副教授、博士生导师。长期从事空天遥感数据智能处理与深度学习等方面研究，包括通信遥感一体化、多模态大语言模型与智能体、空天遥感数据智能处理等。科研奖励方面，入选中国科协第九届青年人才托举计划、北京市科协2024-2026年度青年人才托举工程，获德国马克思普朗克协会国际交流奖、中国电子教育学会优秀博士论文奖。',
-    email: 'xuwenjia@bupt.edu.cn',
-    github: 'https://github.com/wenjiaXu',
-    scholar: 'https://scholar.google.com/citations?user=mW2Jtu0AAAAJ&hl=en',
     homepage: 'https://teacher.bupt.edu.cn/xuwenjia/zh_CN/index.htm',
+    email: 'xuwenjia@bupt.edu.cn',
+    scholar: 'https://scholar.google.com/citations?user=mW2Jtu0AAAAJ&hl=en',
+    github: 'https://github.com/wenjiaXu',
     honors: [
       'Selected for the ninth Young Elite Scientists Sponsorship Program, China Association for Science and Technology',
       'Selected for the 2024-2026 Young Talent Sponsorship Program, Beijing Association for Science and Technology',
@@ -101,9 +110,9 @@ export const team: TeamMember[] = [
     desc: 'Ruiqing Yu is a Ph.D. student at the School of Information and Communication Engineering, Beijing University of Posts and Telecommunications. His research focuses on multimodal large language models for remote sensing.',
     descZh: '北京邮电大学信息与通信工程学院博士研究生，主要研究方向为遥感多模态大模型。',
     email: 'yuruiqing@bupt.edu.cn',
-    github: 'https://github.com/Yu-Ruiqing',
     scholar: 'https://scholar.google.com.pk/citations?user=BhYvgeYAAAAJ&hl=zh-CN',
     huggingface: 'https://huggingface.co/BenQing2002',
+    github: 'https://github.com/Yu-Ruiqing',
     honors: [],
     honorsZh: [],
     personal: 'Traveling and video games.',
@@ -292,10 +301,10 @@ export const team: TeamMember[] = [
     img: '/assets/team/yujie-li.jpg',
     desc: 'Master’s student at the State Key Laboratory of Networking and Switching Technology, Beijing University of Posts and Telecommunications. My research focuses on temporal remote sensing understanding with multimodal large language models.',
     descZh: '北京邮电大学网络与交换技术全国重点实验室硕士研究生。研究方向聚焦于多模态大语言模型的遥感时序理解。',
-    email: 'liyujie2003@bupt.edu.cn',
-    github: 'https://github.com/Davidup1',
-    scholar: 'https://scholar.google.com/citations?user=gAfFuhsAAAAJ',
     homepage: 'https://davidup1.github.io/',
+    email: 'liyujie2003@bupt.edu.cn',
+    scholar: 'https://scholar.google.com/citations?user=gAfFuhsAAAAJ',
+    github: 'https://github.com/Davidup1',
     honors: ['Graduate Freshman Scholarship, Beijing University of Posts and Telecommunications'],
     honorsZh: ['北京邮电大学研究生新生奖学金'],
     personal: 'Board games and video games.',
@@ -424,7 +433,7 @@ export const team: TeamMember[] = [
     personal: 'Fitness and gaming.',
     personalZh: '健身、电子游戏。',
   },
-    {
+  {
     slug: 'zhishan-zou',
     name: 'Zhishan Zou',
     nameZh: '邹志山',
@@ -434,14 +443,21 @@ export const team: TeamMember[] = [
     img: '/assets/team/zhishan-zou.jpeg',
     desc: 'BUPT, School of Information and Communication Engineering Master Candidate.',
     descZh: '北京邮电大学信息与通信工程学院硕士研究生',
-    homepage:"https://choucisan.github.io",
+    homepage: 'https://choucisan.github.io',
+    homepageIcon: '/assets/icons/homepage-zhishan-zou.png',
     email: 'choucisan@gmail.com',
-    scholar:"https://scholar.google.com/citations?user=MLkojp4AAAAJ&hl=en",
+    scholar: 'https://scholar.google.com/citations?user=MLkojp4AAAAJ&hl=en',
+    semanticScholar: 'https://www.semanticscholar.org/author/Zhishan-Zou/2449782969',
+    openalex: 'https://openalex.org/authors/A5144700690',
+    orcid: 'https://orcid.org/0009-0000-9029-912X',
+    huggingface: 'https://huggingface.co/choucsan',
+    modelscope: 'https://www.modelscope.cn/profile/choucisan',
+    alphaxiv: 'https://www.alphaxiv.org/@zhishan-zou',
     github: 'https://github.com/choucisan',
-    huggingface:"https://huggingface.co/choucsan",
-    linkedin:"https://www.linkedin.com/in/zhishan-zou-266b90422",
-    honors: [""],
-    honorsZh: [""],
+    linkedin: 'https://www.linkedin.com/in/zhishan-zou-266b90422',
+    xiaohongshu: 'https://www.xiaohongshu.com/user/profile/624aab39000000001000d3bc',
+    honors: [''],
+    honorsZh: [''],
     personal: '',
     personalZh: '',
   },

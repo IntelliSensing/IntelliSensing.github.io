@@ -84,9 +84,14 @@ const honors = member.honors;
               </p>
             )}
             <div class="member-social">
+              {/* Order: homepage → email → academic → social/code */}
               {member.homepage && (
                 <a class="member-social-link" href={member.homepage} target="_blank" rel="noreferrer" aria-label="Homepage" title="Homepage">
-                  <img class="member-homepage-icon" src="/assets/icons/homepage.svg" alt="Homepage" />
+                  <img
+                    class={member.homepageIcon ? 'member-homepage-icon-custom' : 'member-homepage-icon'}
+                    src={member.homepageIcon ?? '/assets/icons/homepage.svg'}
+                    alt="Homepage"
+                  />
                 </a>
               )}
               {member.email && (
@@ -94,9 +99,39 @@ const honors = member.honors;
                   <img src="/assets/icons/gmail.svg" alt="Email" />
                 </a>
               )}
-              {member.x && (
-                <a class="member-social-link" href={member.x} target="_blank" rel="noreferrer" aria-label="X" title="X">
-                  <img src="/assets/icons/x.svg" alt="X" />
+              {member.scholar && (
+                <a class="member-social-link" href={member.scholar} target="_blank" rel="noreferrer" aria-label="Google Scholar" title="Google Scholar">
+                  <img src="/assets/icons/scholar.svg" alt="Google Scholar" />
+                </a>
+              )}
+              {member.semanticScholar && (
+                <a class="member-social-link" href={member.semanticScholar} target="_blank" rel="noreferrer" aria-label="Semantic Scholar" title="Semantic Scholar">
+                  <img src="/assets/icons/semantic-scholar.svg" alt="Semantic Scholar" />
+                </a>
+              )}
+              {member.openalex && (
+                <a class="member-social-link" href={member.openalex} target="_blank" rel="noreferrer" aria-label="OpenAlex" title="OpenAlex">
+                  <img src="/assets/icons/openalex.svg" alt="OpenAlex" />
+                </a>
+              )}
+              {member.orcid && (
+                <a class="member-social-link" href={member.orcid} target="_blank" rel="noreferrer" aria-label="ORCID" title="ORCID">
+                  <img src="/assets/icons/orcid.svg" alt="ORCID" />
+                </a>
+              )}
+              {member.huggingface && (
+                <a class="member-social-link" href={member.huggingface} target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
+                  <img src="/assets/icons/huggingface.svg" alt="Hugging Face" />
+                </a>
+              )}
+              {member.modelscope && (
+                <a class="member-social-link" href={member.modelscope} target="_blank" rel="noreferrer" aria-label="ModelScope" title="ModelScope">
+                  <img src="/assets/icons/modelscope.png" alt="ModelScope" />
+                </a>
+              )}
+              {member.alphaxiv && (
+                <a class="member-social-link" href={member.alphaxiv} target="_blank" rel="noreferrer" aria-label="AlphaXiv" title="AlphaXiv">
+                  <img src="/assets/icons/alphaxiv.png" alt="AlphaXiv" />
                 </a>
               )}
               {member.github && (
@@ -104,14 +139,9 @@ const honors = member.honors;
                   <img src="/assets/icons/github.svg" alt="GitHub" />
                 </a>
               )}
-              {member.scholar && (
-                <a class="member-social-link" href={member.scholar} target="_blank" rel="noreferrer" aria-label="Google Scholar" title="Google Scholar">
-                  <img src="/assets/icons/scholar.svg" alt="Google Scholar" />
-                </a>
-              )}
-              {member.huggingface && (
-                <a class="member-social-link" href={member.huggingface} target="_blank" rel="noreferrer" aria-label="Hugging Face" title="Hugging Face">
-                  <img src="/assets/icons/huggingface.svg" alt="Hugging Face" />
+              {member.x && (
+                <a class="member-social-link" href={member.x} target="_blank" rel="noreferrer" aria-label="X" title="X">
+                  <img src="/assets/icons/x.svg" alt="X" />
                 </a>
               )}
               {member.linkedin && (
@@ -142,6 +172,11 @@ const honors = member.honors;
               {member.bilibili && (
                 <a class="member-social-link" href={member.bilibili} target="_blank" rel="noreferrer" aria-label="Bilibili" title="Bilibili">
                   <img src="/assets/icons/bilibili.svg" alt="Bilibili" />
+                </a>
+              )}
+              {member.xiaohongshu && (
+                <a class="member-social-link" href={member.xiaohongshu} target="_blank" rel="noreferrer" aria-label="Xiaohongshu" title="Xiaohongshu">
+                  <img src="/assets/icons/xiaohongshu.svg" alt="Xiaohongshu" />
                 </a>
               )}
             </div>
@@ -316,6 +351,13 @@ const honors = member.honors;
 
   .member-homepage-icon {
     filter: invert(1);
+  }
+
+  .member-homepage-icon-custom {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
   }
 
   .member-social-svg {

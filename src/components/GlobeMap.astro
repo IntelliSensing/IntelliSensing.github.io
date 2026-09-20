@@ -341,8 +341,9 @@ const { deferred = false } = Astro.props;
   /* Globe search trigger bar */
   .globe-reset-view {
     position: absolute;
-    bottom: 20px;
-    right: 200px;
+    top: 88px; /* clear the ~72px site header */
+    right: 24px;
+    bottom: auto;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -555,8 +556,11 @@ const { deferred = false } = Astro.props;
       right: 12px;
     }
     .globe-reset-view {
-      bottom: 124px;
+      top: 76px;
       right: 12px;
+      bottom: auto;
+      height: 40px;
+      padding: 6px 12px;
     }
     .globe-search-options {
       flex-direction: column;
